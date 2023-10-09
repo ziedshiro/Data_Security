@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Review" optimistic-lock="none" table="review">
+        <id name="reviewId" type="string">
+            <column length="100" name="review_id"/>
+            <generator class="assigned"/>
+        </id>
+        <many-to-one class="th.ac.ku.kps.eng.cpe.model.Store" fetch="select" name="store">
+            <column length="100" name="store_id" not-null="true"/>
+        </many-to-one>
+        <many-to-one class="th.ac.ku.kps.eng.cpe.model.User" fetch="select" name="user">
+            <column length="200" name="user_id" not-null="true"/>
+        </many-to-one>
+        <property name="rating" type="int">
+            <column name="rating" not-null="true"/>
+        </property>
+        <property name="comment" type="string">
+            <column length="65535" name="comment" not-null="true"/>
+        </property>
+        <property name="date" type="timestamp">
+            <column length="19" name="date" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

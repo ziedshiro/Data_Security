@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2023 at 05:40 PM
+-- Generation Time: Oct 09, 2023 at 07:53 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -976,9 +976,10 @@ INSERT INTO `districts` (`id`, `code`, `name_in_thai`, `name_in_english`, `provi
 --
 
 CREATE TABLE `favourite` (
-  `favourite_id` int(11) NOT NULL,
-  `store_id` int(11) NOT NULL,
-  `user_id` varchar(50) NOT NULL
+  `favourite_id` varchar(100) NOT NULL,
+  `store_id` varchar(100) NOT NULL,
+  `user_id` varchar(200) NOT NULL,
+  `createdate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -988,10 +989,12 @@ CREATE TABLE `favourite` (
 --
 
 CREATE TABLE `orderitem` (
-  `orderItem_id` int(11) NOT NULL,
-  `order_id` varchar(50) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL
+  `orderItem_id` varchar(100) NOT NULL,
+  `order_id` varchar(100) NOT NULL,
+  `product_id` varchar(100) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `createdate` datetime NOT NULL,
+  `updatedate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1001,15 +1004,17 @@ CREATE TABLE `orderitem` (
 --
 
 CREATE TABLE `orders` (
-  `order_id` varchar(50) NOT NULL,
-  `user_id` varchar(50) NOT NULL,
+  `order_id` varchar(100) NOT NULL,
+  `user_id` varchar(200) NOT NULL,
   `order_date` datetime NOT NULL,
   `order_status` enum('Failed','Cart','Pending','Success') NOT NULL,
   `filepath` text NOT NULL,
   `payment_date` datetime NOT NULL,
   `payment_status` enum('Failed','Pending','Success','') NOT NULL,
   `pickup_date` datetime NOT NULL,
-  `pickup_status` enum('Failed','Pending','Received','') NOT NULL
+  `pickup_status` enum('Failed','Pending','Received','') NOT NULL,
+  `createdate` datetime NOT NULL,
+  `updatedate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1019,8 +1024,8 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `product` (
-  `product_id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `product_id` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `expiry_date` datetime NOT NULL,
   `type_id` int(11) NOT NULL,
@@ -1028,7 +1033,9 @@ CREATE TABLE `product` (
   `discount_price` decimal(11,2) NOT NULL,
   `quantity_available` int(11) NOT NULL,
   `img_product` text NOT NULL,
-  `store_id` int(11) NOT NULL
+  `store_id` varchar(100) NOT NULL,
+  `createdate` datetime NOT NULL,
+  `updatedate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1134,9 +1141,9 @@ INSERT INTO `provinces` (`id`, `code`, `name_in_thai`, `name_in_english`) VALUES
 --
 
 CREATE TABLE `review` (
-  `review_id` int(11) NOT NULL,
-  `user_id` varchar(50) NOT NULL,
-  `store_id` int(11) NOT NULL,
+  `review_id` varchar(100) NOT NULL,
+  `user_id` varchar(200) NOT NULL,
+  `store_id` varchar(100) NOT NULL,
   `rating` int(11) NOT NULL,
   `comment` text NOT NULL,
   `date` datetime NOT NULL
@@ -1149,17 +1156,18 @@ CREATE TABLE `review` (
 --
 
 CREATE TABLE `store` (
-  `store_id` int(11) NOT NULL,
+  `store_id` varchar(100) NOT NULL,
   `name` varchar(50) NOT NULL,
   `address` text NOT NULL,
-  `latitude` int(11) NOT NULL,
-  `longitude` int(11) NOT NULL,
+  `latitude` int(11) DEFAULT NULL,
+  `longitude` int(11) DEFAULT NULL,
   `district_id` int(11) NOT NULL,
   `subdistrict_id` int(11) NOT NULL,
   `province_id` int(11) NOT NULL,
   `img_store` text NOT NULL,
   `store_open` time NOT NULL,
-  `store_close` time NOT NULL
+  `store_close` time NOT NULL,
+  `user_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8569,6 +8577,18 @@ CREATE TABLE `type` (
   `type_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `type`
+--
+
+INSERT INTO `type` (`type_id`, `type_name`) VALUES
+(1, 'อาหารแห้ง'),
+(2, 'เครื่องดื่ม'),
+(3, 'ขนมปัง'),
+(4, 'อาหารกระป๋อง'),
+(5, 'ผัก'),
+(6, 'ผลไม้');
+
 -- --------------------------------------------------------
 
 --
@@ -8576,7 +8596,7 @@ CREATE TABLE `type` (
 --
 
 CREATE TABLE `user` (
-  `user_id` varchar(100) NOT NULL,
+  `user_id` varchar(200) NOT NULL,
   `firstname` varchar(20) NOT NULL,
   `lastname` varchar(20) NOT NULL,
   `password` int(11) NOT NULL,
@@ -8654,7 +8674,8 @@ ALTER TABLE `store`
   ADD PRIMARY KEY (`store_id`),
   ADD KEY `districtID` (`district_id`),
   ADD KEY `provinceID` (`province_id`),
-  ADD KEY `subdistrictID` (`subdistrict_id`);
+  ADD KEY `subdistrictID` (`subdistrict_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `subdistricts`
@@ -8688,40 +8709,10 @@ ALTER TABLE `districts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=929;
 
 --
--- AUTO_INCREMENT for table `favourite`
---
-ALTER TABLE `favourite`
-  MODIFY `favourite_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `orderitem`
---
-ALTER TABLE `orderitem`
-  MODIFY `orderItem_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `product`
---
-ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `provinces`
 --
 ALTER TABLE `provinces`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
-
---
--- AUTO_INCREMENT for table `review`
---
-ALTER TABLE `review`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `store`
---
-ALTER TABLE `store`
-  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `subdistricts`
@@ -8733,7 +8724,7 @@ ALTER TABLE `subdistricts`
 -- AUTO_INCREMENT for table `type`
 --
 ALTER TABLE `type`
-  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
@@ -8756,8 +8747,8 @@ ALTER TABLE `favourite`
 -- Constraints for table `orderitem`
 --
 ALTER TABLE `orderitem`
-  ADD CONSTRAINT `orderitem_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orderitem_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `orderitem_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `orderitem_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`
@@ -8769,8 +8760,8 @@ ALTER TABLE `orders`
 -- Constraints for table `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `product_ibfk_3` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `review`
@@ -8785,7 +8776,8 @@ ALTER TABLE `review`
 ALTER TABLE `store`
   ADD CONSTRAINT `store_ibfk_1` FOREIGN KEY (`district_id`) REFERENCES `districts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `store_ibfk_2` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `store_ibfk_3` FOREIGN KEY (`subdistrict_id`) REFERENCES `subdistricts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `store_ibfk_3` FOREIGN KEY (`subdistrict_id`) REFERENCES `subdistricts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `store_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `subdistricts`

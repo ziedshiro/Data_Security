@@ -99,7 +99,7 @@ function Footer() {
             <Link
                 className="font-semibold text-white"
                 to="/"
-            > Tailwind Elements</Link>
+            > Yummy Hub</Link>
             </div>
         </footer>
         );
