@@ -19,19 +19,25 @@ public class UserDTO {
 	private String password;
 	@NotBlank(message = "Invalid Code: Empty Code")
 	private String codeTwoFactorAuthentication;
+	@NotBlank(message = "Invalid Code: Empty Code")
+	private String secretCode;
 	
 	public UserDTO() {}
 
-	
-	public UserDTO(String userId, String firstname, String lastname, String password, String codeTwoFactorAuthentication) {
+	public UserDTO(@Email(message = "Invalid Email") @NotBlank(message = "Invalid Email: Empty Email") String userId,
+			@NotBlank(message = "Invalid Firstname: Empty Firstname") @Size(min = 3, max = 20, message = "Invalid firstname: Must be of 3 - 20 characters") String firstname,
+			@NotBlank(message = "Invalid Lastname: Empty Lastname") @Size(min = 3, max = 20, message = "Invalid Lastname: Must be of 3 - 20 characters") String lastname,
+			@NotBlank(message = "Invalid Password: Empty Password") @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters") String password,
+			@NotBlank(message = "Invalid Code: Empty Code") String codeTwoFactorAuthentication,
+			@NotBlank(message = "Invalid Code: Empty Code") String secretCode) {
 		super();
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.password = password;
 		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
+		this.secretCode = secretCode;
 	}
-
 
 	public String getUserId() {
 		return userId;
@@ -72,4 +78,13 @@ public class UserDTO {
 	public void setCodeTwoFactorAuthentication(String codeTwoFactorAuthentication) {
 		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
 	}
+	
+	public String getSecretCode() {
+		return secretCode;
+	}
+	
+	public void setSecretCode(String secretCode) {
+		this.secretCode = secretCode;
+	}
+	
 }

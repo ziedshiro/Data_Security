@@ -129,7 +129,7 @@ public class AuthenticationController {
 			TimeProvider timeProvider = new SystemTimeProvider();
 			CodeGenerator codeGenerator = new DefaultCodeGenerator();
 			CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-			boolean successful = verifier.isValidCode(secret, user.getCodeTwoFactorAuthentication());
+			boolean successful = verifier.isValidCode(user.getSecretCode(), user.getCodeTwoFactorAuthentication());
 			if(successful) {
 				String userId = encryptionservice.encrypt(user.getUserId());
 				String firstname = encryptionservice.encrypt(user.getFirstname());
@@ -161,6 +161,12 @@ public class AuthenticationController {
 	@PostMapping("/login")
 	public LoginResponse login(LoginDTO login) {
 		LoginResponse loginresp = new LoginResponse();
+		//decode and find user
+		
+//		TimeProvider timeProvider = new SystemTimeProvider();
+//		CodeGenerator codeGenerator = new DefaultCodeGenerator();
+//		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+//		boolean successful = verifier.isValidCode(secret, login.getCodeTwoFactorAuthentication());
 		
 		return loginresp;
 	}
