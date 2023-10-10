@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { NavLink,Outlet } from "react-router-dom";
+import { NavLink,Outlet,Link } from "react-router-dom";
 import {
   Navbar,
   Collapse,
@@ -70,6 +70,23 @@ function NavList({className}:any) {
                     Order
                 </NavLink>
             </Typography>
+            {!className && className !== undefined ? (
+                <></>
+            ):
+                <Typography
+                    as="li"
+                    variant="small"
+                    color="blue-gray"
+                    className="p-1 font-medium"
+                >
+                    <Link 
+                        to="#" 
+                        className="text-base hover:text-yellow-500"
+                    >
+                        Logout
+                    </Link>
+                </Typography>
+            }
         </ul>
     );
 }
