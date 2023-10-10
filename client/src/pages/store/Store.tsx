@@ -15,7 +15,7 @@ function NavList({className}:any) {
     if(!className && className !== undefined){
         active = "pt-3 border-t-4 border-yellow-500 text-yellow-500 text-base";
     }else{
-        active = "border-b-4 pb-1 border-yellow-500 text-yellow-500 text-base";
+        active = "border-b-4 pb-1 border-yellow-500 text-yellow-500 text-base ";
     }
 
     useEffect(() => {
@@ -107,7 +107,7 @@ function Store() {
                 </Typography>
                 <IconButton
                     variant="text"
-                    className="h-7 w-7 my-4 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden flex ml-8"
+                    className="h-7 w-7 my-4 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden flex ml-4"
                     ripple={false}
                     onClick={() => setOpenNav(!openNav)}
                     >
