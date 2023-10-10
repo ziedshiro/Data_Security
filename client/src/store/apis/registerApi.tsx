@@ -3,14 +3,14 @@ import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const registerApi = createApi({
     reducerPath:'authen',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:8080'
+        baseUrl: 'http://localhost:8080/server/api'
     }),
     endpoints(builder){
         return{
             register: builder.mutation({
                 query: (user) => {
                     return{
-                        url: '/server/api/register',
+                        url: '/register',
                         method: 'POST',
                         body:user
                     };
@@ -19,7 +19,7 @@ const registerApi = createApi({
             MFACode: builder.mutation({
                 query: (userId) => {
                     return{
-                        url: `/server/generateMFACode/${userId}`,
+                        url: `/generateMFACode/${userId}`,
                         method: 'POST',
                     };
                 }
