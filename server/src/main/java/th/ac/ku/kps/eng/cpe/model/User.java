@@ -42,6 +42,25 @@ public class User implements java.io.Serializable {
 		this.salt = salt;
 		this.role = role;
 	}
+	
+	
+
+	public User(String userId, String firstname, String lastname, String password, String salt, String role,
+			Timestamp lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Timestamp attemptTimeLogin,
+			Boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication) {
+		this.userId = userId;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.password = password;
+		this.salt = salt;
+		this.role = role;
+		this.lastLoginTimestamp = lastLoginTimestamp;
+		this.accountLockStatus = accountLockStatus;
+		this.attemptLogin = attemptLogin;
+		this.attemptTimeLogin = attemptTimeLogin;
+		this.twoFactorAuthenticationEnabled = twoFactorAuthenticationEnabled;
+		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
+	}
 
 	public User(String userId, String firstname, String lastname, String password, String salt, String role,
 			Timestamp lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Timestamp attemptTimeLogin,

@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,9 +31,14 @@ import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.qr.QrGenerator;
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
+import th.ac.ku.kps.eng.cpe.dto.LoginDTO;
 import th.ac.ku.kps.eng.cpe.dto.UserDTO;
+import th.ac.ku.kps.eng.cpe.model.User;
+import th.ac.ku.kps.eng.cpe.response.LoginResponse;
 import th.ac.ku.kps.eng.cpe.response.MFAResponse;
 import th.ac.ku.kps.eng.cpe.response.RegisterResponse;
+import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
+import th.ac.ku.kps.eng.cpe.service.HashServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
 import java.net.UnknownHostException;
@@ -51,20 +57,32 @@ public class AuthenticationController {
 	@Autowired
 	private UserServices userservice;
 	
-	@GetMapping("/test/{code}")
-	public boolean Test(@PathVariable("code")String code) throws UnknownHostException {
-		TimeProvider timeProvider = new NtpTimeProvider("pool.ntp.org", 5000);
-		CodeGenerator codeGenerator = new DefaultCodeGenerator();
-		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-
-		boolean successful = verifier.isValidCode(secret, code);
-		return successful;
+	@Autowired
+    private HashServices hashservices;
+	
+	@Autowired
+	private EncryptionServices encryptionservice;
+	
+	@GetMapping("/en")
+	public String en(){
+		try {
+		return encryptionservice.encrypt("test");
+		} catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 	}
 	
-	@GetMapping("/auth/test")
-	public String Tests(@RequestHeader("Authorization") String token) {
-		return token;
+	@GetMapping("/de/{userId}")
+	public String de(@PathVariable("userId") String userId){
+		try {
+		return encryptionservice.decrypt(userId);
+	 } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+     }
 	}
+	
 	@PostMapping("/generateMFACode/{userId}")
 	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
 		MFAResponse resp = new MFAResponse();
@@ -92,9 +110,8 @@ public class AuthenticationController {
 		return resp;
 	}
 	
-	
 	@PostMapping("/register")
-	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) {
+	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws Exception {
 		RegisterResponse resp = new RegisterResponse();
 		if(bindingResult.hasErrors()||(userservice.findByUserId(user.getUserId())!=null)) {
 			resp.setStatus(HttpStatus.BAD_REQUEST);
@@ -108,14 +125,44 @@ public class AuthenticationController {
 			
 			return resp;
 		}
-		resp.setStatus(HttpStatus.CREATED);
+		else {
+			TimeProvider timeProvider = new SystemTimeProvider();
+			CodeGenerator codeGenerator = new DefaultCodeGenerator();
+			CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+			boolean successful = verifier.isValidCode(secret, user.getCodeTwoFactorAuthentication());
+			if(successful) {
+				String userId = encryptionservice.encrypt(user.getUserId());
+				String firstname = encryptionservice.encrypt(user.getFirstname());
+				String lastname = encryptionservice.encrypt(user.getLastname());
+				String salt = hashservices.generateSalt();
+				String password = hashservices.hashPassword(user.getPassword(),salt);
+
+				userservice.save(new User(userId,firstname,lastname,password,salt,"customer",null,false,0,null,true,user.getCodeTwoFactorAuthentication()));
+				
+				resp.setStatus(HttpStatus.CREATED);
+				List<String> msg = new ArrayList<String>();
+				msg.add("Register Success");
+				
+				
+				return resp;				
+			}
+			else {
+				resp.setStatus(HttpStatus.BAD_REQUEST);
+				List<String> msg = new ArrayList<String>();
+				msg.add("Code not Match!");
+				resp.setMsg(msg);
+				
+				return resp;
+			}
+			
+		}
+	}
+	
+	@PostMapping("/login")
+	public LoginResponse login(LoginDTO login) {
+		LoginResponse loginresp = new LoginResponse();
 		
-		List<String> msg = new ArrayList<String>();
-		msg.add("Register Success");
-		resp.setMsg(msg);
-		
-		
-		return resp;
+		return loginresp;
 	}
 	
 	@PostMapping("/check/{code}")

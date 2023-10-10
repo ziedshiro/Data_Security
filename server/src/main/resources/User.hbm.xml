@@ -7,16 +7,16 @@
             <generator class="assigned"/>
         </id>
         <property name="firstname" type="string">
-            <column length="20" name="firstname" not-null="true"/>
+            <column length="200" name="firstname" not-null="true"/>
         </property>
         <property name="lastname" type="string">
-            <column length="20" name="lastname" not-null="true"/>
+            <column length="200" name="lastname" not-null="true"/>
         </property>
         <property name="password" type="string">
-            <column length="20" name="password" not-null="true"/>
+            <column length="200" name="password" not-null="true"/>
         </property>
         <property name="salt" type="string">
-            <column length="100" name="salt" not-null="true"/>
+            <column length="200" name="salt" not-null="true"/>
         </property>
         <property name="role" type="string">
             <column length="13" name="role" not-null="true"/>
@@ -37,7 +37,7 @@
             <column name="two_factor_authentication_enabled"/>
         </property>
         <property name="codeTwoFactorAuthentication" type="string">
-            <column length="100" name="code_two_factor_authentication"/>
+            <column length="200" name="code_two_factor_authentication"/>
         </property>
         <set fetch="select" inverse="true" lazy="true" name="reviews" table="review">
             <key>

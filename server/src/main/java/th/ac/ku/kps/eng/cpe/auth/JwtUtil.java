@@ -17,10 +17,8 @@ import th.ac.ku.kps.eng.cpe.model.User;
 @Service
 public class JwtUtil {
     
-//    @Value("${jwt.secret}")
     private final String SECRET_KEY = "i9u*_j5o*t01c%5y42%650(-%q@=hifhavv1(-^y@q&wc6%4xu";
 
-//    @Value("${jwt.expiration}")
     private Long expirationInMs = (long) 3600000;
     
     private final JwtParser jwtParser;
