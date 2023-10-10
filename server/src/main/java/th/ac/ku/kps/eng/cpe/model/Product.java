@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final
+// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -25,6 +25,7 @@ public class Product implements java.io.Serializable {
 	private BigDecimal discountPrice;
 	private int quantityAvailable;
 	private String imgProduct;
+	private boolean isactive;
 	private Timestamp createdate;
 	private Timestamp updatedate;
 	@JsonIgnore private Set orderitems = new HashSet(0);
@@ -32,26 +33,23 @@ public class Product implements java.io.Serializable {
 	public Product() {
 	}
 
-	public Product(String productId, Store store, Type type, String name, String description, Timestamp expiryDate,
-			BigDecimal price, BigDecimal discountPrice, int quantityAvailable, String imgProduct, Timestamp createdate,
-			Timestamp updatedate) {
+	public Product(String productId, Store store, Type type, String name, Timestamp expiryDate, BigDecimal price,
+			int quantityAvailable, String imgProduct, boolean isactive, Timestamp createdate) {
 		this.productId = productId;
 		this.store = store;
 		this.type = type;
 		this.name = name;
-		this.description = description;
 		this.expiryDate = expiryDate;
 		this.price = price;
-		this.discountPrice = discountPrice;
 		this.quantityAvailable = quantityAvailable;
 		this.imgProduct = imgProduct;
+		this.isactive = isactive;
 		this.createdate = createdate;
-		this.updatedate = updatedate;
 	}
 
 	public Product(String productId, Store store, Type type, String name, String description, Timestamp expiryDate,
-			BigDecimal price, BigDecimal discountPrice, int quantityAvailable, String imgProduct, Timestamp createdate,
-			Timestamp updatedate, Set orderitems) {
+			BigDecimal price, BigDecimal discountPrice, int quantityAvailable, String imgProduct, boolean isactive,
+			Timestamp createdate, Timestamp updatedate, Set orderitems) {
 		this.productId = productId;
 		this.store = store;
 		this.type = type;
@@ -62,6 +60,7 @@ public class Product implements java.io.Serializable {
 		this.discountPrice = discountPrice;
 		this.quantityAvailable = quantityAvailable;
 		this.imgProduct = imgProduct;
+		this.isactive = isactive;
 		this.createdate = createdate;
 		this.updatedate = updatedate;
 		this.orderitems = orderitems;
@@ -145,6 +144,14 @@ public class Product implements java.io.Serializable {
 
 	public void setImgProduct(String imgProduct) {
 		this.imgProduct = imgProduct;
+	}
+
+	public boolean isIsactive() {
+		return this.isactive;
+	}
+
+	public void setIsactive(boolean isactive) {
+		this.isactive = isactive;
 	}
 
 	public Timestamp getCreatedate() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.User" optimistic-lock="none" table="user">
         <id name="userId" type="string">
@@ -12,29 +12,32 @@
         <property name="lastname" type="string">
             <column length="20" name="lastname" not-null="true"/>
         </property>
-        <property name="password" type="int">
-            <column name="password" not-null="true"/>
+        <property name="password" type="string">
+            <column length="20" name="password" not-null="true"/>
+        </property>
+        <property name="salt" type="string">
+            <column length="100" name="salt" not-null="true"/>
         </property>
         <property name="role" type="string">
             <column length="13" name="role" not-null="true"/>
         </property>
         <property name="lastLoginTimestamp" type="timestamp">
-            <column length="19" name="last_login_timestamp" not-null="true"/>
+            <column length="19" name="last_login_timestamp"/>
         </property>
-        <property name="accountLockStatus" type="boolean">
-            <column name="account_lock_status" not-null="true"/>
+        <property name="accountLockStatus" type="java.lang.Boolean">
+            <column name="account_lock_status"/>
         </property>
-        <property name="attemptLogin" type="int">
-            <column name="attempt_login" not-null="true"/>
+        <property name="attemptLogin" type="java.lang.Integer">
+            <column name="attempt_login"/>
         </property>
         <property name="attemptTimeLogin" type="timestamp">
-            <column length="19" name="attempt_time_login" not-null="true"/>
+            <column length="19" name="attempt_time_login"/>
         </property>
-        <property name="twoFactorAuthenticationEnabled" type="boolean">
-            <column name="two_factor_authentication_enabled" not-null="true"/>
+        <property name="twoFactorAuthenticationEnabled" type="java.lang.Boolean">
+            <column name="two_factor_authentication_enabled"/>
         </property>
         <property name="codeTwoFactorAuthentication" type="string">
-            <column length="100" name="code_two_factor_authentication" not-null="true"/>
+            <column length="100" name="code_two_factor_authentication"/>
         </property>
         <set fetch="select" inverse="true" lazy="true" name="reviews" table="review">
             <key>

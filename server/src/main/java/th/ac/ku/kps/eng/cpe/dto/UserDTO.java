@@ -16,16 +16,21 @@ public class UserDTO {
 	@NotBlank(message = "Invalid Password: Empty Password")
     @Size(min = 8, max = 15, message = "Invalid Password: Must be of 8 - 15 characters")
 	private String password;
+	@NotBlank(message = "Invalid Code: Empty Code")
+	private String codeTwoFactorAuthentication;
 	
 	public UserDTO() {}
+
 	
-	public UserDTO(String userId,String firstname, String lastname, String password) {
+	public UserDTO(String userId, String firstname, String lastname, String password, String codeTwoFactorAuthentication) {
 		super();
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.password = password;
+		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
 	}
+
 
 	public String getUserId() {
 		return userId;
@@ -58,6 +63,16 @@ public class UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public String getCodeTwoFactorAuthentication() {
+		return codeTwoFactorAuthentication;
+	}
+
+	public void setCodeTwoFactorAuthentication(String codeTwoFactorAuthentication) {
+		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
+	}
+	
+	
 
 	
 

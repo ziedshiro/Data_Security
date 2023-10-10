@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Orders" optimistic-lock="none" table="orders">
         <id name="orderId" type="string">
@@ -10,31 +10,31 @@
             <column length="200" name="user_id" not-null="true"/>
         </many-to-one>
         <property name="orderDate" type="timestamp">
-            <column length="19" name="order_date" not-null="true"/>
+            <column length="19" name="order_date"/>
         </property>
         <property name="orderStatus" type="string">
             <column length="7" name="order_status" not-null="true"/>
         </property>
         <property name="filepath" type="string">
-            <column length="65535" name="filepath" not-null="true"/>
+            <column length="65535" name="filepath"/>
         </property>
         <property name="paymentDate" type="timestamp">
-            <column length="19" name="payment_date" not-null="true"/>
+            <column length="19" name="payment_date"/>
         </property>
         <property name="paymentStatus" type="string">
-            <column length="7" name="payment_status" not-null="true"/>
+            <column length="7" name="payment_status"/>
         </property>
         <property name="pickupDate" type="timestamp">
-            <column length="19" name="pickup_date" not-null="true"/>
+            <column length="19" name="pickup_date"/>
         </property>
         <property name="pickupStatus" type="string">
-            <column length="8" name="pickup_status" not-null="true"/>
+            <column length="8" name="pickup_status"/>
         </property>
         <property name="createdate" type="timestamp">
             <column length="19" name="createdate" not-null="true"/>
         </property>
         <property name="updatedate" type="timestamp">
-            <column length="19" name="updatedate" not-null="true"/>
+            <column length="19" name="updatedate"/>
         </property>
         <set fetch="select" inverse="true" lazy="true" name="orderitems" table="orderitem">
             <key>

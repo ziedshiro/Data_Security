@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final
+// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -17,13 +17,14 @@ public class User implements java.io.Serializable {
 	private String userId;
 	private String firstname;
 	private String lastname;
-	private int password;
+	private String password;
+	private String salt;
 	private String role;
 	private Timestamp lastLoginTimestamp;
-	private boolean accountLockStatus;
-	private int attemptLogin;
+	private Boolean accountLockStatus;
+	private Integer attemptLogin;
 	private Timestamp attemptTimeLogin;
-	private boolean twoFactorAuthenticationEnabled;
+	private Boolean twoFactorAuthenticationEnabled;
 	private String codeTwoFactorAuthentication;
 	@JsonIgnore private Set reviews = new HashSet(0);
 	@JsonIgnore private Set orderses = new HashSet(0);
@@ -33,30 +34,24 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	public User(String userId, String firstname, String lastname, int password, String role,
-			Timestamp lastLoginTimestamp, boolean accountLockStatus, int attemptLogin, Timestamp attemptTimeLogin,
-			boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication) {
+	public User(String userId, String firstname, String lastname, String password, String salt, String role) {
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.password = password;
+		this.salt = salt;
 		this.role = role;
-		this.lastLoginTimestamp = lastLoginTimestamp;
-		this.accountLockStatus = accountLockStatus;
-		this.attemptLogin = attemptLogin;
-		this.attemptTimeLogin = attemptTimeLogin;
-		this.twoFactorAuthenticationEnabled = twoFactorAuthenticationEnabled;
-		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
 	}
 
-	public User(String userId, String firstname, String lastname, int password, String role,
-			Timestamp lastLoginTimestamp, boolean accountLockStatus, int attemptLogin, Timestamp attemptTimeLogin,
-			boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication, Set reviews, Set orderses,
+	public User(String userId, String firstname, String lastname, String password, String salt, String role,
+			Timestamp lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Timestamp attemptTimeLogin,
+			Boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication, Set reviews, Set orderses,
 			Set favourites, Set stores) {
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.password = password;
+		this.salt = salt;
 		this.role = role;
 		this.lastLoginTimestamp = lastLoginTimestamp;
 		this.accountLockStatus = accountLockStatus;
@@ -94,12 +89,20 @@ public class User implements java.io.Serializable {
 		this.lastname = lastname;
 	}
 
-	public int getPassword() {
+	public String getPassword() {
 		return this.password;
 	}
 
-	public void setPassword(int password) {
+	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getSalt() {
+		return this.salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	public String getRole() {
@@ -118,19 +121,19 @@ public class User implements java.io.Serializable {
 		this.lastLoginTimestamp = lastLoginTimestamp;
 	}
 
-	public boolean isAccountLockStatus() {
+	public Boolean getAccountLockStatus() {
 		return this.accountLockStatus;
 	}
 
-	public void setAccountLockStatus(boolean accountLockStatus) {
+	public void setAccountLockStatus(Boolean accountLockStatus) {
 		this.accountLockStatus = accountLockStatus;
 	}
 
-	public int getAttemptLogin() {
+	public Integer getAttemptLogin() {
 		return this.attemptLogin;
 	}
 
-	public void setAttemptLogin(int attemptLogin) {
+	public void setAttemptLogin(Integer attemptLogin) {
 		this.attemptLogin = attemptLogin;
 	}
 
@@ -142,11 +145,11 @@ public class User implements java.io.Serializable {
 		this.attemptTimeLogin = attemptTimeLogin;
 	}
 
-	public boolean isTwoFactorAuthenticationEnabled() {
+	public Boolean getTwoFactorAuthenticationEnabled() {
 		return this.twoFactorAuthenticationEnabled;
 	}
 
-	public void setTwoFactorAuthenticationEnabled(boolean twoFactorAuthenticationEnabled) {
+	public void setTwoFactorAuthenticationEnabled(Boolean twoFactorAuthenticationEnabled) {
 		this.twoFactorAuthenticationEnabled = twoFactorAuthenticationEnabled;
 	}
 

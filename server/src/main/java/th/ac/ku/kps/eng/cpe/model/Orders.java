@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final
+// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -30,20 +30,11 @@ public class Orders implements java.io.Serializable {
 	public Orders() {
 	}
 
-	public Orders(String orderId, User user, Timestamp orderDate, String orderStatus, String filepath,
-			Timestamp paymentDate, String paymentStatus, Timestamp pickupDate, String pickupStatus,
-			Timestamp createdate, Timestamp updatedate) {
+	public Orders(String orderId, User user, String orderStatus, Timestamp createdate) {
 		this.orderId = orderId;
 		this.user = user;
-		this.orderDate = orderDate;
 		this.orderStatus = orderStatus;
-		this.filepath = filepath;
-		this.paymentDate = paymentDate;
-		this.paymentStatus = paymentStatus;
-		this.pickupDate = pickupDate;
-		this.pickupStatus = pickupStatus;
 		this.createdate = createdate;
-		this.updatedate = updatedate;
 	}
 
 	public Orders(String orderId, User user, Timestamp orderDate, String orderStatus, String filepath,

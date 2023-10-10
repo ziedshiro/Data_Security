@@ -3,13 +3,13 @@ package th.ac.ku.kps.eng.cpe.response;
 import org.springframework.http.HttpStatus;
 
 public class ErrorResponse {
-	private HttpStatus status;
+	private int status;
     private String message;
     private String error;
 
     public ErrorResponse() {}
 
-	public ErrorResponse(HttpStatus status, String message, String error) {
+	public ErrorResponse(int status, String message, String error) {
         this.setStatus(status);
         this.message = message;
     }
@@ -22,11 +22,11 @@ public class ErrorResponse {
         this.message = message;
     }
 
-	public HttpStatus getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(HttpStatus status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 

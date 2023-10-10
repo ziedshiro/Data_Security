@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 1:16:06 AM by Hibernate Tools 6.1.7.Final
+// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
 
@@ -16,18 +16,26 @@ public class Review implements java.io.Serializable {
 	private User user;
 	private int rating;
 	private String comment;
-	private Timestamp date;
+	private Timestamp createdate;
 
 	public Review() {
 	}
 
-	public Review(String reviewId, Store store, User user, int rating, String comment, Timestamp date) {
+	public Review(String reviewId, Store store, User user, int rating, Timestamp createdate) {
+		this.reviewId = reviewId;
+		this.store = store;
+		this.user = user;
+		this.rating = rating;
+		this.createdate = createdate;
+	}
+
+	public Review(String reviewId, Store store, User user, int rating, String comment, Timestamp createdate) {
 		this.reviewId = reviewId;
 		this.store = store;
 		this.user = user;
 		this.rating = rating;
 		this.comment = comment;
-		this.date = date;
+		this.createdate = createdate;
 	}
 
 	public String getReviewId() {
@@ -70,12 +78,12 @@ public class Review implements java.io.Serializable {
 		this.comment = comment;
 	}
 
-	public Timestamp getDate() {
-		return this.date;
+	public Timestamp getCreatedate() {
+		return this.createdate;
 	}
 
-	public void setDate(Timestamp date) {
-		this.date = date;
+	public void setCreatedate(Timestamp createdate) {
+		this.createdate = createdate;
 	}
 
 }

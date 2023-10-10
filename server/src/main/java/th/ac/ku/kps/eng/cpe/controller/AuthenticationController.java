@@ -1,20 +1,17 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.warrenstrange.googleauth.GoogleAuthenticator;
-import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
@@ -33,33 +30,52 @@ import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.qr.QrGenerator;
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
+import th.ac.ku.kps.eng.cpe.dto.UserDTO;
+import th.ac.ku.kps.eng.cpe.response.MFAResponse;
+import th.ac.ku.kps.eng.cpe.response.RegisterResponse;
+import th.ac.ku.kps.eng.cpe.service.UserServices;
+
 import java.net.UnknownHostException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AuthenticationController {
-//	private final GoogleAuthenticator googleAuthenticator;
 	private final String secret = "T5JDCOA5B5B6NPEUPC5V3RXCWSLKWBZ2I4MRYMXSERNW7I6E27YH7J6WMLTIBDQD";
-	
-//	public AuthenticationController() {
-//		this.googleAuthenticator = new GoogleAuthenticator();
-//	}
-	
-	@GetMapping("/test")
-	public String test() {
-		return "test";
-	}
 
-	@PostMapping("/generateMFA")
-	public String generateMFA() throws QrGenerationException {
+	@Autowired
+	private UserServices userservice;
+	
+	@GetMapping("/test/{code}")
+	public boolean Test(@PathVariable("code")String code) throws UnknownHostException {
+		TimeProvider timeProvider = new NtpTimeProvider("pool.ntp.org", 5000);
+		CodeGenerator codeGenerator = new DefaultCodeGenerator();
+		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+
+		boolean successful = verifier.isValidCode(secret, code);
+		return successful;
+	}
+	
+	@GetMapping("/auth/test")
+	public String Tests(@RequestHeader("Authorization") String token) {
+		return token;
+	}
+	@PostMapping("/generateMFACode/{userId}")
+	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
+		MFAResponse resp = new MFAResponse();
+		
 		SecretGenerator secretGenerator = new DefaultSecretGenerator();
 		String secret = secretGenerator.generate();
+		
 		QrData data = new QrData.Builder()
-				   .label("Shop")
+				   .label(userId)
 				   .secret(secret)
-				   .issuer("DS")
+				   .issuer("Yummy Hub")
 				   .algorithm(HashingAlgorithm.SHA1) // More on this below
 				   .digits(6)
 				   .period(30)
@@ -69,8 +85,39 @@ public class AuthenticationController {
 		String mimeType = generator.getImageMimeType();
 		String dataUri = getDataUriForImage(imageData, mimeType);
 		
-		return dataUri;
+		resp.setStatus(HttpStatus.CREATED);
+		resp.setSecret(secret);
+		resp.setUri(dataUri);
+		
+		return resp;
 	}
+	
+	
+	@PostMapping("/register")
+	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) {
+		RegisterResponse resp = new RegisterResponse();
+		if(bindingResult.hasErrors()||(userservice.findByUserId(user.getUserId())!=null)) {
+			resp.setStatus(HttpStatus.BAD_REQUEST);
+			List<String> errors = bindingResult.getAllErrors().stream()
+		            .map(ObjectError::getDefaultMessage)
+		            .collect(Collectors.toList());
+			if(userservice.findByUserId(user.getUserId())!=null) {
+				errors.add("Invalid USER ID: USER ID DUPLICATE");
+			}
+			resp.setMsg(errors);
+			
+			return resp;
+		}
+		resp.setStatus(HttpStatus.CREATED);
+		
+		List<String> msg = new ArrayList<String>();
+		msg.add("Register Success");
+		resp.setMsg(msg);
+		
+		
+		return resp;
+	}
+	
 	@PostMapping("/check/{code}")
 	public Boolean check(@PathVariable("code")String code) throws UnknownHostException  {
 		TimeProvider timeProvider = new SystemTimeProvider();
