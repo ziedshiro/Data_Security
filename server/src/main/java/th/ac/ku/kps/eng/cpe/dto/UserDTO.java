@@ -1,11 +1,12 @@
 package th.ac.ku.kps.eng.cpe.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class UserDTO {
-	@NotBlank(message = "Invalid User ID: Empty User ID")
-	@Size(min = 3, max = 20, message = "Invalid User ID: Must be of 3 - 20 characters")
+	@Email(message = "Invalid Email")
+	@NotBlank(message = "Invalid Email: Empty Email")
 	private String userId;
 	@NotBlank(message = "Invalid Firstname: Empty Firstname")
 	@Size(min = 3, max = 20, message = "Invalid firstname: Must be of 3 - 20 characters")
