@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2023 at 07:53 PM
+-- Generation Time: Oct 10, 2023 at 06:15 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ds`
+-- Database: `yummy_hub`
 --
 
 -- --------------------------------------------------------
@@ -1006,15 +1006,15 @@ CREATE TABLE `orderitem` (
 CREATE TABLE `orders` (
   `order_id` varchar(100) NOT NULL,
   `user_id` varchar(200) NOT NULL,
-  `order_date` datetime NOT NULL,
+  `order_date` datetime DEFAULT NULL,
   `order_status` enum('Failed','Cart','Pending','Success') NOT NULL,
-  `filepath` text NOT NULL,
-  `payment_date` datetime NOT NULL,
-  `payment_status` enum('Failed','Pending','Success','') NOT NULL,
-  `pickup_date` datetime NOT NULL,
-  `pickup_status` enum('Failed','Pending','Received','') NOT NULL,
+  `filepath` text DEFAULT NULL,
+  `payment_date` datetime DEFAULT NULL,
+  `payment_status` enum('Failed','Pending','Success','') DEFAULT NULL,
+  `pickup_date` datetime DEFAULT NULL,
+  `pickup_status` enum('Failed','Pending','Received','') DEFAULT NULL,
   `createdate` datetime NOT NULL,
-  `updatedate` datetime NOT NULL
+  `updatedate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1026,16 +1026,17 @@ CREATE TABLE `orders` (
 CREATE TABLE `product` (
   `product_id` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `description` text NOT NULL,
+  `description` text DEFAULT NULL,
   `expiry_date` datetime NOT NULL,
   `type_id` int(11) NOT NULL,
   `price` decimal(11,2) NOT NULL,
-  `discount_price` decimal(11,2) NOT NULL,
+  `discount_price` decimal(11,2) DEFAULT NULL,
   `quantity_available` int(11) NOT NULL,
   `img_product` text NOT NULL,
   `store_id` varchar(100) NOT NULL,
+  `isactive` tinyint(1) NOT NULL,
   `createdate` datetime NOT NULL,
-  `updatedate` datetime NOT NULL
+  `updatedate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1145,8 +1146,8 @@ CREATE TABLE `review` (
   `user_id` varchar(200) NOT NULL,
   `store_id` varchar(100) NOT NULL,
   `rating` int(11) NOT NULL,
-  `comment` text NOT NULL,
-  `date` datetime NOT NULL
+  `comment` text DEFAULT NULL,
+  `createdate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8599,14 +8600,15 @@ CREATE TABLE `user` (
   `user_id` varchar(200) NOT NULL,
   `firstname` varchar(20) NOT NULL,
   `lastname` varchar(20) NOT NULL,
-  `password` int(11) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `salt` varchar(100) NOT NULL,
   `role` enum('customer','store owner','administrator','') NOT NULL,
-  `last_login_timestamp` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `account_lock_status` tinyint(1) NOT NULL,
-  `attempt_login` int(11) NOT NULL,
-  `attempt_time_login` datetime NOT NULL,
-  `two_factor_authentication_enabled` tinyint(1) NOT NULL,
-  `code_two_factor_authentication` varchar(100) NOT NULL
+  `last_login_timestamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `account_lock_status` tinyint(1) DEFAULT NULL,
+  `attempt_login` int(11) DEFAULT NULL,
+  `attempt_time_login` datetime DEFAULT NULL,
+  `two_factor_authentication_enabled` tinyint(1) DEFAULT NULL,
+  `code_two_factor_authentication` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

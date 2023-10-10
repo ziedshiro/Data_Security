@@ -14,7 +14,7 @@ public class UserDTO {
 	@Size(min = 3, max = 20, message = "Invalid Lastname: Must be of 3 - 20 characters")
 	private String lastname;
 	@NotBlank(message = "Invalid Password: Empty Password")
-    @Size(min = 8, max = 15, message = "Invalid Password: Must be of 8 - 15 characters")
+    @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters")
 	private String password;
 	@NotBlank(message = "Invalid Code: Empty Code")
 	private String codeTwoFactorAuthentication;
@@ -71,10 +71,4 @@ public class UserDTO {
 	public void setCodeTwoFactorAuthentication(String codeTwoFactorAuthentication) {
 		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
 	}
-	
-	
-
-	
-
-
 }
