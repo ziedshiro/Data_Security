@@ -1,8 +1,54 @@
 import { Link } from "react-router-dom";
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function Login() {
+    const validationSchema = yup.object().shape({
+        userId: yup
+            .string()
+            .email('Please enter correct email.')
+            .required('Email is required.'),
+        password: yup
+            .string()
+            .min(8,'Password must be at least 8 characters.')
+            .max(15,'Passwords can contain up to 18 characters.')
+            .matches(
+                /.*\d.*/,
+                'Password must contain at least one number'
+            )
+            .matches(
+                /.+`/,
+                'Password must contain at least one character'
+            )
+            .required('Password is required.')
+    
+    });
 
-    // const [ email, setEmail ] = useState();
+    const formik = useFormik({
+        initialValues: {
+            userId: '',
+            password: '',
+        },
+        validationSchema: validationSchema,
+        validateOnBlur:false,
+        validateOnChange:false,
+        onSubmit: (values) => {
+            // Manually validate the form on submission
+            validationSchema
+              .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
+              .then(() => {
+                // Validation successful, you can proceed with form submission
+                console.log('Form submitted:', values);
+              })
+              .catch((errors) => {
+                // Validation failed, set the form errors
+                formik.setErrors(errors.inner.reduce((acc:any, error:any) => {
+                  acc[error.path] = error.message;
+                  return acc;
+                }, {}));
+              });
+          },
+    });
 
     return ( 
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
@@ -10,7 +56,7 @@ function Login() {
                 <h1 className="text-3xl font-semibold text-center text-red-700">
                 Sign in
                 </h1>
-                <form className="mt-6 px-6">
+                <form onSubmit={formik.handleSubmit} className="mt-6 px-6">
                     <div className="mb-4">
                         <label
                             className="block text-sm font-semibold text-gray-800"
@@ -18,9 +64,16 @@ function Login() {
                             Email
                         </label>
                         <input
-                            type="email"
+                            type="text"
+                            id="userId"
+                            name="userId"
+                            onChange={formik.handleChange}
+                            value={formik.values.userId}
                             className="block w-full px-4 py-2 mt-2 bg-white border rounded-md focus:outline-none"
                         />
+                        {formik.errors.userId ? (
+                            <div className="text-red-500 text-xs">{formik.errors.userId}</div>
+                        ) : null}
                     </div>
                     <div className="mb-4">
                         <label
@@ -30,11 +83,18 @@ function Login() {
                         </label>
                         <input
                             type="password"
+                            id="password"
+                            name="password"
+                            onChange={formik.handleChange}
+                            value={formik.values.password}
                             className="block w-full px-4 py-2 mt-2 bg-white border rounded-md  focus:outline-none"
                         />
+                        {formik.errors.password ? (
+                            <div className="text-red-500 text-xs">{formik.errors.password}</div>
+                        ) : null}
                     </div>
                     <div className="mt-6">
-                        <button className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-red-700 hover:bg-red-600 focus:outline-none focus:bg-red-600">
+                        <button type="submit" className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-red-700 hover:bg-red-600 focus:outline-none focus:bg-red-600">
                             Login
                         </button>
                     </div>
