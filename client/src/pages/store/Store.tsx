@@ -99,13 +99,15 @@ function Store() {
                     as="a"
                     href="#"
                     variant="h6"
-                    className="mx-4 cursor-pointer py-3 flex justify-center items-center hover:text-yellow-500"
+                    className="hidden lg:block mx-4 cursor-pointer py-3 hover:text-yellow-500"
                 >
-                    StoreName <FiLogOut className="ml-2" size={18}/>
+                    <div className="flex justify-center items-center">
+                        StoreName<FiLogOut className="ml-2" size={18}/>
+                    </div>
                 </Typography>
                 <IconButton
                     variant="text"
-                    className="h-7 w-7 my-4 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden mr-3 flex"
+                    className="h-7 w-7 my-4 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden flex ml-8"
                     ripple={false}
                     onClick={() => setOpenNav(!openNav)}
                     >
