@@ -9,6 +9,8 @@ const registerApi = createApi({
         return{
             register: builder.mutation({
                 query: (user) => {
+                    console.log(user);
+                    
                     return{
                         url: '/register',
                         method: 'POST',
@@ -16,11 +18,11 @@ const registerApi = createApi({
                     };
                 }
             }),
-            MFACode: builder.mutation({
+            MFACode: builder.query({
                 query: (userId) => {
                     return{
                         url: `/generateMFACode/${userId}`,
-                        method: 'POST',
+                        method: 'GET',
                     };
                 }
             }),
@@ -29,7 +31,7 @@ const registerApi = createApi({
 })
 
 export const { 
-    useMFACodeMutation,
+    useMFACodeQuery,
     useRegisterMutation
  } = registerApi;
 export { registerApi };

@@ -15,6 +15,6 @@ export const store = configureStore({
 setupListeners(store.dispatch);
 
 export {
-    useMFACodeMutation,
+    useMFACodeQuery,
     useRegisterMutation
 } from './apis/registerApi'

@@ -83,7 +83,7 @@ public class AuthenticationController {
      }
 	}
 	
-	@PostMapping("/generateMFACode/{userId}")
+	@GetMapping("/generateMFACode/{userId}")
 	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
 		MFAResponse resp = new MFAResponse();
 		

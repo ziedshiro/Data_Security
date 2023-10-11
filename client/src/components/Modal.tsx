@@ -1,14 +1,42 @@
 import { Fragment, ReactNode, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { useMFACodeQuery } from '../store';
+import User from '../Model/User';
+
 
 interface OpenModal {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>; 
     children?: ReactNode;
     title?:string;
+    user?:User
 }
 
-export default function Modal({ open, setOpen,children,title }: OpenModal) {
+export default function Modal({ open, setOpen,children,title,user }: OpenModal) {
+    const { data,isFetching,isError } = useMFACodeQuery(user?.userId);
+    
+    
+    useEffect(() => {
+        console.log(MFAresult);
+        
+        const decrementTimer = async () => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }else{
+                await MFA(userData?.userId)
+                setSeconds(30);
+            }
+        };
+
+        let timer: NodeJS.Timeout;
+        if (onOpen) {
+            timer = setInterval(decrementTimer, 1000);
+        }else{
+            setSeconds(30);
+        }
+        return () => clearInterval(timer);
+    }, [seconds, onOpen, MFA, userData,]);
+
 
     const cancelButtonRef = useRef(null)
 

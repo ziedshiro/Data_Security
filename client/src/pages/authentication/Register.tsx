@@ -1,36 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFormik } from 'formik';
-import { useMFACodeMutation } from "../../store";
+import { useMFACodeQuery,useRegisterMutation } from "../../store";
+import { Button } from "@material-tailwind/react";
 import Modal from "../../components/Modal";
+import User from '../../Model/User';
 import * as yup from 'yup';
 
 
 function Register() {
-    const [MFA,MFAresult] = useMFACodeMutation();
+    const [register,registerResult] = useRegisterMutation();
     const navigate = useNavigate();
     const [onOpen,setOnOpen] = useState(false);
     const [seconds, setSeconds] = useState(30);
-    const [userId,setUserId] = useState('');
-
-    useEffect(() => {
-        const decrementTimer = async () => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }else{
-                await MFA(userId)
-                setSeconds(30);
-            }
-        };
-
-        let timer: NodeJS.Timeout;
-        if (onOpen) {
-            timer = setInterval(decrementTimer, 1000);
-        }else{
-            setSeconds(30);
-        }
-        return () => clearInterval(timer);
-    }, [seconds, onOpen, MFA, userId]);
+    const [userData,setUserData] = useState<any>([]);
 
     const validationSchema = yup.object().shape({
         userId: yup
@@ -75,8 +58,7 @@ function Register() {
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then( async () => {
                 if (acceptedPrivacyPolicy) {
-                    await MFA(values.userId);
-                    setUserId(values.userId);
+                    setUserData(values);
                     setOnOpen(!onOpen);
                   } else {
                     alert('Please accept both terms & conditions and privacy policy to register.');
@@ -98,10 +80,25 @@ function Register() {
         setAcceptedPrivacyPolicy(!acceptedPrivacyPolicy);
       };
 
-    // const handleRegistrationSubmit = (e: React.FormEvent) => {
-    //     e.preventDefault();
-    
-    //   };
+    const handleRegistrationSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const formElement = e.target as HTMLFormElement;
+        const inputElement = formElement.querySelector('[name="codeTwoFactorAuthentication"]') as HTMLInputElement;
+        const inputValue = inputElement.value;
+        const user = {
+            userId:userData.userId,
+            firstname:userData.firstname,
+            lastname:userData.lastname,
+            password:userData.password,
+            codeTwoFactorAuthentication: inputValue,
+            secretCode:MFAresult.data?.secret
+        }
+        await register(user);
+        console.log(registerResult);
+        
+        
+        
+      };
 
     return ( 
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
@@ -215,12 +212,19 @@ function Register() {
                 <Modal open={onOpen} setOpen={setOnOpen} title="MFA Code">
                     <h1>Timer: {seconds} seconds</h1>
                     <img src={MFAresult.data?.uri} alt="mfaImage"/>
-                    <form>
-                    <label
+                    <form onSubmit={handleRegistrationSubmit}>
+                        <label
                             className="block text-sm font-semibold text-gray-800"
                         >
                             Code
                         </label>
+                        <input
+                            type="text"
+                            id="codeTwoFactorAuthentication"
+                            name="codeTwoFactorAuthentication"
+                            className="block w-full px-4 py-2 mt-2 bg-white border rounded-md  focus:outline-none"
+                        />
+                          <Button className="mt-3" color="green" type="submit">verify</Button>
                     </form>
                 </Modal>
             </div>
