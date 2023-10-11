@@ -154,7 +154,6 @@ public class AuthenticationController {
 				
 				return resp;
 			}
-			
 		}
 	}
 	

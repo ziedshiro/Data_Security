@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
+// Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Time;
 import java.util.HashSet;

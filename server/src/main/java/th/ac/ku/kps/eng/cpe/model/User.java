@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final
+// Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -48,6 +48,7 @@ public class User implements java.io.Serializable {
 	public User(String userId, String firstname, String lastname, String password, String salt, String role,
 			Timestamp lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Timestamp attemptTimeLogin,
 			Boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication) {
+		super();
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;

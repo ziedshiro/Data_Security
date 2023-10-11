@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 10, 2023, 7:19:20 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 11, 2023, 2:55:48 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.User" optimistic-lock="none" table="user">
         <id name="userId" type="string">
-            <column length="200" name="user_id"/>
+            <column length="1000" name="user_id"/>
             <generator class="assigned"/>
         </id>
         <property name="firstname" type="string">
-            <column length="200" name="firstname" not-null="true"/>
+            <column length="1000" name="firstname" not-null="true"/>
         </property>
         <property name="lastname" type="string">
-            <column length="200" name="lastname" not-null="true"/>
+            <column length="1000" name="lastname" not-null="true"/>
         </property>
         <property name="password" type="string">
-            <column length="200" name="password" not-null="true"/>
+            <column length="1000" name="password" not-null="true"/>
         </property>
         <property name="salt" type="string">
-            <column length="200" name="salt" not-null="true"/>
+            <column length="1000" name="salt" not-null="true"/>
         </property>
         <property name="role" type="string">
             <column length="13" name="role" not-null="true"/>
@@ -37,7 +37,7 @@
             <column name="two_factor_authentication_enabled"/>
         </property>
         <property name="codeTwoFactorAuthentication" type="string">
-            <column length="200" name="code_two_factor_authentication"/>
+            <column length="1000" name="code_two_factor_authentication"/>
         </property>
         <set fetch="select" inverse="true" lazy="true" name="reviews" table="review">
             <key>
