@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -23,7 +24,6 @@ import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
-import dev.samstevens.totp.time.NtpTimeProvider;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
@@ -31,18 +31,23 @@ import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.qr.QrGenerator;
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
+import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.dto.LoginDTO;
 import th.ac.ku.kps.eng.cpe.dto.UserDTO;
+import th.ac.ku.kps.eng.cpe.dto.UserLogin;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.LoginResponse;
 import th.ac.ku.kps.eng.cpe.response.MFAResponse;
 import th.ac.ku.kps.eng.cpe.response.RegisterResponse;
+import th.ac.ku.kps.eng.cpe.service.DecryptionServices;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.HashServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,10 +68,18 @@ public class AuthenticationController {
 	@Autowired
 	private EncryptionServices encryptionservice;
 	
-	@GetMapping("/en")
-	public String en(){
+	@Autowired
+	private DecryptionServices decryptionservice;
+	
+	private JwtUtil jwtUtil;
+    public AuthenticationController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+	
+	@GetMapping("/en/{userId}")
+	public String en(@PathVariable("userId") String userId){
 		try {
-		return encryptionservice.encrypt("test");
+		return encryptionservice.encrypt(userId);
 		} catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -113,61 +126,134 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws Exception {
 		RegisterResponse resp = new RegisterResponse();
-		if(bindingResult.hasErrors()||(userservice.findByUserId(user.getUserId())!=null)) {
-			resp.setStatus(HttpStatus.BAD_REQUEST);
-			List<String> errors = bindingResult.getAllErrors().stream()
-		            .map(ObjectError::getDefaultMessage)
-		            .collect(Collectors.toList());
-			if(userservice.findByUserId(user.getUserId())!=null) {
-				errors.add("Invalid USER ID: USER ID DUPLICATE");
-			}
-			resp.setMsg(errors);
+		TimeProvider timeProvider = new SystemTimeProvider();
+		CodeGenerator codeGenerator = new DefaultCodeGenerator();
+		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+		boolean successful = verifier.isValidCode(user.getSecretCode(), user.getCodeTwoFactorAuthentication());
+		
+		if(successful) {
+			String userId = encryptionservice.encrypt(user.getUserId());
+			String firstname = encryptionservice.encrypt(user.getFirstname());
+			String lastname = encryptionservice.encrypt(user.getLastname());
+			String salt = hashservices.generateSalt();
+			String password = hashservices.hashPassword(user.getPassword(),salt);
 			
-			return resp;
-		}
-		else {
-			TimeProvider timeProvider = new SystemTimeProvider();
-			CodeGenerator codeGenerator = new DefaultCodeGenerator();
-			CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-			boolean successful = verifier.isValidCode(user.getSecretCode(), user.getCodeTwoFactorAuthentication());
-			if(successful) {
-				String userId = encryptionservice.encrypt(user.getUserId());
-				String firstname = encryptionservice.encrypt(user.getFirstname());
-				String lastname = encryptionservice.encrypt(user.getLastname());
-				String salt = hashservices.generateSalt();
-				String password = hashservices.hashPassword(user.getPassword(),salt);
-
-				userservice.save(new User(userId,firstname,lastname,password,salt,"customer",null,false,0,null,true,user.getCodeTwoFactorAuthentication()));
+			if(bindingResult.hasErrors()||(userservice.findByUserId(userId)!=null)) {
+				resp.setStatus(HttpStatus.BAD_REQUEST);
+				List<String> errors = bindingResult.getAllErrors().stream()
+						.map(ObjectError::getDefaultMessage)
+						.collect(Collectors.toList());
+				if(userservice.findByUserId(userId)!=null) {
+					errors.add("Invalid USER ID: USER ID DUPLICATE");
+				}
+				resp.setMsg(errors);
 				
+				return resp;
+			}
+			else {
+				userservice.save(new User(userId,firstname,lastname,password,salt,"customer",null,false,0,null,true,user.getCodeTwoFactorAuthentication()));
 				resp.setStatus(HttpStatus.CREATED);
 				List<String> msg = new ArrayList<String>();
 				msg.add("Register Success");
 				
-				
-				return resp;				
-			}
-			else {
-				resp.setStatus(HttpStatus.BAD_REQUEST);
-				List<String> msg = new ArrayList<String>();
-				msg.add("Code not Match!");
-				resp.setMsg(msg);
-				
 				return resp;
 			}
 		}
+		else {
+			resp.setStatus(HttpStatus.BAD_REQUEST);
+			List<String> msg = new ArrayList<String>();
+			msg.add("Code not Match!");
+			resp.setMsg(msg);
+			
+			return resp;
+		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@PostMapping("/login")
-	public LoginResponse login(LoginDTO login) {
+	public LoginResponse login(@Valid @RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
 		LoginResponse loginresp = new LoginResponse();
-		//decode and find user
+		String userId = decryptionservice.decrypt(login.getUsername());
+		String password = decryptionservice.decrypt(login.getPassword());
 		
-//		TimeProvider timeProvider = new SystemTimeProvider();
-//		CodeGenerator codeGenerator = new DefaultCodeGenerator();
-//		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-//		boolean successful = verifier.isValidCode(secret, login.getCodeTwoFactorAuthentication());
+		String encodedUserId = encryptionservice.encrypt(userId);
 		
-		return loginresp;
+		User user = userservice.findByUserId(encodedUserId);
+		Date current = new Date();
+		if(!bindingResult.hasErrors() && user!=null) {
+			if(!user.getAccountLockStatus()||(current.getHours()>user.getAttemptTimeLogin().getHours())||(current.getDate()>user.getAttemptTimeLogin().getDate())||(current.getMonth()>user.getAttemptTimeLogin().getMonth())||(current.getYear()>user.getAttemptTimeLogin().getYear())) {
+				if((current.getHours()>user.getAttemptTimeLogin().getHours())||(current.getDate()>user.getAttemptTimeLogin().getDate())||(current.getMonth()>user.getAttemptTimeLogin().getMonth())||(current.getYear()>user.getAttemptTimeLogin().getYear())) {
+					user.setAccountLockStatus(false);
+					user.setAttemptLogin(0);
+					user.setAttemptTimeLogin(null);
+					userservice.save(user);
+				}
+				TimeProvider timeProvider = new SystemTimeProvider();
+				CodeGenerator codeGenerator = new DefaultCodeGenerator();
+				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+				boolean successful = verifier.isValidCode(user.getCodeTwoFactorAuthentication(),login.getSecretcode());
+				
+				if(successful) {
+					if(hashservices.verifyPassword(password, user.getSalt(), user.getPassword())) {
+						String token = jwtUtil.createToken(user);
+						loginresp.setStatus(HttpStatus.OK);
+						loginresp.setAccessToken(token);
+						List<String> msg = new ArrayList<String>();
+						msg.add("Login Success");
+						loginresp.setMsg(msg);
+						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname())));
+						user.setLastLoginTimestamp(new Date());
+						user.setAttemptLogin(0);
+						userservice.save(user);
+						return loginresp;
+					}
+					else {
+						user.setAttemptLogin(user.getAttemptLogin()+1);
+						if(user.getAttemptLogin()==3) {
+							user.setAccountLockStatus(true);
+							user.setAttemptTimeLogin(new Date());
+						}
+						userservice.save(user);
+						loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+						List<String> msg = new ArrayList<String>();
+						msg.add("Invalid Password");
+						loginresp.setMsg(msg);
+						return loginresp;
+					}
+				}
+				else {
+					user.setAttemptLogin(user.getAttemptLogin()+1);
+					if(user.getAttemptLogin()==3) {
+						user.setAccountLockStatus(true);
+						user.setAttemptTimeLogin(new Date());
+					}
+					userservice.save(user);
+					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+					List<String> msg = new ArrayList<String>();
+					msg.add("Code not Match");
+					loginresp.setMsg(msg);
+					return loginresp;
+				}
+			}
+			else {
+				loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+				List<String> msg = new ArrayList<String>();
+				msg.add("Account Lock");
+				loginresp.setMsg(msg);
+				return loginresp;
+			}	
+		}
+		else {
+			loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(ObjectError::getDefaultMessage)
+					.collect(Collectors.toList());
+			if(user == null) {
+				errors.add("Invalid USER not Found");
+			}
+			loginresp.setMsg(errors);
+			return loginresp;
+		}
 	}
 	
 	@PostMapping("/check/{code}")

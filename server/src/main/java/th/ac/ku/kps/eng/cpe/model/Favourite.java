@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,12 +15,12 @@ public class Favourite implements java.io.Serializable {
 	private String favouriteId;
 	private Store store;
 	private User user;
-	private Timestamp createdate;
+	private Date createdate;
 
 	public Favourite() {
 	}
 
-	public Favourite(String favouriteId, Store store, User user, Timestamp createdate) {
+	public Favourite(String favouriteId, Store store, User user, Date createdate) {
 		this.favouriteId = favouriteId;
 		this.store = store;
 		this.user = user;
@@ -50,11 +51,11 @@ public class Favourite implements java.io.Serializable {
 		this.user = user;
 	}
 
-	public Timestamp getCreatedate() {
+	public Date getCreatedate() {
 		return this.createdate;
 	}
 
-	public void setCreatedate(Timestamp createdate) {
+	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
 	}
 

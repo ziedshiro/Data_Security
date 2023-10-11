@@ -3,6 +3,7 @@ package th.ac.ku.kps.eng.cpe.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,21 +21,21 @@ public class Product implements java.io.Serializable {
 	private Type type;
 	private String name;
 	private String description;
-	private Timestamp expiryDate;
+	private Date expiryDate;
 	private BigDecimal price;
 	private BigDecimal discountPrice;
 	private int quantityAvailable;
 	private String imgProduct;
 	private boolean isactive;
-	private Timestamp createdate;
-	private Timestamp updatedate;
+	private Date createdate;
+	private Date updatedate;
 	@JsonIgnore private Set orderitems = new HashSet(0);
 
 	public Product() {
 	}
 
-	public Product(String productId, Store store, Type type, String name, Timestamp expiryDate, BigDecimal price,
-			int quantityAvailable, String imgProduct, boolean isactive, Timestamp createdate) {
+	public Product(String productId, Store store, Type type, String name, Date expiryDate, BigDecimal price,
+			int quantityAvailable, String imgProduct, boolean isactive, Date createdate) {
 		this.productId = productId;
 		this.store = store;
 		this.type = type;
@@ -47,9 +48,9 @@ public class Product implements java.io.Serializable {
 		this.createdate = createdate;
 	}
 
-	public Product(String productId, Store store, Type type, String name, String description, Timestamp expiryDate,
+	public Product(String productId, Store store, Type type, String name, String description, Date expiryDate,
 			BigDecimal price, BigDecimal discountPrice, int quantityAvailable, String imgProduct, boolean isactive,
-			Timestamp createdate, Timestamp updatedate, Set orderitems) {
+			Date createdate, Date updatedate, Set orderitems) {
 		this.productId = productId;
 		this.store = store;
 		this.type = type;
@@ -106,11 +107,11 @@ public class Product implements java.io.Serializable {
 		this.description = description;
 	}
 
-	public Timestamp getExpiryDate() {
+	public Date getExpiryDate() {
 		return this.expiryDate;
 	}
 
-	public void setExpiryDate(Timestamp expiryDate) {
+	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
 
@@ -154,19 +155,19 @@ public class Product implements java.io.Serializable {
 		this.isactive = isactive;
 	}
 
-	public Timestamp getCreatedate() {
+	public Date getCreatedate() {
 		return this.createdate;
 	}
 
-	public void setCreatedate(Timestamp createdate) {
+	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
 	}
 
-	public Timestamp getUpdatedate() {
+	public Date getUpdatedate() {
 		return this.updatedate;
 	}
 
-	public void setUpdatedate(Timestamp updatedate) {
+	public void setUpdatedate(Date updatedate) {
 		this.updatedate = updatedate;
 	}
 

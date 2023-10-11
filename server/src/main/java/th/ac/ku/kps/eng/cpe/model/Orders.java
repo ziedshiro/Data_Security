@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,15 +17,15 @@ public class Orders implements java.io.Serializable {
 
 	private String orderId;
 	private User user;
-	private Timestamp orderDate;
+	private Date orderDate;
 	private String orderStatus;
 	private String filepath;
-	private Timestamp paymentDate;
+	private Date paymentDate;
 	private String paymentStatus;
-	private Timestamp pickupDate;
+	private Date pickupDate;
 	private String pickupStatus;
-	private Timestamp createdate;
-	private Timestamp updatedate;
+	private Date createdate;
+	private Date updatedate;
 	@JsonIgnore private Set orderitems = new HashSet(0);
 
 	public Orders() {
@@ -37,9 +38,9 @@ public class Orders implements java.io.Serializable {
 		this.createdate = createdate;
 	}
 
-	public Orders(String orderId, User user, Timestamp orderDate, String orderStatus, String filepath,
-			Timestamp paymentDate, String paymentStatus, Timestamp pickupDate, String pickupStatus,
-			Timestamp createdate, Timestamp updatedate, Set orderitems) {
+	public Orders(String orderId, User user, Date orderDate, String orderStatus, String filepath,
+			Date paymentDate, String paymentStatus, Date pickupDate, String pickupStatus,
+			Date createdate, Date updatedate, Set orderitems) {
 		this.orderId = orderId;
 		this.user = user;
 		this.orderDate = orderDate;
@@ -70,11 +71,11 @@ public class Orders implements java.io.Serializable {
 		this.user = user;
 	}
 
-	public Timestamp getOrderDate() {
+	public Date getOrderDate() {
 		return this.orderDate;
 	}
 
-	public void setOrderDate(Timestamp orderDate) {
+	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
 
@@ -94,11 +95,11 @@ public class Orders implements java.io.Serializable {
 		this.filepath = filepath;
 	}
 
-	public Timestamp getPaymentDate() {
+	public Date getPaymentDate() {
 		return this.paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
@@ -110,11 +111,11 @@ public class Orders implements java.io.Serializable {
 		this.paymentStatus = paymentStatus;
 	}
 
-	public Timestamp getPickupDate() {
+	public Date getPickupDate() {
 		return this.pickupDate;
 	}
 
-	public void setPickupDate(Timestamp pickupDate) {
+	public void setPickupDate(Date pickupDate) {
 		this.pickupDate = pickupDate;
 	}
 
@@ -126,19 +127,19 @@ public class Orders implements java.io.Serializable {
 		this.pickupStatus = pickupStatus;
 	}
 
-	public Timestamp getCreatedate() {
+	public Date getCreatedate() {
 		return this.createdate;
 	}
 
-	public void setCreatedate(Timestamp createdate) {
+	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
 	}
 
-	public Timestamp getUpdatedate() {
+	public Date getUpdatedate() {
 		return this.updatedate;
 	}
 
-	public void setUpdatedate(Timestamp updatedate) {
+	public void setUpdatedate(Date updatedate) {
 		this.updatedate = updatedate;
 	}
 

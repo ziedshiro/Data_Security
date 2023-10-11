@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -16,12 +17,12 @@ public class Review implements java.io.Serializable {
 	private User user;
 	private int rating;
 	private String comment;
-	private Timestamp createdate;
+	private Date createdate;
 
 	public Review() {
 	}
 
-	public Review(String reviewId, Store store, User user, int rating, Timestamp createdate) {
+	public Review(String reviewId, Store store, User user, int rating, Date createdate) {
 		this.reviewId = reviewId;
 		this.store = store;
 		this.user = user;
@@ -29,7 +30,7 @@ public class Review implements java.io.Serializable {
 		this.createdate = createdate;
 	}
 
-	public Review(String reviewId, Store store, User user, int rating, String comment, Timestamp createdate) {
+	public Review(String reviewId, Store store, User user, int rating, String comment, Date createdate) {
 		this.reviewId = reviewId;
 		this.store = store;
 		this.user = user;
@@ -78,7 +79,7 @@ public class Review implements java.io.Serializable {
 		this.comment = comment;
 	}
 
-	public Timestamp getCreatedate() {
+	public Date getCreatedate() {
 		return this.createdate;
 	}
 

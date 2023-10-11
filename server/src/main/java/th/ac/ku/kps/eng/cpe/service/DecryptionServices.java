@@ -9,21 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EncryptionServices {
-	
-	@Value("${secret.backkey}")
+public class DecryptionServices {
+	@Value("${secret.frontkey}")
 	private String SECRET_KEY;
 	
-    public String encrypt(String data) throws Exception {
-    	Cipher cipher = Cipher.getInstance("AES");
-    	SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        
-        byte[] encryptedBytes = cipher.doFinal(data.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
-    }
-
-    public String decrypt(String encryptedData) throws Exception {
+	public String decrypt(String encryptedData) throws Exception {
     	Cipher cipher = Cipher.getInstance("AES");
     	SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
     	cipher.init(Cipher.DECRYPT_MODE, secretKey);

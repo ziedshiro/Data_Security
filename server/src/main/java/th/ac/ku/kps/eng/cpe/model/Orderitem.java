@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -15,14 +16,14 @@ public class Orderitem implements java.io.Serializable {
 	private Product product;
 	private Orders orders;
 	private int quantity;
-	private Timestamp createdate;
-	private Timestamp updatedate;
+	private Date createdate;
+	private Date updatedate;
 
 	public Orderitem() {
 	}
 
-	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, Timestamp createdate,
-			Timestamp updatedate) {
+	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, Date createdate,
+			Date updatedate) {
 		this.orderItemId = orderItemId;
 		this.product = product;
 		this.orders = orders;
@@ -63,19 +64,19 @@ public class Orderitem implements java.io.Serializable {
 		this.quantity = quantity;
 	}
 
-	public Timestamp getCreatedate() {
+	public Date getCreatedate() {
 		return this.createdate;
 	}
 
-	public void setCreatedate(Timestamp createdate) {
+	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
 	}
 
-	public Timestamp getUpdatedate() {
+	public Date getUpdatedate() {
 		return this.updatedate;
 	}
 
-	public void setUpdatedate(Timestamp updatedate) {
+	public void setUpdatedate(Date updatedate) {
 		this.updatedate = updatedate;
 	}
 
