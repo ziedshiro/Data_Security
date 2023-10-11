@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2023 at 06:15 PM
+-- Generation Time: Oct 11, 2023 at 10:01 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -8597,19 +8597,26 @@ INSERT INTO `type` (`type_id`, `type_name`) VALUES
 --
 
 CREATE TABLE `user` (
-  `user_id` varchar(200) NOT NULL,
-  `firstname` varchar(20) NOT NULL,
-  `lastname` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  `salt` varchar(100) NOT NULL,
+  `user_id` varchar(1000) NOT NULL,
+  `firstname` varchar(1000) NOT NULL,
+  `lastname` varchar(1000) NOT NULL,
+  `password` varchar(1000) NOT NULL,
+  `salt` varchar(1000) NOT NULL,
   `role` enum('customer','store owner','administrator','') NOT NULL,
   `last_login_timestamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `account_lock_status` tinyint(1) DEFAULT NULL,
   `attempt_login` int(11) DEFAULT NULL,
   `attempt_time_login` datetime DEFAULT NULL,
   `two_factor_authentication_enabled` tinyint(1) DEFAULT NULL,
-  `code_two_factor_authentication` varchar(100) DEFAULT NULL
+  `code_two_factor_authentication` varchar(1000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `role`, `last_login_timestamp`, `account_lock_status`, `attempt_login`, `attempt_time_login`, `two_factor_authentication_enabled`, `code_two_factor_authentication`) VALUES
+('EoQvbrGqRB2QsRrHk1xPTg==', 'WYae4u11QGPNlPviVAyrbw==', 'WYae4u11QGPNlPviVAyrbw==', 'fb03f5432b8f3f9c81800de673c7d12024e023d99768816e61d643fdf5b5d14b', '5yMC5Uq2T8x3M+i71kJPoQ==', 'customer', NULL, 0, 0, NULL, 1, '1234');
 
 --
 -- Indexes for dumped tables
