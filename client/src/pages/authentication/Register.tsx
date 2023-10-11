@@ -15,18 +15,18 @@ function Register() {
             .required('Email is required.'),
         firstname: yup
             .string()
-            .min(8,'Firstname must be at least 8 characters.')
-            .max(15,'Firstname can contain up to 18 characters.')
+            .min(3,'Firstname must be at least 3 characters.')
+            .max(20,'Firstname can contain up to 18 characters.')
             .required('Firstname is require'),
         lastname: yup
             .string()
-            .min(8,'Lastname must be at least 8 characters.')
-            .max(15,'Lastname can contain up to 18 characters.')
+            .min(3,'Lastname must be at least 3 characters.')
+            .max(20,'Lastname can contain up to 20 characters.')
             .required('Lastname is require'),
         password: yup
             .string()
             .min(8, 'Password must be at least 8 characters.')
-            .max(18, 'Passwords can contain up to 18 characters.') // Changed 15 to 18
+            .max(20, 'Passwords can contain up to 20 characters.') // Changed 15 to 18
             .matches(
                 /^(?=.*[a-zA-Z])(?=.*\d)/,
                 'Password must contain at least one character and one number'
