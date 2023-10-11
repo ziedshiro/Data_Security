@@ -6,6 +6,7 @@ import { Button } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import Swal from 'sweetalert2';
+import Media from './Media';
 
 interface OpenModal {
     open: boolean;
@@ -22,10 +23,8 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
     const cancelButtonRef = useRef(null);
 
     let content;
-    if(MFAFetching){
-        content = <Skeleton variant="rectangular" width={275} height={190} />
-    }else if(MFAError){
-        content = <Skeleton variant="rectangular" width={275} height={190} />
+    if(MFAFetching || MFAError){
+        content = <Skeleton className='my-5'  animation="wave" variant="rectangular" width={200}  height={200}/>
     }else{
         content =  <img className='w-60' src={MFA.uri} alt="mfaImage"/>
     }
@@ -61,7 +60,7 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                     Swal.fire({
                     icon: 'error',
                     title: 'Register Failed',
-                    text: 'Invalid username or password or ',
+                    text: 'Something Wrong!',
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false,
@@ -72,15 +71,15 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
   
                     Swal.fire({
                         icon: 'success',
-                        title: 'Login Successful',
+                        title: 'Register Successful',
                         timer: 2000,
                         timerProgressBar: true,
                         showConfirmButton: false,
                         allowOutsideClick: true,
-                        text: 'You are now logged in!',
+                        text: 'You can Login in now!',
                         // confirmButtonColor: '#13D300',
                         }).then(() => {
-                            navigate('/');
+                            navigate('/login');
                     });
                 }
             }
@@ -124,29 +123,33 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-3 text-center sm:mt-0 sm:text-left">                         
-                                            {MFAFetching?<Skeleton />:
+                                            {MFAFetching ? <Media height={40} width={310} />:
                                             <Dialog.Title as="h2" className="text-xl font-semibold leading-6 text-gray-900 flex justify-center">
                                                 Setup Multi-Factor Authentication
                                             </Dialog.Title>}
 
                                             <div className="mt-2">
-                                                <div className='flex justify-center'>
+                                                <div className="flex justify-center w-full rounded-lg overflow-hidden mb-2">
                                                     {content}
                                                 </div>
                                                 <form onSubmit={handleRegistrationSubmit}>
+                                                    {MFAFetching ? <Media height={30} width={120} />:
                                                     <label
                                                         className="block text-sm font-semibold text-gray-800 mb-3"
                                                     >
                                                         Verification Code
-                                                    </label>
+                                                    </label>}
+                                                    {MFAFetching ? <Media height={65} width={310} />:
                                                     <input
                                                         type="text"
                                                         id="codeTwoFactorAuthentication"
                                                         name="codeTwoFactorAuthentication"
                                                         className="block w-full px-4 py-2 my-2 bg-white border rounded-md  focus:outline-none"
-                                                    />
+                                                    />}
                                                     <div className='flex justify-center mb-3'>
+                                                    {MFAFetching ? <Media height={60} width={145} />:
                                                         <Button className="mt-3 w-40" color="red" type="submit">Verify</Button>
+                                                    }
                                                     </div>
                                                 </form>
                                             </div>

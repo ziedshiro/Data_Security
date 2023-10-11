@@ -10,7 +10,11 @@ const pause = (duration:number) => {
 const registerApi = createApi({
     reducerPath:'authen',
     baseQuery: fetchBaseQuery({
-        baseUrl: baseUrl
+        baseUrl: baseUrl,
+        fetchFn: async (...args) => {
+            await pause(2000);
+            return fetch(...args)
+        }
     }),
     endpoints(builder){
         return{
