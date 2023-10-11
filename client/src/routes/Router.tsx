@@ -7,20 +7,41 @@ import Profile from '../pages/store/Profile';
 import Store from '../pages/store/Store';
 import Order from '../pages/store/Order';
 import Management from '../pages/store/Management';
+import AnonymousRoutes from '../utils/AnonymousRoutes';
+import CustomerRoutes from '../utils/CustomerRoutes';
+import OwnerRoutes from '../utils/OwnerRoutes';
+import AdminRoutes from '../utils/AdminRoutes';
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/register" element={<Register/>}/>
+        <Route element={<AnonymousRoutes/>}>
+          <Route path="/" element={<Home/>}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register/>}/>
+          <Route path="/*" element={<NoPage/>}/>
+        </Route>
+        <Route element={<CustomerRoutes/>}>
+
+
+        </Route>
+        <Route element={<OwnerRoutes/>}>
+
+
+        </Route>
+
+        <Route element={<AdminRoutes/>}>
+
+
+        </Route>
+
         <Route path="/store" element={<Store />}>
           <Route path="profile" element={<Profile />} />
           <Route path="order" element={<Order />} />
           <Route path="management" element={<Management />} />
         </Route>
-        <Route path="/error" element={<NoPage/>}/>
+        
       </Routes>
     </BrowserRouter>
   );
