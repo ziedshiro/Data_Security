@@ -1,4 +1,5 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseUrl } from '../utils/baseUrl';
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
@@ -9,11 +10,7 @@ const pause = (duration:number) => {
 const registerApi = createApi({
     reducerPath:'authen',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:8080/server/api',
-        fetchFn: async (...args) => {
-            await pause(2000);
-            return fetch(...args)
-        }
+        baseUrl: baseUrl
     }),
     endpoints(builder){
         return{

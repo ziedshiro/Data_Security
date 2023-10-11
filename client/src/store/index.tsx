@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { registerApi } from "./apis/registerApi";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { loginReducer } from "./slices/loginSlice";
 
 export const store = configureStore({
     reducer: {
+        login: loginReducer,
         [registerApi.reducerPath]: registerApi.reducer,
     },
     middleware: (getDefaultMiddleware) => {
@@ -17,4 +19,6 @@ setupListeners(store.dispatch);
 export {
     useMFACodeQuery,
     useRegisterMutation
-} from './apis/registerApi'
+} from './apis/registerApi';
+
+export { userLogin } from './thunks/userLogin';

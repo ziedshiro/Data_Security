@@ -1,7 +1,7 @@
 import { Fragment, ReactNode, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
 import { useMFACodeQuery,useRegisterMutation } from '../store';
-import User from '../Model/User';
+import { User } from '../Model/User';
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';

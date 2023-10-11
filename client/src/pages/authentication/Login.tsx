@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useFormik } from 'formik';
+import { useDispatch } from "react-redux";
 import * as yup from 'yup';
 
 function Login() {
+    const dispatch = useDispatch();
     const validationSchema = yup.object().shape({
         userId: yup
             .string()
