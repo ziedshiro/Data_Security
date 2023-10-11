@@ -1,8 +1,9 @@
-import { Fragment, ReactNode, useRef } from 'react'
+import { Fragment, ReactNode, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
-import { useMFACodeQuery } from '../store';
+import { useMFACodeQuery,useRegisterMutation } from '../store';
 import User from '../Model/User';
-
+import { Button } from "@material-tailwind/react";
+import { useNavigate } from 'react-router-dom';
 
 interface OpenModal {
     open: boolean;
@@ -13,36 +14,54 @@ interface OpenModal {
 }
 
 export default function Modal({ open, setOpen,children,title,user }: OpenModal) {
-    const { data,isFetching,isError } = useMFACodeQuery(user?.userId);
-    
-    
-    useEffect(() => {
-        console.log(MFAresult);
-        
-        const decrementTimer = async () => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }else{
-                await MFA(userData?.userId)
-                setSeconds(30);
+    const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
+    const [register] = useRegisterMutation();
+    const [invalidMFA,setInvalidMFA] = useState(null);
+    const navigate = useNavigate();
+    const cancelButtonRef = useRef(null);
+
+    let content;
+    if(MFAFetching){
+        content = <h6>Loading.........</h6>
+    }else if(MFAError){
+        content = <h6>Error.........</h6>
+    }else{
+        content =  <img src={MFA.uri} alt="mfaImage"/>
+    }
+
+    const handleRegistrationSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const formElement = e.target as HTMLFormElement;
+        const inputElement = formElement.querySelector('[name="codeTwoFactorAuthentication"]') as HTMLInputElement;
+        const inputValue = inputElement.value;
+        if (user && MFA) {
+            user.secretCode = MFA.secret;
+            user.codeTwoFactorAuthentication = inputValue;
+            const result = await register(user);     
+            if ('data' in result) {
+                console.log(result);
+                if (result.data.status === "BAD_REQUEST") {
+                    setInvalidMFA(result.data.msg);
+                }else{
+                    setInvalidMFA(null);
+                    setOpen(false)
+                    navigate('/login')
+                }
             }
-        };
-
-        let timer: NodeJS.Timeout;
-        if (onOpen) {
-            timer = setInterval(decrementTimer, 1000);
-        }else{
-            setSeconds(30);
         }
-        return () => clearInterval(timer);
-    }, [seconds, onOpen, MFA, userData,]);
-
-
-    const cancelButtonRef = useRef(null)
+      };
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
+            <Dialog 
+                as="div" 
+                className="relative z-10" 
+                initialFocus={cancelButtonRef} 
+                onClose={()=>{
+                    setOpen(false);
+                    setInvalidMFA(null); 
+                }}
+                >
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -79,11 +98,26 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                                             )}
 
                                             <div className="mt-2">
-                                            {children? (
-                                                <>{children}</>
-                                            ):(
-                                                <></>
-                                            )}
+                                               {content}
+                                                <form onSubmit={handleRegistrationSubmit}>
+                                                    <label
+                                                        className="block text-sm font-semibold text-gray-800"
+                                                    >
+                                                        Code
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="codeTwoFactorAuthentication"
+                                                        name="codeTwoFactorAuthentication"
+                                                        className="block w-full px-4 py-2 mt-2 bg-white border rounded-md  focus:outline-none"
+                                                    />
+                                                    {invalidMFA? (
+                                                        <p className='text-red-500 text-xs mt-4 mb-2'>{invalidMFA}</p>
+                                                    ):(
+                                                        <></>
+                                                    )}
+                                                    <Button className="mt-3" color="green" type="submit">verify</Button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -92,7 +126,10 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                                     <button
                                         type="button"
                                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => setOpen(false)}
+                                        onClick={() => {
+                                            setOpen(false)
+                                            setInvalidMFA(null)
+                                        }}
                                         ref={cancelButtonRef}
                                     >
                                         Cancel

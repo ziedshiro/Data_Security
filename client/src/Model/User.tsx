@@ -3,8 +3,8 @@ export default interface User {
     firstname:string,
     lastname:string
     password:string,
-    codeTwoFactorAuthentication:string,
-    secretCode:string
+    codeTwoFactorAuthentication?:string,
+    secretCode?:string
 }
 
 

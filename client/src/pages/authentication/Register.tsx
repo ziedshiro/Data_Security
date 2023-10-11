@@ -1,18 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from 'formik';
-import { useMFACodeQuery,useRegisterMutation } from "../../store";
-import { Button } from "@material-tailwind/react";
-import Modal from "../../components/Modal";
-import User from '../../Model/User';
+import ModalMFA from "../../components/ModalMFA";
 import * as yup from 'yup';
 
 
 function Register() {
-    const [register,registerResult] = useRegisterMutation();
-    const navigate = useNavigate();
     const [onOpen,setOnOpen] = useState(false);
-    const [seconds, setSeconds] = useState(30);
     const [userData,setUserData] = useState<any>([]);
 
     const validationSchema = yup.object().shape({
@@ -78,26 +71,6 @@ function Register() {
 
     const togglePrivacyPolicyAcceptance = () => {
         setAcceptedPrivacyPolicy(!acceptedPrivacyPolicy);
-      };
-
-    const handleRegistrationSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const formElement = e.target as HTMLFormElement;
-        const inputElement = formElement.querySelector('[name="codeTwoFactorAuthentication"]') as HTMLInputElement;
-        const inputValue = inputElement.value;
-        const user = {
-            userId:userData.userId,
-            firstname:userData.firstname,
-            lastname:userData.lastname,
-            password:userData.password,
-            codeTwoFactorAuthentication: inputValue,
-            secretCode:MFAresult.data?.secret
-        }
-        await register(user);
-        console.log(registerResult);
-        
-        
-        
       };
 
     return ( 
@@ -209,24 +182,7 @@ function Register() {
                         )}
                     </div>
                 </form>
-                <Modal open={onOpen} setOpen={setOnOpen} title="MFA Code">
-                    <h1>Timer: {seconds} seconds</h1>
-                    <img src={MFAresult.data?.uri} alt="mfaImage"/>
-                    <form onSubmit={handleRegistrationSubmit}>
-                        <label
-                            className="block text-sm font-semibold text-gray-800"
-                        >
-                            Code
-                        </label>
-                        <input
-                            type="text"
-                            id="codeTwoFactorAuthentication"
-                            name="codeTwoFactorAuthentication"
-                            className="block w-full px-4 py-2 mt-2 bg-white border rounded-md  focus:outline-none"
-                        />
-                          <Button className="mt-3" color="green" type="submit">verify</Button>
-                    </form>
-                </Modal>
+                <ModalMFA open={onOpen} setOpen={setOnOpen} user={userData} title="MFA Code"/>
             </div>
         </div>
      );
