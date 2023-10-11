@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Store implements java.io.Serializable {
 
 	private String storeId;
-	private User user;
+	@JsonIgnore private User user;
 	private Districts districts;
 	private Provinces provinces;
 	private Subdistricts subdistricts;

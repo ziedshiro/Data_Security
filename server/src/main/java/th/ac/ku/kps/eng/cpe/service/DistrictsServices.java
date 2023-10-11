@@ -28,4 +28,7 @@ public class DistrictsServices {
 	public void deleteById(int id) {
 		districtsrepository.deleteById(id);
 	}
+	public List<Districts> findByProvinceId(int id){
+		return districtsrepository.findByProvinceId(id);
+	}
 }

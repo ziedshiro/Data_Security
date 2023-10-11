@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Subdistricts implements java.io.Serializable {
 
 	private Integer id;
-	private Districts districts;
+	@JsonIgnore private Districts districts;
 	private int code;
 	private String nameInThai;
 	private String nameInEnglish;
