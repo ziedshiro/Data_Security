@@ -40,7 +40,9 @@ function Navbar() {
                         
                         <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                             <div className="flex flex-shrink-0 items-center">
-                                <img className="w-40 ml-3" alt="Logo" src={Logo}/>
+                                <Link to="/">
+                                    <img className="w-40 ml-3" alt="Logo" src={Logo}/>
+                                </Link>
                             </div>
                         </div>
                         <div className="absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 hidden sm:flex">
