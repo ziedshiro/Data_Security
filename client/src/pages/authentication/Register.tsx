@@ -1,10 +1,37 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from 'formik';
+import { useMFACodeMutation } from "../../store";
+import Modal from "../../components/Modal";
 import * as yup from 'yup';
 
 
 function Register() {
+    const [MFA,MFAresult] = useMFACodeMutation();
+    const navigate = useNavigate();
+    const [onOpen,setOnOpen] = useState(false);
+    const [seconds, setSeconds] = useState(30);
+    const [userId,setUserId] = useState('');
+
+    useEffect(() => {
+        const decrementTimer = async () => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }else{
+                await MFA(userId)
+                setSeconds(30);
+            }
+        };
+
+        let timer: NodeJS.Timeout;
+        if (onOpen) {
+            timer = setInterval(decrementTimer, 1000);
+        }else{
+            setSeconds(30);
+        }
+        return () => clearInterval(timer);
+    }, [seconds, onOpen, MFA, userId]);
+
     const validationSchema = yup.object().shape({
         userId: yup
             .string()
@@ -22,17 +49,13 @@ function Register() {
             .required('Lastname is require'),
         password: yup
             .string()
-            .min(8,'Password must be at least 8 characters.')
-            .max(15,'Passwords can contain up to 18 characters.')
+            .min(8, 'Password must be at least 8 characters.')
+            .max(18, 'Passwords can contain up to 18 characters.') // Changed 15 to 18
             .matches(
-                /.*\d.*/,
-                'Password must contain at least one number'
+                /^(?=.*[a-zA-Z])(?=.*\d)/,
+                'Password must contain at least one character and one number'
             )
-            .matches(
-                /.+`/,
-                'Password must contain at least one character'
-            )
-            .required('Password is required.')
+            .required('Password is required.'),
     
     });
 
@@ -50,9 +73,11 @@ function Register() {
             // Manually validate the form on submission
             validationSchema
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
-              .then(() => {
+              .then( async () => {
                 if (acceptedPrivacyPolicy) {
-                    navigate("/")
+                    await MFA(values.userId);
+                    setUserId(values.userId);
+                    setOnOpen(!onOpen);
                   } else {
                     alert('Please accept both terms & conditions and privacy policy to register.');
                   }
@@ -68,8 +93,6 @@ function Register() {
     });
 
     const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false);
-
-    const navigate = useNavigate();
 
     const togglePrivacyPolicyAcceptance = () => {
         setAcceptedPrivacyPolicy(!acceptedPrivacyPolicy);
@@ -157,7 +180,7 @@ function Register() {
                         />
                     </div>
                     {formik.errors.password ? (
-                        <div className="text-red-500 text-xs">{formik.errors.password}</div>
+                        <div className="text-red-500 text-xs mb-3">{formik.errors.password}</div>
                     ) : null}
                     <div className="mb-4">
                         <label className="flex items-center">
@@ -189,7 +212,17 @@ function Register() {
                         )}
                     </div>
                 </form>
-
+                <Modal open={onOpen} setOpen={setOnOpen} title="MFA Code">
+                    <h1>Timer: {seconds} seconds</h1>
+                    <img src={MFAresult.data?.uri} alt="mfaImage"/>
+                    <form>
+                    <label
+                            className="block text-sm font-semibold text-gray-800"
+                        >
+                            Code
+                        </label>
+                    </form>
+                </Modal>
             </div>
         </div>
      );
