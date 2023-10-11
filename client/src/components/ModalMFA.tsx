@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useRef, useState } from 'react';
+import { Fragment, ReactNode, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
 import { useMFACodeQuery,useRegisterMutation } from '../store';
 import { User } from '../Model/User';
@@ -18,7 +18,6 @@ interface OpenModal {
 export default function Modal({ open, setOpen,children,title,user }: OpenModal) {
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
     const [register] = useRegisterMutation();
-    const [invalidMFA,setInvalidMFA] = useState(null);
     const navigate = useNavigate();
     const cancelButtonRef = useRef(null);
 
@@ -57,21 +56,18 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
             const result = await register(user);     
             if ('data' in result) {
                 if (result.data.status === "BAD_REQUEST") {
-                    setInvalidMFA(result.data.msg);
                     Swal.close();
 
                     Swal.fire({
                     icon: 'error',
-                    title: 'Login Failed',
-                    text: 'Invalid username or password',
+                    title: 'Register Failed',
+                    text: 'Invalid username or password or ',
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false,
                     allowOutsideClick: true,
                     });
                 }else{
-                    setInvalidMFA(null);
-                    setOpen(false)
                     Swal.close();
   
                     Swal.fire({
@@ -99,7 +95,6 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                 initialFocus={cancelButtonRef} 
                 onClose={()=>{
                     setOpen(false);
-                    setInvalidMFA(null); 
                 }}
                 >
                 <Transition.Child
@@ -150,11 +145,6 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                                                         name="codeTwoFactorAuthentication"
                                                         className="block w-full px-4 py-2 my-2 bg-white border rounded-md  focus:outline-none"
                                                     />
-                                                    {invalidMFA? (
-                                                        <p className='text-red-500 text-xs mt-4 mb-2'>{invalidMFA}</p>
-                                                    ):(
-                                                        <></>
-                                                    )}
                                                     <div className='flex justify-center mb-3'>
                                                         <Button className="mt-3 w-40" color="red" type="submit">Verify</Button>
                                                     </div>
@@ -163,19 +153,6 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                                         </div>
                                     </div>
                                 </div>
-                                {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button
-                                        type="button"
-                                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => {
-                                            setOpen(false)
-                                            setInvalidMFA(null)
-                                        }}
-                                        ref={cancelButtonRef}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div> */}
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
