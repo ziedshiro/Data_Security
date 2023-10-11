@@ -47,6 +47,7 @@ import th.ac.ku.kps.eng.cpe.service.UserServices;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -169,7 +170,6 @@ public class AuthenticationController {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@PostMapping("/login")
 	public LoginResponse login(@Valid @RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
 		LoginResponse loginresp = new LoginResponse();
@@ -181,13 +181,23 @@ public class AuthenticationController {
 		User user = userservice.findByUserId(encodedUserId);
 		Date current = new Date();
 		if(!bindingResult.hasErrors() && user!=null) {
-			if(!user.getAccountLockStatus()||(current.getHours()>user.getAttemptTimeLogin().getHours())||(current.getDate()>user.getAttemptTimeLogin().getDate())||(current.getMonth()>user.getAttemptTimeLogin().getMonth())||(current.getYear()>user.getAttemptTimeLogin().getYear())) {
-				if((current.getHours()>user.getAttemptTimeLogin().getHours())||(current.getDate()>user.getAttemptTimeLogin().getDate())||(current.getMonth()>user.getAttemptTimeLogin().getMonth())||(current.getYear()>user.getAttemptTimeLogin().getYear())) {
+			
+			Calendar calendarDatabaseDate = Calendar.getInstance();
+			calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
+
+			Calendar calendarCurrentDate = Calendar.getInstance();
+			calendarCurrentDate.setTime(current);
+			
+			calendarDatabaseDate.add(Calendar.HOUR, 1);
+			
+			if(!user.getAccountLockStatus() || (calendarCurrentDate.after(calendarDatabaseDate))) {
+				if(calendarCurrentDate.after(calendarDatabaseDate)) {
 					user.setAccountLockStatus(false);
 					user.setAttemptLogin(0);
 					user.setAttemptTimeLogin(null);
 					userservice.save(user);
 				}
+				
 				TimeProvider timeProvider = new SystemTimeProvider();
 				CodeGenerator codeGenerator = new DefaultCodeGenerator();
 				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);

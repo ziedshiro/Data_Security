@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.auth;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.crypto.KeyGenerator;
@@ -52,9 +53,18 @@ public class test {
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
-		Date date = new Date(2023,9,11,16,39,22);
+		Date date = new Date(123,9,11,20,00,22);
 		Date now = new Date();
-		System.out.print(now.getDay());
+		Calendar calendarDatabaseDate = Calendar.getInstance();
+		calendarDatabaseDate.setTime(date);
+
+		Calendar calendarCurrentDate = Calendar.getInstance();
+		calendarCurrentDate.setTime(now);
+		
+		calendarDatabaseDate.add(Calendar.HOUR, 1);
+		
+//		System.out.print(now+" "+date);
+		System.out.print(calendarCurrentDate.after(calendarDatabaseDate));
 
 	}
 //	public static String bytesToHex(byte[] bytes) {
