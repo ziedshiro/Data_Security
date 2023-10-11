@@ -21,6 +21,10 @@ public class ProductServices {
 		return productpository.findById(id).orElse(null);
 	}
 	
+	public Product findById(String id) {
+		return productpository.findBytId(id);
+	}
+	
 	public Product save(Product product) {
 		return productpository.save(product);
 	}
