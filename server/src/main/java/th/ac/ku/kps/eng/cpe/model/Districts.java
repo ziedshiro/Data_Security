@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Districts implements java.io.Serializable {
 
 	private Integer id;
-	@JsonIgnore private Provinces provinces;
+	private Provinces provinces;
 	private int code;
 	private String nameInThai;
 	private String nameInEnglish;

@@ -49,7 +49,7 @@ function Navbar() {
                             
                         <div className='flex border-r-2 border-l-2 pl-5'>
                             <div className='mr-5'>
-                                <Link to='/register' className='px-7 py-3'>
+                                <Link to='/address' className='px-7 py-3'>
                                     <span className='flex items-center kanit text-gray-600 hover:text-red-500 text-base font-semibold'>
                                         <FaMapMarkerAlt className='mr-3 text-xl'/>
                                         Select a delivery address

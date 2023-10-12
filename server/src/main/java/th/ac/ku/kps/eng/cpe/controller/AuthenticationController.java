@@ -179,25 +179,27 @@ public class AuthenticationController {
 		String encodedUserId = encryptionservice.encrypt(userId);
 		
 		User user = userservice.findByUserId(encodedUserId);
-		Date current = new Date();
 		if(!bindingResult.hasErrors() && user!=null) {
+			Date current = new Date();
 			
-			Calendar calendarDatabaseDate = Calendar.getInstance();
-			calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
-
-			Calendar calendarCurrentDate = Calendar.getInstance();
-			calendarCurrentDate.setTime(current);
-			
-			calendarDatabaseDate.add(Calendar.HOUR, 1);
-			
-			if(!user.getAccountLockStatus() || (calendarCurrentDate.after(calendarDatabaseDate))) {
+			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
+				Calendar calendarDatabaseDate = Calendar.getInstance();
+				calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
+				
+				Calendar calendarCurrentDate = Calendar.getInstance();
+				calendarCurrentDate.setTime(current);
+				
+				calendarDatabaseDate.add(Calendar.HOUR, 1);	
+				
 				if(calendarCurrentDate.after(calendarDatabaseDate)) {
 					user.setAccountLockStatus(false);
 					user.setAttemptLogin(0);
 					user.setAttemptTimeLogin(null);
 					userservice.save(user);
 				}
-				
+			}
+			
+			if(!user.getAccountLockStatus()) {
 				TimeProvider timeProvider = new SystemTimeProvider();
 				CodeGenerator codeGenerator = new DefaultCodeGenerator();
 				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
@@ -230,6 +232,104 @@ public class AuthenticationController {
 						loginresp.setMsg(msg);
 						return loginresp;
 					}
+				}
+				else {
+					user.setAttemptLogin(user.getAttemptLogin()+1);
+					if(user.getAttemptLogin()==3) {
+						user.setAccountLockStatus(true);
+						user.setAttemptTimeLogin(new Date());
+					}
+					userservice.save(user);
+					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+					List<String> msg = new ArrayList<String>();
+					msg.add("Code not Match");
+					loginresp.setMsg(msg);
+					return loginresp;
+				}
+			}
+			else {
+				loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+				List<String> msg = new ArrayList<String>();
+				msg.add("Account Lock");
+				loginresp.setMsg(msg);
+				return loginresp;
+			}	
+		}
+		else {
+			loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(ObjectError::getDefaultMessage)
+					.collect(Collectors.toList());
+			if(user == null) {
+				errors.add("Invalid USER not Found");
+			}
+			loginresp.setMsg(errors);
+			return loginresp;
+		}
+	}
+	
+	@PostMapping("/login/test")
+	public LoginResponse logintest(@Valid @RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
+		LoginResponse loginresp = new LoginResponse();
+//		String userId = decryptionservice.decrypt(login.getUsername());
+//		String password = decryptionservice.decrypt(login.getPassword());
+		
+		String encodedUserId = encryptionservice.encrypt(login.getUsername());
+		
+		User user = userservice.findByUserId(encodedUserId);
+		if(!bindingResult.hasErrors() && user!=null) {
+			Date current = new Date();
+			
+			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
+				Calendar calendarDatabaseDate = Calendar.getInstance();
+				calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
+				
+				Calendar calendarCurrentDate = Calendar.getInstance();
+				calendarCurrentDate.setTime(current);
+				
+				calendarDatabaseDate.add(Calendar.HOUR, 1);	
+				
+				if(calendarCurrentDate.after(calendarDatabaseDate)) {
+					user.setAccountLockStatus(false);
+					user.setAttemptLogin(0);
+					user.setAttemptTimeLogin(null);
+					userservice.save(user);
+				}
+			}
+			
+			if(!user.getAccountLockStatus()) {
+				TimeProvider timeProvider = new SystemTimeProvider();
+				CodeGenerator codeGenerator = new DefaultCodeGenerator();
+				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+				boolean successful = verifier.isValidCode(user.getCodeTwoFactorAuthentication(),login.getSecretcode());
+				
+//				if(successful) {
+					if(hashservices.verifyPassword(login.getPassword(), user.getSalt(), user.getPassword())) {
+						String token = jwtUtil.createToken(user);
+						loginresp.setStatus(HttpStatus.OK);
+						loginresp.setAccessToken(token);
+						List<String> msg = new ArrayList<String>();
+						msg.add("Login Success");
+						loginresp.setMsg(msg);
+						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname())));
+						user.setLastLoginTimestamp(new Date());
+						user.setAttemptLogin(0);
+						userservice.save(user);
+						return loginresp;
+//					}
+//					else {
+//						user.setAttemptLogin(user.getAttemptLogin()+1);
+//						if(user.getAttemptLogin()==3) {
+//							user.setAccountLockStatus(true);
+//							user.setAttemptTimeLogin(new Date());
+//						}
+//						userservice.save(user);
+//						loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+//						List<String> msg = new ArrayList<String>();
+//						msg.add("Invalid Password");
+//						loginresp.setMsg(msg);
+//						return loginresp;
+//					}
 				}
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);

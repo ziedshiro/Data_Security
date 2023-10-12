@@ -28,4 +28,8 @@ public class SubdistrictsServices {
 	public void deleteById(int id) {
 		subdistrictsrepository.deleteById(id);
 	}
+	
+	public List<Subdistricts> findByAndDistrictsId(int districtId,int provinceId){
+		return subdistrictsrepository.findByDistrictIdAndProvinceId(districtId, provinceId);
+	}
 }

@@ -11,6 +11,7 @@ import AnonymousRoutes from '../utils/AnonymousRoutes';
 import CustomerRoutes from '../utils/CustomerRoutes';
 import OwnerRoutes from '../utils/OwnerRoutes';
 import AdminRoutes from '../utils/AdminRoutes';
+import Address from '../pages/general/Address';
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
+          <Route path="/address" element={<Address/>}/>
           <Route path="/*" element={<NoPage/>}/>
         </Route>
         <Route element={<CustomerRoutes/>}>
