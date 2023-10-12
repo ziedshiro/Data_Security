@@ -10,7 +10,7 @@ export interface User {
 export interface LoginUser {
     userId:string,
     password:string,
-    secretCode?:string
+    secretcode?:string
 }
 
 
