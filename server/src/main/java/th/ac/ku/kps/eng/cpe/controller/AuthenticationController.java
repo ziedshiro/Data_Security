@@ -192,8 +192,8 @@ public class AuthenticationController {
 	@PostMapping("/login")
 	public LoginResponse login(@RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
 		LoginResponse loginresp = new LoginResponse();
-		String userId = decryptionservice.Decode(login.getUsername());
-		String password = decryptionservice.Decode(login.getPassword());
+		String userId = decryptionservice.De(login.getUsername());
+		String password = decryptionservice.De(login.getPassword());
 		
 		String encodedUserId = encryptionservice.encrypt(userId);
 		

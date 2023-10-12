@@ -23,6 +23,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -77,6 +78,24 @@ public class DecryptionServices {
         System.out.println("Decrypted Text: " + decryptedText);
         return decryptedText;
 
+	}
+	public String De(String data) {
+		try {
+            byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, "AES");
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+            byte[] encryptedData = Base64.getDecoder().decode(data);
+            byte[] iv = new byte[16]; // You need to determine the initialization vector (IV) used during encryption
+
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
+            byte[] decrypted = cipher.doFinal(encryptedData);
+
+            return new String(decrypted);
+        } catch (Exception e) {
+            // Handle decryption errors
+            return null;
+        }
 	}
 	
 	
