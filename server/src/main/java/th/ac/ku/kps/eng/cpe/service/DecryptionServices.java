@@ -24,12 +24,13 @@ public class DecryptionServices {
         return new String(decryptedBytes);
     }
 	public String encrypt(String data) throws Exception {
-		Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding"); // Use AES-CFB mode
-
+		Cipher cipher = Cipher.getInstance("AES");
 	    SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-	    cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(new byte[16])); // Use an IV
-	    byte[] encryptedBytes = cipher.doFinal(data.getBytes("UTF-8"));
-	    return Base64.getEncoder().encodeToString(encryptedBytes);
+	    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+	    byte[] encryptedBytes = cipher.doFinal(data.getBytes());
+	    String encryptedData = Base64.getEncoder().encodeToString(encryptedBytes);
+	    return encryptedData;
 	}
 	
 	

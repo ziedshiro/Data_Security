@@ -1,17 +1,8 @@
 package th.ac.ku.kps.eng.cpe.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 public class LoginDTO {
-	@Email(message = "Invalid Email")
-	@NotBlank(message = "Invalid Email: Empty Email")
 	private String username;
-	@NotBlank(message = "Invalid Password: Empty Password")
-    @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters")
 	private String password;
-	@NotBlank(message = "Invalid Code: Empty Code")
 	private String secretcode;
 	
 	public LoginDTO() {}
