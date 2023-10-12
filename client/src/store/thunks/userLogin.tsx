@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { baseUrl } from "../utils/baseUrl";
+import { baseUrl,secretKey } from "../../env/utils";
 import forge from 'node-forge';
-import { secretKey } from "../utils/secretKey";
 import { LoginUser } from "../../Model/User";
+
 
 const userLogin = createAsyncThunk('login', async (user:LoginUser) => {
     const loginData = JSON.stringify(user);
