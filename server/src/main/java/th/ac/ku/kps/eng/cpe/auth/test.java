@@ -53,18 +53,18 @@ public class test {
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
-		Date date = new Date(123,9,11,20,00,22);
-		Date now = new Date();
-		Calendar calendarDatabaseDate = Calendar.getInstance();
-		calendarDatabaseDate.setTime(date);
-
-		Calendar calendarCurrentDate = Calendar.getInstance();
-		calendarCurrentDate.setTime(now);
-		
-		calendarDatabaseDate.add(Calendar.HOUR, 1);
-		
-//		System.out.print(now+" "+date);
-		System.out.print(calendarCurrentDate.after(calendarDatabaseDate));
+//		Date date = new Date(123,9,11,20,00,22);
+//		Date now = new Date();
+//		Calendar calendarDatabaseDate = Calendar.getInstance();
+//		calendarDatabaseDate.setTime(date);
+//
+//		Calendar calendarCurrentDate = Calendar.getInstance();
+//		calendarCurrentDate.setTime(now);
+//		
+//		calendarDatabaseDate.add(Calendar.HOUR, 1);
+//		
+//		System.out.print(calendarCurrentDate.after(calendarDatabaseDate));
+		System.out.print(new Date());
 
 	}
 //	public static String bytesToHex(byte[] bytes) {

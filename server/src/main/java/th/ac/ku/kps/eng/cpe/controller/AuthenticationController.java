@@ -97,6 +97,25 @@ public class AuthenticationController {
      }
 	}
 	
+	@GetMapping("/decode/{userId}")
+	public String decode(@PathVariable("userId") String userId){
+		try {
+		return decryptionservice.decrypt("L4qquar7/ziwvz0g49dS4+2TBrodiQ==");
+	 } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+     }
+	}
+	@GetMapping("/encode/{userId}")
+	public String encode(@PathVariable("userId") String userId){
+		try {
+		return decryptionservice.encrypt(userId);
+	 } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+     }
+	}
+	
 	@GetMapping("/generateMFACode/{userId}")
 	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
 		MFAResponse resp = new MFAResponse();
@@ -171,7 +190,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/login")
-	public LoginResponse login(@Valid @RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
+	public LoginResponse login(@RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
 		LoginResponse loginresp = new LoginResponse();
 		String userId = decryptionservice.decrypt(login.getUsername());
 		String password = decryptionservice.decrypt(login.getPassword());
@@ -179,7 +198,7 @@ public class AuthenticationController {
 		String encodedUserId = encryptionservice.encrypt(userId);
 		
 		User user = userservice.findByUserId(encodedUserId);
-		if(!bindingResult.hasErrors() && user!=null) {
+		if(user!=null) {
 			Date current = new Date();
 			
 			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
