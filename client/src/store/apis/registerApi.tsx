@@ -1,5 +1,5 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseUrl } from '../utils/baseUrl';
+import { baseUrl } from "../../env/utils";
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
