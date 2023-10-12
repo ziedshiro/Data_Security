@@ -14,12 +14,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.spec.IvParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Security;
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,20 +44,23 @@ public class DecryptionServices {
 	    return encryptedData;
 	}
 	public String Decode(String data) throws UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+		
 		Security.addProvider(new BouncyCastleProvider());
 
-        byte[] encryptedDataBytes = Base64.getDecoder().decode(data);
+        byte[] secretKey = SECRET_KEY.getBytes();
 
-        byte[] iv = Base64.getDecoder().decode("16");
+        byte[] encryptedBytes = Base64.getDecoder().decode(data);
 
-        Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5Padding", "BC");
-        SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "AES");
 
-        byte[] decryptedDataBytes = cipher.doFinal(encryptedDataBytes);
+        Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", "BC");
+        
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
-        String decryptedData = new String(decryptedDataBytes, "UTF-8");
+        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+        String decryptedData = new String(decryptedBytes, "UTF-8");
+
         return decryptedData;
 
 	}
