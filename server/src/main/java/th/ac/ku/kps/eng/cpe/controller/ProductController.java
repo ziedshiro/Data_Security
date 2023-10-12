@@ -1,7 +1,9 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -64,26 +64,53 @@ public class ProductController {
 			ObjectMapper objectMapper = new ObjectMapper();
 			Product product = objectMapper.readValue(productJson, Product.class);
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-	        String evidence = FileUploadUtil.saveFile(fileName, file);
-//	        product.setImgProduct(evidence);
-//	        productservice.save(product);
-	        return new Response(HttpStatus.CREATED,"created");
+			if (fileName != null && fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$")) {
+				String img = FileUploadUtil.saveFile(fileName, file);
+				product.setImgProduct(img);
+				product.setCreatedate(new Date());
+				product.setIsactive(true);
+				product.setProductId(UUID.randomUUID().toString());
+				productservice.save(product);
+				return new Response(HttpStatus.CREATED,"created");				
+			}
+	        return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error File Type!");
 		}
-		return new Response(HttpStatus.CREATED,"created");
+		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
 	@PutMapping("/auth/product/{id}")
-	public Response update(@RequestHeader("Authorization") String token,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
+	public Response update(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws IOException {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(username);
 		if(user != null) {
+			Product product = productservice.findById(id);
 			ObjectMapper objectMapper = new ObjectMapper();
-			Product product = objectMapper.readValue(productJson, Product.class);
-			productservice.save(product);
+			Product productObj = objectMapper.readValue(productJson, Product.class);
+			
+			product.setName(productObj.getName());
+			product.setDescription(productObj.getDescription());
+			product.setExpiryDate(productObj.getExpiryDate());
+			product.setType(productObj.getType());
+			product.setPrice(productObj.getPrice());
+			product.setDiscountPrice(productObj.getDiscountPrice());
+			product.setQuantityAvailable(productObj.getQuantityAvailable());
+			product.setStore(productObj.getStore());
+			product.setUpdatedate(new Date());
+			
+			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+			if ((fileName != null) && (fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$"))) {
+				if(!fileName.equals(product.getImgProduct())) {
+					String img = FileUploadUtil.saveFile(fileName, file);	
+					product.setImgProduct(img);					
+				}
+				productservice.save(product);
+				return new Response(HttpStatus.OK,"Updated");
+			}
+			return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error File Type!");
 		}
-		return new Response(HttpStatus.ACCEPTED,"updated");
+		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
 	@DeleteMapping("/auth/product/{id}")
@@ -93,8 +120,9 @@ public class ProductController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(username);
 		if(user!=null) {
-			productservice.deleteById(id);			
+			productservice.deleteById(id);		
+			return new Response(HttpStatus.OK,"Deleted");
 		}
-		return new Response(HttpStatus.OK,"Deleted");
+		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 }

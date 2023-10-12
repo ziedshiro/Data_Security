@@ -97,6 +97,16 @@ public class AuthenticationController {
      }
 	}
 	
+	@GetMapping("/decode/{userId}")
+	public String decode(@PathVariable("userId") String userId){
+		try {
+		return decryptionservice.encrypt(userId);
+	 } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+     }
+	}
+	
 	@GetMapping("/generateMFACode/{userId}")
 	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
 		MFAResponse resp = new MFAResponse();
