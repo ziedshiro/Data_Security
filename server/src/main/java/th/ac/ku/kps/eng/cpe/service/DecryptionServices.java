@@ -1,6 +1,7 @@
 package th.ac.ku.kps.eng.cpe.service;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,11 +15,18 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.modes.CFBBlockCipher;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
 
 @Service
 public class DecryptionServices {
@@ -45,31 +53,29 @@ public class DecryptionServices {
 	}
 	public String Decode(String data) throws UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 		
-		Security.addProvider(new BouncyCastleProvider());
+		byte[] secretKeyBytes = SECRET_KEY.getBytes(StandardCharsets.UTF_8);
+        byte[] ciphertext = Base64.getDecoder().decode(data);
 
-        byte[] secretKey = SECRET_KEY.getBytes();
-        
-        byte[] iv = new byte[] {
-        	    (byte) 0xD3, (byte) 0xB1, (byte) 0x9C, (byte) 0x53,
-        	    (byte) 0xD3, (byte) 0x36, (byte) 0x8C, (byte) 0x1C,
-        	    (byte) 0xA4, (byte) 0x7F, (byte) 0x2A, (byte) 0x20,
-        	    (byte) 0x6D, (byte) 0xE1, (byte) 0x5E, (byte) 0x32
-        };
+        byte[] iv = new byte[16];
 
-        byte[] encryptedBytes = Base64.getDecoder().decode(data);
+        BufferedBlockCipher cipher = new BufferedBlockCipher(new CFBBlockCipher(new AESEngine(), 8));
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "AES");
+        CipherParameters keyWithIV = new ParametersWithIV(new KeyParameter(secretKeyBytes), iv);
+        cipher.init(false, keyWithIV);
 
-        Cipher cipher = Cipher.getInstance("AES/CFB/PKCS7Padding", "BC");
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
-        
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+        byte[] decryptedBytes = new byte[cipher.getOutputSize(ciphertext.length)];
+        int processedBytes = cipher.processBytes(ciphertext, 0, ciphertext.length, decryptedBytes, 0);
 
-        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+        try {
+            cipher.doFinal(decryptedBytes, processedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        String decryptedData = new String(decryptedBytes, "UTF-8");
+        String decryptedText = new String(decryptedBytes, StandardCharsets.UTF_8);
 
-        return decryptedData;
+        System.out.println("Decrypted Text: " + decryptedText);
+        return decryptedText;
 
 	}
 	
