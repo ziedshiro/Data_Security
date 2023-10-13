@@ -16,9 +16,9 @@ public class FavouriteServices {
 	public List<Favourite> findAll(){
 		return (List<Favourite>) favouriterepository.findAll();
 	}
-	
-	public Favourite findById(int id) {
-		return favouriterepository.findById(id).orElse(null);
+
+	public Favourite findById(String id) {
+		return favouriterepository.findById(id);
 	}
 	
 	public Favourite save(Favourite favourite) {
@@ -27,5 +27,8 @@ public class FavouriteServices {
 	
 	public void deleteById(int id) {
 		favouriterepository.deleteById(id);
+	}
+	public void delete(Favourite favourite) {
+		favouriterepository.delete(favourite);
 	}
 }

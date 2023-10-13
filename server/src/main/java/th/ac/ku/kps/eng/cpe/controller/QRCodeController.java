@@ -2,6 +2,7 @@ package th.ac.ku.kps.eng.cpe.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,10 @@ import com.google.zxing.WriterException;
 
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
+import th.ac.ku.kps.eng.cpe.model.Orderitem;
 import th.ac.ku.kps.eng.cpe.response.QRCodeResponse;
+import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
+import th.ac.ku.kps.eng.cpe.service.OrdersServices;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,14 +31,17 @@ public class QRCodeController {
 	@Autowired
     private JwtUtil jwtUtil;
 	
+	@Autowired
+	private OrderitemServices orderitemservice;
 	
 	@PostMapping("auth/createqrcode/{id}")
-	public QRCodeResponse createQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")int id) throws IOException, WriterException {
+	public QRCodeResponse createQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")String id) throws IOException, WriterException {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		QRCodeResponse reps = new QRCodeResponse();
 		if (username != null) {
+			List<Orderitem> orderitem = orderitemservice.findByOrderId(id);
 			ThaiQRPromptPay qrcode = new ThaiQRPromptPay.Builder().dynamicQR().creditTransfer().mobileNumber("0955523541").amount(new BigDecimal(5)).build();
 			reps.setResults("data:image/png;base64,"+qrcode.drawToBase64(300, 300));
 			reps.setMsg("create");

@@ -114,13 +114,14 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/auth/product/{id}")
-	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") int id) {
+	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(username);
 		if(user!=null) {
-			productservice.deleteById(id);		
+			Product product = productservice.findById(id);
+			productservice.delete(product);	
 			return new Response(HttpStatus.OK,"Deleted");
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");

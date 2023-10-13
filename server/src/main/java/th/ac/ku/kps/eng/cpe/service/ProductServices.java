@@ -28,4 +28,8 @@ public class ProductServices {
 	public void deleteById(int id) {
 		productpository.deleteById(id);
 	}
+	
+	public void delete(Product product) {
+		productpository.delete(product);
+	}
 }

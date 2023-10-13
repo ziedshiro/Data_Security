@@ -17,6 +17,10 @@ public class OrderitemServices {
 		return (List<Orderitem>) orderitemrepository.findAll();
 	}
 	
+	public List<Orderitem> findByOrderId(String id){
+		return (List<Orderitem>) orderitemrepository.findByOrderId(id);
+	}
+	
 	public Orderitem findById(int id) {
 		return orderitemrepository.findById(id).orElse(null);
 	}

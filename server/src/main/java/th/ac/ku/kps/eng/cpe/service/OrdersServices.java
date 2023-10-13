@@ -21,6 +21,10 @@ public class OrdersServices {
 		return ordersrepository.findById(id).orElse(null);
 	}
 	
+	public Orders findById(String id) {
+		return ordersrepository.findById(id);
+	}
+	
 	public Orders save(Orders orders) {
 		return ordersrepository.save(orders);
 	}
