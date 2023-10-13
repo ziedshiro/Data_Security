@@ -77,45 +77,6 @@ public class AuthenticationController {
         this.jwtUtil = jwtUtil;
     }
 	
-	@GetMapping("/en/{userId}")
-	public String en(@PathVariable("userId") String userId){
-		try {
-		return encryptionservice.encrypt(userId);
-		} catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-	}
-	
-	@GetMapping("/de/{userId}")
-	public String de(@PathVariable("userId") String userId){
-		try {
-		return encryptionservice.decrypt(userId);
-	 } catch (Exception e) {
-         e.printStackTrace();
-         return null;
-     }
-	}
-	
-	@GetMapping("/decode")
-	public String decode(){
-		try {
-		return decryptionservice.De("U2FsdGVkX18kOm3e3kKt2PqC8hr2WmibdHzRAEUKAwFUC20ANBuD1pvLlihmTzqt");
-	 } catch (Exception e) {
-         e.printStackTrace();
-         return null;
-     }
-	}
-	@GetMapping("/encode/{userId}")
-	public String encode(@PathVariable("userId") String userId){
-		try {
-		return decryptionservice.encrypt(userId);
-	 } catch (Exception e) {
-         e.printStackTrace();
-         return null;
-     }
-	}
-	
 	@GetMapping("/generateMFACode/{userId}")
 	public MFAResponse generateMFA(@PathVariable("userId") String userId) throws QrGenerationException {
 		MFAResponse resp = new MFAResponse();
