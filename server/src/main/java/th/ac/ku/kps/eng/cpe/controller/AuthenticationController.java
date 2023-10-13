@@ -97,10 +97,10 @@ public class AuthenticationController {
      }
 	}
 	
-	@GetMapping("/decode/{userId}")
-	public String decode(@PathVariable("userId") String userId){
+	@GetMapping("/decode")
+	public String decode(){
 		try {
-		return decryptionservice.decrypt("L4qquar7/ziwvz0g49dS4+2TBrodiQ==");
+		return decryptionservice.De("U2FsdGVkX18kOm3e3kKt2PqC8hr2WmibdHzRAEUKAwFUC20ANBuD1pvLlihmTzqt");
 	 } catch (Exception e) {
          e.printStackTrace();
          return null;
@@ -171,7 +171,7 @@ public class AuthenticationController {
 				return resp;
 			}
 			else {
-				userservice.save(new User(userId,firstname,lastname,password,salt,"customer",null,false,0,null,true,user.getCodeTwoFactorAuthentication()));
+				userservice.save(new User(userId,firstname,lastname,password,salt,"customer",null,false,0,null,true,user.getSecretCode()));
 				resp.setStatus(HttpStatus.CREATED);
 				List<String> msg = new ArrayList<String>();
 				msg.add("Register Success");
@@ -192,8 +192,8 @@ public class AuthenticationController {
 	@PostMapping("/login")
 	public LoginResponse login(@RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
 		LoginResponse loginresp = new LoginResponse();
-		String userId = decryptionservice.De(login.getUsername());
-		String password = decryptionservice.De(login.getPassword());
+		String userId = decryptionservice.Decrypt(login.getUsername());
+		String password = decryptionservice.Decrypt(login.getPassword());
 		
 		String encodedUserId = encryptionservice.encrypt(userId);
 		
@@ -222,6 +222,7 @@ public class AuthenticationController {
 				TimeProvider timeProvider = new SystemTimeProvider();
 				CodeGenerator codeGenerator = new DefaultCodeGenerator();
 				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+				System.out.print(login.getSecretcode()+" "+user.getCodeTwoFactorAuthentication());
 				boolean successful = verifier.isValidCode(user.getCodeTwoFactorAuthentication(),login.getSecretcode());
 				
 				if(successful) {

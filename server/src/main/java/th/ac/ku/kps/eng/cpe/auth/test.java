@@ -2,11 +2,14 @@ package th.ac.ku.kps.eng.cpe.auth;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class test {
 	@Value("${secret.pepper}")
 	private static String pepper;
-	
+	private String SECRET_KEY = "4Pz+k9qSJBujdyz8Wk+TtN1jbZeesp2vRCbzgdehkt4=";
 	public static void main(String[] args) throws Exception {
 //        byte[] pepperBytes = new byte[32];
 //        SecureRandom random = new SecureRandom();
@@ -64,7 +67,8 @@ public class test {
 //		calendarDatabaseDate.add(Calendar.HOUR, 1);
 //		
 //		System.out.print(calendarCurrentDate.after(calendarDatabaseDate));
-		System.out.print(new Date());
+		test t = new test();
+		System.out.print(t.De("TPE63c9UUKFJZPKRLlrsZA=="));
 
 	}
 //	public static String bytesToHex(byte[] bytes) {
@@ -74,5 +78,19 @@ public class test {
 //        }
 //        return hexString.toString();
 //    }
+	public String De(String data) {
+		try {
+            byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding"); // Use the same padding mode as in encryption
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(data));
+            return new String(decryptedBytes, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+	}
 
 }
