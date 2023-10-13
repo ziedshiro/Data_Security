@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2023 at 10:01 AM
+-- Generation Time: Oct 13, 2023 at 07:15 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -1039,6 +1039,15 @@ CREATE TABLE `product` (
   `updatedate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`product_id`, `name`, `description`, `expiry_date`, `type_id`, `price`, `discount_price`, `quantity_available`, `img_product`, `store_id`, `isactive`, `createdate`, `updatedate`) VALUES
+('1x69KkAiYAT8R8hVdG7O', 'test', 'dsadsa', '2023-10-13 05:35:27', 1, 12.50, 10.50, 5, 'a6779b14-5def-47ae-8821-df8e6815dee0.png', 'kklcldlvvfvf', 1, '2023-10-12 22:45:27', NULL),
+('ac06060d-a047-4333-b58c-504b4ca2905d', 'test', 'dsadsa', '2023-10-13 05:35:27', 1, 12.50, 10.50, 5, 'db7c550f-a753-4fb9-b585-d9b34061ad01.png', 'kklcldlvvfvf', 1, '2023-10-12 22:48:47', '2023-10-12 23:56:09'),
+('d323f69c-8442-4599-8555-1fe23e18d063', 'test', 'dsadsa', '2023-10-13 05:35:27', 1, 12.50, 10.50, 5, '6cb72c2e-3bd0-433c-ae19-195e276a59a9.png', 'kklcldlvvfvf', 1, '2023-10-12 23:54:59', '2023-10-13 00:35:14');
+
 -- --------------------------------------------------------
 
 --
@@ -1138,21 +1147,6 @@ INSERT INTO `provinces` (`id`, `code`, `name_in_thai`, `name_in_english`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `review`
---
-
-CREATE TABLE `review` (
-  `review_id` varchar(100) NOT NULL,
-  `user_id` varchar(200) NOT NULL,
-  `store_id` varchar(100) NOT NULL,
-  `rating` int(11) NOT NULL,
-  `comment` text DEFAULT NULL,
-  `createdate` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `store`
 --
 
@@ -1168,8 +1162,16 @@ CREATE TABLE `store` (
   `img_store` text NOT NULL,
   `store_open` time NOT NULL,
   `store_close` time NOT NULL,
-  `user_id` varchar(200) NOT NULL
+  `user_id` varchar(200) NOT NULL,
+  `rating` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `store`
+--
+
+INSERT INTO `store` (`store_id`, `name`, `address`, `latitude`, `longitude`, `district_id`, `subdistrict_id`, `province_id`, `img_store`, `store_open`, `store_close`, `user_id`, `rating`) VALUES
+('kklcldlvvfvf', '247', '-', NULL, NULL, 750, 5996, 1, '-', '08:00:00', '21:00:00', 'xp4YRwzZj5ierSI64cpIog==', 0);
 
 -- --------------------------------------------------------
 
@@ -8603,7 +8605,7 @@ CREATE TABLE `user` (
   `password` varchar(1000) NOT NULL,
   `salt` varchar(1000) NOT NULL,
   `role` enum('customer','store owner','administrator','') NOT NULL,
-  `last_login_timestamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_login_timestamp` datetime DEFAULT NULL,
   `account_lock_status` tinyint(1) DEFAULT NULL,
   `attempt_login` int(11) DEFAULT NULL,
   `attempt_time_login` datetime DEFAULT NULL,
@@ -8616,7 +8618,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `role`, `last_login_timestamp`, `account_lock_status`, `attempt_login`, `attempt_time_login`, `two_factor_authentication_enabled`, `code_two_factor_authentication`) VALUES
-('EoQvbrGqRB2QsRrHk1xPTg==', 'WYae4u11QGPNlPviVAyrbw==', 'WYae4u11QGPNlPviVAyrbw==', 'fb03f5432b8f3f9c81800de673c7d12024e023d99768816e61d643fdf5b5d14b', '5yMC5Uq2T8x3M+i71kJPoQ==', 'customer', NULL, 0, 0, NULL, 1, '1234');
+('xp4YRwzZj5ierSI64cpIog==', 'MLj63wvd3eCKUZZCvIX8Dg==', 'MLj63wvd3eCKUZZCvIX8Dg==', '28511cb1b5bb2eb7abacd0972a051889b7ede80ca95f1d46fd6159544fdd9fa5', 'CEcTXGXh03qGA5lGWkbDUA==', 'customer', '2023-10-12 23:48:44', 0, 0, NULL, 1, '1234'),
+('YMMszApZtPBEmptv9N3Nsw==', 'SKTdYPnY9oHHJXekrRRcVw==', 'w3Bn29AdZbIEMtYJ7YfYOQ==', '5b4deaf39a72104ac3767fc2ac23624e3cfe9e30ad5c57bf59621c8aa030de74', 'ELvEtHm/P8+wOiMe+3EOng==', 'customer', '2023-10-13 13:52:18', 0, 0, NULL, 1, '2C7XO6KILILRFTZVDP7SFR753JQI3TLH');
 
 --
 -- Indexes for dumped tables
@@ -8667,14 +8670,6 @@ ALTER TABLE `product`
 ALTER TABLE `provinces`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ux_provinces_code` (`code`) USING BTREE;
-
---
--- Indexes for table `review`
---
-ALTER TABLE `review`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `userID` (`user_id`),
-  ADD KEY `storeID` (`store_id`);
 
 --
 -- Indexes for table `store`
@@ -8771,13 +8766,6 @@ ALTER TABLE `orders`
 ALTER TABLE `product`
   ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `type` (`type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `product_ibfk_3` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `review`
---
-ALTER TABLE `review`
-  ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `review_ibfk_2` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `store`

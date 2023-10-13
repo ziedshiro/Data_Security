@@ -1,6 +1,7 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,13 +36,14 @@ public class FavouriteController {
 	@Autowired
 	private UserServices userservice;
 	
-	@PostMapping("/auth/product")
+	@PostMapping("/auth/favorite")
 	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(username);
 		if(user!=null) {
+			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
 			favouriteservice.save(favourite);		
 			return new Response(HttpStatus.OK,"Favourite!");
@@ -49,7 +51,7 @@ public class FavouriteController {
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
-	@DeleteMapping("/auth/product/{id}")
+	@DeleteMapping("/auth/favorite/{id}")
 	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);

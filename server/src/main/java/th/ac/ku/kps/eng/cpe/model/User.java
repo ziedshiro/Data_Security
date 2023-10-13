@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
+// Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -27,7 +27,6 @@ public class User implements java.io.Serializable {
 	private Date attemptTimeLogin;
 	private Boolean twoFactorAuthenticationEnabled;
 	private String codeTwoFactorAuthentication;
-	@JsonIgnore private Set reviews = new HashSet(0);
 	@JsonIgnore private Set orderses = new HashSet(0);
 	@JsonIgnore private Set favourites = new HashSet(0);
 	@JsonIgnore private Set stores = new HashSet(0);
@@ -43,8 +42,6 @@ public class User implements java.io.Serializable {
 		this.salt = salt;
 		this.role = role;
 	}
-	
-	
 
 	public User(String userId, String firstname, String lastname, String password, String salt, String role,
 			Date lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Date attemptTimeLogin,
@@ -66,8 +63,8 @@ public class User implements java.io.Serializable {
 
 	public User(String userId, String firstname, String lastname, String password, String salt, String role,
 			Date lastLoginTimestamp, Boolean accountLockStatus, Integer attemptLogin, Date attemptTimeLogin,
-			Boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication, Set reviews, Set orderses,
-			Set favourites, Set stores) {
+			Boolean twoFactorAuthenticationEnabled, String codeTwoFactorAuthentication, Set orderses, Set favourites,
+			Set stores) {
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -80,7 +77,6 @@ public class User implements java.io.Serializable {
 		this.attemptTimeLogin = attemptTimeLogin;
 		this.twoFactorAuthenticationEnabled = twoFactorAuthenticationEnabled;
 		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
-		this.reviews = reviews;
 		this.orderses = orderses;
 		this.favourites = favourites;
 		this.stores = stores;
@@ -138,8 +134,8 @@ public class User implements java.io.Serializable {
 		return this.lastLoginTimestamp;
 	}
 
-	public void setLastLoginTimestamp(Date date) {
-		this.lastLoginTimestamp = date;
+	public void setLastLoginTimestamp(Date lastLoginTimestamp) {
+		this.lastLoginTimestamp = lastLoginTimestamp;
 	}
 
 	public Boolean getAccountLockStatus() {
@@ -180,14 +176,6 @@ public class User implements java.io.Serializable {
 
 	public void setCodeTwoFactorAuthentication(String codeTwoFactorAuthentication) {
 		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
-	}
-
-	public Set getReviews() {
-		return this.reviews;
-	}
-
-	public void setReviews(Set reviews) {
-		this.reviews = reviews;
 	}
 
 	public Set getOrderses() {

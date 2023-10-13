@@ -1,5 +1,5 @@
 package th.ac.ku.kps.eng.cpe.model;
-// Generated Oct 11, 2023, 2:55:47 PM by Hibernate Tools 6.1.7.Final
+// Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final
 
 import java.sql.Time;
 import java.util.HashSet;
@@ -26,15 +26,15 @@ public class Store implements java.io.Serializable {
 	private String imgStore;
 	private Time storeOpen;
 	private Time storeClose;
+	private int rating;
 	@JsonIgnore private Set favourites = new HashSet(0);
 	@JsonIgnore private Set products = new HashSet(0);
-	@JsonIgnore private Set reviews = new HashSet(0);
 
 	public Store() {
 	}
 
 	public Store(String storeId, User user, Districts districts, Provinces provinces, Subdistricts subdistricts,
-			String name, String address, String imgStore, Time storeOpen, Time storeClose) {
+			String name, String address, String imgStore, Time storeOpen, Time storeClose, int rating) {
 		this.storeId = storeId;
 		this.user = user;
 		this.districts = districts;
@@ -45,11 +45,12 @@ public class Store implements java.io.Serializable {
 		this.imgStore = imgStore;
 		this.storeOpen = storeOpen;
 		this.storeClose = storeClose;
+		this.rating = rating;
 	}
 
 	public Store(String storeId, User user, Districts districts, Provinces provinces, Subdistricts subdistricts,
 			String name, String address, Integer latitude, Integer longitude, String imgStore, Time storeOpen,
-			Time storeClose, Set favourites, Set products, Set reviews) {
+			Time storeClose, int rating, Set favourites, Set products) {
 		this.storeId = storeId;
 		this.user = user;
 		this.districts = districts;
@@ -62,9 +63,9 @@ public class Store implements java.io.Serializable {
 		this.imgStore = imgStore;
 		this.storeOpen = storeOpen;
 		this.storeClose = storeClose;
+		this.rating = rating;
 		this.favourites = favourites;
 		this.products = products;
-		this.reviews = reviews;
 	}
 
 	public String getStoreId() {
@@ -163,6 +164,14 @@ public class Store implements java.io.Serializable {
 		this.storeClose = storeClose;
 	}
 
+	public int getRating() {
+		return this.rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
 	public Set getFavourites() {
 		return this.favourites;
 	}
@@ -177,14 +186,6 @@ public class Store implements java.io.Serializable {
 
 	public void setProducts(Set products) {
 		this.products = products;
-	}
-
-	public Set getReviews() {
-		return this.reviews;
-	}
-
-	public void setReviews(Set reviews) {
-		this.reviews = reviews;
 	}
 
 }

@@ -3,6 +3,7 @@ package th.ac.ku.kps.eng.cpe.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
+import th.ac.ku.kps.eng.cpe.response.Response;
 import th.ac.ku.kps.eng.cpe.service.StoreServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
@@ -43,13 +45,14 @@ public class StoreController {
 	
 	@GetMapping("/auth/store")
 	public Store storeByOwner(@RequestHeader("Authorization") String token) {
-		
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(username);
-		
-		return storeservice.findByOwner(user);
+		if(user != null && user.getRole().equals("store owner")) {
+			return storeservice.findByOwner(user);
+		}
+		return null;
 	}
 	
 	@GetMapping("/store/{districtId}/{subdistrictId}/{provinceId}")
