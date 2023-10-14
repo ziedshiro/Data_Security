@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
+import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.repository.OrderitemRepository;
 
 @Service
@@ -19,6 +20,14 @@ public class OrderitemServices {
 	
 	public List<Orderitem> findByOrderId(String id){
 		return (List<Orderitem>) orderitemrepository.findByOrderId(id);
+	}
+	
+	public List<Orderitem> findByUser(User user){
+		return (List<Orderitem>) orderitemrepository.findByUser(user);
+	}
+	
+	public List<Orderitem> findCartByUser(User user){
+		return (List<Orderitem>) orderitemrepository.findCartByUser(user);
 	}
 	
 	public Orderitem findById(int id) {

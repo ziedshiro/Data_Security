@@ -16,6 +16,7 @@ import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.Response;
+import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.StoreServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
@@ -33,6 +34,9 @@ public class StoreController {
 	@Autowired
 	private UserServices userservice;
 	
+	@Autowired
+	private EncryptionServices encryptionservice;
+	
 	@GetMapping("/store")
 	public List<Store> all(){
 		return storeservice.findAll();
@@ -44,11 +48,11 @@ public class StoreController {
 	}
 	
 	@GetMapping("/auth/store")
-	public Store storeByOwner(@RequestHeader("Authorization") String token) {
+	public Store storeByOwner(@RequestHeader("Authorization") String token) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user != null && user.getRole().equals("store owner")) {
 			return storeservice.findByOwner(user);
 		}

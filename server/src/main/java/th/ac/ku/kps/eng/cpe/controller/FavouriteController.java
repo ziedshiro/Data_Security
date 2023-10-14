@@ -19,6 +19,7 @@ import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Favourite;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.Response;
+import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.FavouriteServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
@@ -36,15 +37,19 @@ public class FavouriteController {
 	@Autowired
 	private UserServices userservice;
 	
+	@Autowired
+	private EncryptionServices encryptionservice;
+	
 	@PostMapping("/auth/favorite")
-	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
+			favourite.setUser(user);
 			favouriteservice.save(favourite);		
 			return new Response(HttpStatus.OK,"Favourite!");
 		}
@@ -52,11 +57,11 @@ public class FavouriteController {
 	}
 	
 	@DeleteMapping("/auth/favorite/{id}")
-	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) {
+	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			Favourite favourite = favouriteservice.findById(id);
 			favouriteservice.delete(favourite);		

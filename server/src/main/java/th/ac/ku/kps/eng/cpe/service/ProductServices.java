@@ -17,6 +17,10 @@ public class ProductServices {
 		return (List<Product>) productpository.findAll();
 	}
 	
+	public List<Product> findByTypeId(int id){
+		return (List<Product>) productpository.findBytTypeId(id);
+	}
+	
 	public Product findById(String id) {
 		return productpository.findBytId(id);
 	}

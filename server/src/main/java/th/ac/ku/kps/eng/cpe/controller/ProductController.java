@@ -1,6 +1,5 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +25,7 @@ import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Product;
 import th.ac.ku.kps.eng.cpe.model.User;
+import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.ProductServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 import th.ac.ku.kps.eng.cpe.util.FileUploadUtil;
@@ -44,9 +44,17 @@ public class ProductController {
 	@Autowired
 	private UserServices userservice;
 	
+	@Autowired
+	private EncryptionServices encryptionservice;
+	
 	@GetMapping("/product")
 	public List<Product> getAll(){
 		return productservice.findAll();
+	}
+	
+	@GetMapping("/product/type/{id}")
+	public List<Product> getByTypeId(@PathVariable("id")int id){
+		return productservice.findByTypeId(id);
 	}
 	
 	@GetMapping("/product/{id}")
@@ -55,11 +63,11 @@ public class ProductController {
 	}
 	
 	@PostMapping("/auth/product")
-	public Response create(@RequestHeader("Authorization") String token,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws IOException {
+	public Response create(@RequestHeader("Authorization") String token,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user != null) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			Product product = objectMapper.readValue(productJson, Product.class);
@@ -79,11 +87,11 @@ public class ProductController {
 	}
 	
 	@PutMapping("/auth/product/{id}")
-	public Response update(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws IOException {
+	public Response update(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user != null) {
 			Product product = productservice.findById(id);
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -96,7 +104,6 @@ public class ProductController {
 			product.setPrice(productObj.getPrice());
 			product.setDiscountPrice(productObj.getDiscountPrice());
 			product.setQuantityAvailable(productObj.getQuantityAvailable());
-			product.setStore(productObj.getStore());
 			product.setUpdatedate(new Date());
 			
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -114,11 +121,11 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/auth/product/{id}")
-	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) {
+	public Response delete(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			Product product = productservice.findById(id);
 			productservice.delete(product);	
