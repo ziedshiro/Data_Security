@@ -21,4 +21,7 @@ public interface OrderitemRepository extends CrudRepository<Orderitem, Integer> 
 	@Query("from Orderitem oi inner join oi.orders o where o.user = :user and o.orderStatus = 'Cart'")
 	public List<Orderitem> findCartByUser(@Param("user")User user);
 	
+	@Query("from Orderitem oi where oi.orderItemId = :orderItemId")
+	public Orderitem findById(@Param("orderItemId") String orderItemId);
+	
 }

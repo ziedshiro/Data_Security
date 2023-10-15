@@ -56,12 +56,36 @@ public class OrderController {
 		return null;
 	}
 	
-	@PostMapping("/auth/order/{id}")
-	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	@GetMapping("/auth/payment")
+	public List<Orders> getPayment(@RequestHeader("Authorization") String token) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null) {
+			return orderservice.findPayment();
+		}
+		return null;
+	}
+	
+	@GetMapping("/auth/pickup")
+	public List<Orders> getPickup(@RequestHeader("Authorization") String token) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null) {
+			return orderservice.findPickup();
+		}
+		return null;
+	}
+	
+	@PostMapping("/auth/order/{id}")
+	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
@@ -72,11 +96,11 @@ public class OrderController {
 	}
 	
 	@PutMapping("/auth/order/{id}")
-	public Response check(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response check(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
@@ -87,11 +111,11 @@ public class OrderController {
 	}
 	
 	@PutMapping("/auth/pay/{id}")
-	public Response pay(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response pay(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
@@ -102,11 +126,11 @@ public class OrderController {
 	}
 	
 	@PutMapping("/auth/pay/approve/{id}")
-	public Response payApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response payApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
@@ -117,11 +141,11 @@ public class OrderController {
 	}
 	
 	@PutMapping("/auth/pickup/{id}")
-	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
@@ -132,11 +156,11 @@ public class OrderController {
 	}
 	
 	@PutMapping("/auth/pickup/approve/{id}")
-	public Response pickupApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) {
+	public Response pickupApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(username);
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());

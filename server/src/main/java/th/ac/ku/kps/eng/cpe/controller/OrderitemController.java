@@ -1,11 +1,19 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
+import th.ac.ku.kps.eng.cpe.model.Orders;
+import th.ac.ku.kps.eng.cpe.model.Product;
 import th.ac.ku.kps.eng.cpe.model.User;
+import th.ac.ku.kps.eng.cpe.response.Response;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
+import th.ac.ku.kps.eng.cpe.service.OrdersServices;
+import th.ac.ku.kps.eng.cpe.service.ProductServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
 @RestController
@@ -34,6 +47,12 @@ public class OrderitemController {
 	
 	@Autowired
 	private EncryptionServices encryptionservice;
+	
+	@Autowired
+	private OrdersServices orderservice;
+	
+	@Autowired
+	private ProductServices productservice;
 	
 	@GetMapping("/auth/orderitem")
 	public List<Orderitem> getByUser(@RequestHeader("Authorization") String token) throws Exception {
@@ -69,5 +88,81 @@ public class OrderitemController {
 			return orderitemservice.findCartByUser(user);
 		}
 		return null;
+	}
+	
+	@PostMapping("/auth/orderitem/{id}")
+	public Response addeOrderItem(@RequestHeader("Authorization") String token,@RequestBody Orderitem orderitem,@PathVariable("id") String id) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null) {
+			Orders order = orderservice.findCartByUser(user);
+			Product product = productservice.findById(id);
+			BigDecimal subTotal = new BigDecimal(0);
+			
+			Date timeOpen = product.getStore().getStoreOpen();
+			Date timeClose = product.getStore().getStoreClose();
+			Date timeCurrent = new Date();
+			
+			if (timeCurrent.getHours()>=timeClose.getHours()-1) {
+				subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitem.getQuantity()));
+			} else {
+				subTotal = product.getPrice().multiply(new BigDecimal(orderitem.getQuantity()));				
+			}
+			
+			if(order != null) {
+				order.setTotalAmount(order.getTotalAmount().add(subTotal));
+				orderservice.save(order);
+				
+				orderitem.setOrders(order);
+			}else {
+				Orders o = new Orders(UUID.randomUUID().toString(),
+					user,
+					new Date(),
+					"Cart",
+					subTotal,null,null,null,null,null,null,
+					new Date(),null	
+				);
+				orderservice.save(o);
+				
+				orderitem.setOrders(o);
+			}
+			
+			orderitem.setOrderItemId(UUID.randomUUID().toString());
+			orderitem.setProduct(product);
+			orderitem.setOrders(order);
+			orderitem.setSubtotal(subTotal);
+			orderitem.setCreatedate(new Date());
+			
+			orderitemservice.save(orderitem);
+			return new Response(HttpStatus.OK,"Created");
+		}
+		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
+		
+	}
+	
+	@DeleteMapping("/auth/orderitem/{id}")
+	public Response deleteOrderItem(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null) {
+			Orders order = orderservice.findCartByUser(user);
+			List<Orderitem> list = orderitemservice.findByUser(user);
+			if(list.size() == 1) {
+				orderservice.deleteById(order);
+			}
+			Orderitem orderitem = orderitemservice.findById(id);
+			order.setTotalAmount(order.getTotalAmount().subtract(orderitem.getSubtotal()));
+			order.setUpdatedate(new Date());
+			orderservice.save(order);
+			
+			orderitemservice.deleteById(orderitem);
+			return new Response(HttpStatus.OK,"Delted");
+		}
+		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
+		
 	}
 }

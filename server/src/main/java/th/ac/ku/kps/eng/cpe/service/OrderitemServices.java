@@ -30,15 +30,15 @@ public class OrderitemServices {
 		return (List<Orderitem>) orderitemrepository.findCartByUser(user);
 	}
 	
-	public Orderitem findById(int id) {
-		return orderitemrepository.findById(id).orElse(null);
+	public Orderitem findById(String id) {
+		return orderitemrepository.findById(id);
 	}
 	
 	public Orderitem save(Orderitem orderitem) {
 		return orderitemrepository.save(orderitem);
 	}
 	
-	public void deleteById(int id) {
-		orderitemrepository.deleteById(id);
+	public void deleteById(Orderitem orderitem) {
+		orderitemrepository.delete(orderitem);
 	}
 }

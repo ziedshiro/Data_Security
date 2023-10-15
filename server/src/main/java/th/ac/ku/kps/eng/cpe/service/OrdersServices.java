@@ -22,6 +22,14 @@ public class OrdersServices {
 		return (List<Orders>) ordersrepository.findByUser(user);
 	}
 	
+	public List<Orders> findPayment(){
+		return (List<Orders>) ordersrepository.findPayment();
+	}
+	
+	public List<Orders> findPickup(){
+		return (List<Orders>) ordersrepository.findPickup();
+	}
+	
 	public Orders findCartByUser(User user){
 		return  ordersrepository.findCartByUser(user);
 	}
@@ -38,7 +46,7 @@ public class OrdersServices {
 		return ordersrepository.save(orders);
 	}
 	
-	public void deleteById(int id) {
-		ordersrepository.deleteById(id);
+	public void deleteById(Orders order) {
+		ordersrepository.delete(order);
 	}
 }
