@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 13, 2023 at 07:15 PM
+-- Generation Time: Oct 15, 2023 at 06:11 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -976,8 +976,8 @@ INSERT INTO `districts` (`id`, `code`, `name_in_thai`, `name_in_english`, `provi
 --
 
 CREATE TABLE `favourite` (
-  `favourite_id` varchar(100) NOT NULL,
-  `store_id` varchar(100) NOT NULL,
+  `favourite_id` varchar(200) NOT NULL,
+  `store_id` varchar(200) NOT NULL,
   `user_id` varchar(200) NOT NULL,
   `createdate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -989,10 +989,11 @@ CREATE TABLE `favourite` (
 --
 
 CREATE TABLE `orderitem` (
-  `orderItem_id` varchar(100) NOT NULL,
-  `order_id` varchar(100) NOT NULL,
-  `product_id` varchar(100) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `orderItem_id` varchar(200) NOT NULL,
+  `order_id` varchar(200) NOT NULL,
+  `product_id` varchar(200) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `Subtotal` decimal(11,2) DEFAULT NULL,
   `createdate` datetime NOT NULL,
   `updatedate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1004,13 +1005,15 @@ CREATE TABLE `orderitem` (
 --
 
 CREATE TABLE `orders` (
-  `order_id` varchar(100) NOT NULL,
+  `order_id` varchar(200) NOT NULL,
   `user_id` varchar(200) NOT NULL,
   `order_date` datetime DEFAULT NULL,
   `order_status` enum('Failed','Cart','Pending','Success') NOT NULL,
+  `TotalAmount` decimal(11,2) DEFAULT NULL,
   `filepath` text DEFAULT NULL,
   `payment_date` datetime DEFAULT NULL,
   `payment_status` enum('Failed','Pending','Success','') DEFAULT NULL,
+  `pickup_code` varchar(200) DEFAULT NULL,
   `pickup_date` datetime DEFAULT NULL,
   `pickup_status` enum('Failed','Pending','Received','') DEFAULT NULL,
   `createdate` datetime NOT NULL,
@@ -1024,7 +1027,7 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `product` (
-  `product_id` varchar(100) NOT NULL,
+  `product_id` varchar(200) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `expiry_date` datetime NOT NULL,
@@ -1033,7 +1036,7 @@ CREATE TABLE `product` (
   `discount_price` decimal(11,2) DEFAULT NULL,
   `quantity_available` int(11) NOT NULL,
   `img_product` text NOT NULL,
-  `store_id` varchar(100) NOT NULL,
+  `store_id` varchar(200) NOT NULL,
   `isactive` tinyint(1) NOT NULL,
   `createdate` datetime NOT NULL,
   `updatedate` datetime DEFAULT NULL
@@ -1151,8 +1154,8 @@ INSERT INTO `provinces` (`id`, `code`, `name_in_thai`, `name_in_english`) VALUES
 --
 
 CREATE TABLE `store` (
-  `store_id` varchar(100) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `store_id` varchar(200) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `address` text NOT NULL,
   `latitude` int(11) DEFAULT NULL,
   `longitude` int(11) DEFAULT NULL,
