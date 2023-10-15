@@ -21,7 +21,6 @@ import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.QRCodeResponse;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
-import th.ac.ku.kps.eng.cpe.service.OrdersServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 
 @RestController
@@ -41,8 +40,8 @@ public class PaymentController {
 	@Autowired
 	private UserServices userservice;
 	
-	@PostMapping("auth/createqrcode/{id}")
-	public QRCodeResponse createQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")String id) throws Exception {
+	@PostMapping("auth/generateqrcode/{id}")
+	public QRCodeResponse generateQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");

@@ -12,13 +12,13 @@ import th.ac.ku.kps.eng.cpe.model.User;
 
 @Repository
 public interface OrderitemRepository extends CrudRepository<Orderitem, Integer> {
-	@Query("from Orderitem as o where o.orders.orderId = :orderId")
+	@Query("from Orderitem oi inner join oi.orders o where o.orderId = :orderId")
 	public List<Orderitem> findByOrderId(@Param("orderId") String orderId);
 	
-	@Query("from Orderitem as o where o.orders.user = :user")
+	@Query("from Orderitem oi inner join oi.orders o where o.user = :user")
 	public List<Orderitem> findByUser(@Param("user") User user);
 	
-	@Query("from Orderitem as o where o.orders.user = :user and o.orders.status = 'Cart'")
+	@Query("from Orderitem oi inner join oi.orders o where o.user = :user and o.orderStatus = 'Cart'")
 	public List<Orderitem> findCartByUser(@Param("user")User user);
 	
 }

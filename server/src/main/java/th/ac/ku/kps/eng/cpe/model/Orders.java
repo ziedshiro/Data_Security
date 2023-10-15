@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Orders implements java.io.Serializable {
 
 	private String orderId;
-	private User user;
+	@JsonIgnore private User user;
 	private Date orderDate;
 	private String orderStatus;
 	private String filepath;
