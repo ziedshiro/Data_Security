@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 15, 2023, 11:09:00 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Product" optimistic-lock="none" table="product">
         <id name="productId" type="string">
-            <column length="100" name="product_id"/>
+            <column length="200" name="product_id"/>
             <generator class="assigned"/>
         </id>
         <many-to-one class="th.ac.ku.kps.eng.cpe.model.Store" fetch="select" name="store">
-            <column length="100" name="store_id" not-null="true"/>
+            <column length="200" name="store_id" not-null="true"/>
         </many-to-one>
         <many-to-one class="th.ac.ku.kps.eng.cpe.model.Type" fetch="select" name="type">
             <column name="type_id" not-null="true"/>
@@ -44,7 +44,7 @@
         </property>
         <set fetch="select" inverse="true" lazy="true" name="orderitems" table="orderitem">
             <key>
-                <column length="100" name="product_id" not-null="true"/>
+                <column length="200" name="product_id" not-null="true"/>
             </key>
             <one-to-many class="th.ac.ku.kps.eng.cpe.model.Orderitem"/>
         </set>

@@ -1,6 +1,7 @@
 package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -16,18 +17,20 @@ public class Orderitem implements java.io.Serializable {
 	private Product product;
 	private Orders orders;
 	private int quantity;
+	private BigDecimal subtotal;
 	private Date createdate;
 	private Date updatedate;
 
 	public Orderitem() {
 	}
 
-	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, Date createdate,
+	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, BigDecimal subtotal, Date createdate,
 			Date updatedate) {
 		this.orderItemId = orderItemId;
 		this.product = product;
 		this.orders = orders;
 		this.quantity = quantity;
+		this.setSubtotal(subtotal);
 		this.createdate = createdate;
 		this.updatedate = updatedate;
 	}
@@ -78,6 +81,14 @@ public class Orderitem implements java.io.Serializable {
 
 	public void setUpdatedate(Date updatedate) {
 		this.updatedate = updatedate;
+	}
+
+	public BigDecimal getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(BigDecimal subtotal) {
+		this.subtotal = subtotal;
 	}
 
 }

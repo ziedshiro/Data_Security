@@ -1,6 +1,7 @@
 package th.ac.ku.kps.eng.cpe.model;
 // Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,9 +20,11 @@ public class Orders implements java.io.Serializable {
 	@JsonIgnore private User user;
 	private Date orderDate;
 	private String orderStatus;
+	private BigDecimal totalAmount;
 	private String filepath;
 	private Date paymentDate;
 	private String paymentStatus;
+	private String pickupCode;
 	private Date pickupDate;
 	private String pickupStatus;
 	private Date createdate;
@@ -38,21 +41,22 @@ public class Orders implements java.io.Serializable {
 		this.createdate = createdate;
 	}
 
-	public Orders(String orderId, User user, Date orderDate, String orderStatus, String filepath,
-			Date paymentDate, String paymentStatus, Date pickupDate, String pickupStatus,
-			Date createdate, Date updatedate, Set orderitems) {
+	public Orders(String orderId, User user, Date orderDate, String orderStatus, BigDecimal totalAmount,
+			String filepath, Date paymentDate, String paymentStatus, String pickupCode, Date pickupDate,
+			String pickupStatus, Date createdate, Date updatedate) {
 		this.orderId = orderId;
 		this.user = user;
 		this.orderDate = orderDate;
 		this.orderStatus = orderStatus;
+		this.totalAmount = totalAmount;
 		this.filepath = filepath;
 		this.paymentDate = paymentDate;
 		this.paymentStatus = paymentStatus;
+		this.pickupCode = pickupCode;
 		this.pickupDate = pickupDate;
 		this.pickupStatus = pickupStatus;
 		this.createdate = createdate;
 		this.updatedate = updatedate;
-		this.orderitems = orderitems;
 	}
 
 	public String getOrderId() {
@@ -149,6 +153,22 @@ public class Orders implements java.io.Serializable {
 
 	public void setOrderitems(Set orderitems) {
 		this.orderitems = orderitems;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getPickupCode() {
+		return pickupCode;
+	}
+
+	public void setPickupCode(String pickupCode) {
+		this.pickupCode = pickupCode;
 	}
 
 }

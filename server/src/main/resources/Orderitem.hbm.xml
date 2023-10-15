@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 14, 2023, 12:18:28 AM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 15, 2023, 11:09:00 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Orderitem" optimistic-lock="none" table="orderitem">
         <id name="orderItemId" type="string">
-            <column length="100" name="orderItem_id"/>
+            <column length="200" name="orderItem_id"/>
             <generator class="assigned"/>
         </id>
         <many-to-one class="th.ac.ku.kps.eng.cpe.model.Product" fetch="select" name="product">
-            <column length="100" name="product_id" not-null="true"/>
+            <column length="200" name="product_id" not-null="true"/>
         </many-to-one>
         <many-to-one class="th.ac.ku.kps.eng.cpe.model.Orders" fetch="select" name="orders">
-            <column length="100" name="order_id" not-null="true"/>
+            <column length="200" name="order_id" not-null="true"/>
         </many-to-one>
-        <property name="quantity" type="int">
-            <column name="quantity" not-null="true"/>
+        <property name="quantity" type="java.lang.Integer">
+            <column name="quantity"/>
+        </property>
+        <property name="subtotal" type="big_decimal">
+            <column name="Subtotal" precision="11" scale="2"/>
         </property>
         <property name="createdate" type="timestamp">
             <column length="19" name="createdate" not-null="true"/>

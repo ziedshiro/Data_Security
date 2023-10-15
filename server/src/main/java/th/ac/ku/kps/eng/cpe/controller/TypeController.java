@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import th.ac.ku.kps.eng.cpe.service.TypeServices;
 import th.ac.ku.kps.eng.cpe.model.Type;
+import th.ac.ku.kps.eng.cpe.service.TypeServices;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
