@@ -22,12 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
-import th.ac.ku.kps.eng.cpe.model.Favourite;
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
 import th.ac.ku.kps.eng.cpe.model.Orders;
 import th.ac.ku.kps.eng.cpe.model.Product;
 import th.ac.ku.kps.eng.cpe.model.User;
-import th.ac.ku.kps.eng.cpe.response.OrderResponse;
 import th.ac.ku.kps.eng.cpe.response.Response;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
@@ -95,7 +93,7 @@ public class OrderController {
 		return null;
 	}
 	
-	@PutMapping("/auth/payment/{id}")
+	@PostMapping("/auth/payment/{id}")
 	public Response pay(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
@@ -135,47 +133,55 @@ public class OrderController {
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
-	@PutMapping("/auth/payment/approve/{id}")
-	public Response payApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
+	@PutMapping("/auth/payment/{id}")
+	public Response payApprove(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody,@PathVariable("id")String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
+			Orders order = orderservice.findById(id);
+			if(orderBody.getPaymentStatus().equals("Approve")) {
+				order.setPaymentStatus("Approve");
+				order.setPickupCode(UUID.randomUUID().toString());
+				order.setPickupStatus("Pending");
+			}
+			else if(orderBody.getPaymentStatus().equals("Reject")) {
+				order.setOrderStatus("Failed");
+				order.setPaymentStatus("Reject");
+				List<Orderitem> orderItems = orderitemservice.findByOrderId(id);
+				for (Orderitem orderItem : orderItems) {
+	                Product product = orderItem.getProduct();
+	                int orderedQuantity = orderItem.getQuantity();
+	                product.setQuantityAvailable(product.getQuantityAvailable() + orderedQuantity);
+	                productservice.save(product);
+	            }
+			}
+			order.setUpdatedate(new Date());
+			orderservice.save(order);
+			
+			return new Response(HttpStatus.OK,"Updated!");
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
 	@PutMapping("/auth/pickup/{id}")
-	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
+	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody,@PathVariable("id")String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
-		}
-		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
-	}
-	
-	@PutMapping("/auth/pickup/approve/{id}")
-	public Response pickupApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
-		String jwtToken = token.replace("Bearer ", "");
-		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
-		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
+			Orders order = orderservice.findPickupCode(orderBody.getPickupCode());
+			if(order!=null && !order.getOrderStatus().equals("Success") && !order.getPickupStatus().equals("Received")) {
+				order.setOrderStatus("Success");
+				order.setPickupDate(new Date());
+				order.setPickupStatus("Received");
+				order.setUpdatedate(new Date());
+				orderservice.save(order);
+				return new Response(HttpStatus.OK,"Pick up!");
+			}
+			return new Response(HttpStatus.OK,"Code not match!");
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
