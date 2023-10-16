@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.ac.ku.kps.eng.cpe.model.Product;
+import th.ac.ku.kps.eng.cpe.model.Store;
+import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.repository.ProductRepository;
 
 @Service
@@ -18,11 +20,23 @@ public class ProductServices {
 	}
 	
 	public List<Product> findByTypeId(int id){
-		return (List<Product>) productpository.findBytTypeId(id);
+		return (List<Product>) productpository.findByTypeId(id);
+	}
+	
+	public List<Product> findByStore(Store store){
+		return (List<Product>) productpository.findByStore(store);
+	}
+	
+	public List<Product> findByStoreId(String id){
+		return (List<Product>) productpository.findByStoreId(id);
+	}
+	
+	public List<Product> findByUser(User user){
+		return (List<Product>) productpository.findByUser(user);
 	}
 	
 	public Product findById(String id) {
-		return productpository.findBytId(id);
+		return productpository.findById(id);
 	}
 	
 	public Product save(Product product) {

@@ -62,6 +62,24 @@ public class ProductController {
 		return productservice.findById(id);
 	}
 	
+	@GetMapping("/product/store/{id}")
+	public List<Product> getByOrder(@PathVariable("id")String id){
+		return productservice.findByStoreId(id);
+	}
+	
+	@GetMapping("/auth/product")
+	public List<Product> getByUser(@RequestHeader("Authorization") String token) throws Exception{
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user != null) {
+			return productservice.findByUser(user);
+		} else {
+			return null;
+		}
+	}
+	
 	@PostMapping("/auth/product")
 	public Response create(@RequestHeader("Authorization") String token,@RequestPart("product") String productJson,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");

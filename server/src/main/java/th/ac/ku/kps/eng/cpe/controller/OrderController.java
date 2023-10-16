@@ -1,31 +1,40 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Favourite;
+import th.ac.ku.kps.eng.cpe.model.Orderitem;
 import th.ac.ku.kps.eng.cpe.model.Orders;
+import th.ac.ku.kps.eng.cpe.model.Product;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.OrderResponse;
 import th.ac.ku.kps.eng.cpe.response.Response;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
 import th.ac.ku.kps.eng.cpe.service.OrdersServices;
+import th.ac.ku.kps.eng.cpe.service.ProductServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
+import th.ac.ku.kps.eng.cpe.util.FileUploadUtil;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -40,6 +49,12 @@ public class OrderController {
 	
 	@Autowired
 	private OrdersServices orderservice;
+	
+	@Autowired
+	private OrderitemServices orderitemservice;
+	
+	@Autowired
+	private ProductServices productservice;
 	
 	@Autowired
 	private EncryptionServices encryptionservice;
@@ -80,52 +95,47 @@ public class OrderController {
 		return null;
 	}
 	
-	@PostMapping("/auth/order/{id}")
-	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
+	@PutMapping("/auth/payment/{id}")
+	public Response pay(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
+			Orders order = orderservice.findById(id);
+			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+			
+			if (fileName != null && fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$")) {
+				order.setOrderDate(new Date());
+				order.setOrderStatus("Pending");
+				String img = FileUploadUtil.saveFile(fileName, file);
+				order.setFilepath(img);
+				order.setPaymentDate(new Date());
+				order.setPaymentStatus("Pending");
+				order.setUpdatedate(new Date());
+				List<Orderitem> orderItems = orderitemservice.findByOrderId(id);
+				for (Orderitem orderItem : orderItems) {
+					Product product = orderItem.getProduct();
+					int quantityAvailable = product.getQuantityAvailable();
+		            int orderedQuantity = orderItem.getQuantity();
+		            if (quantityAvailable >= orderedQuantity) {
+		            	product.setQuantityAvailable(quantityAvailable - orderedQuantity);
+		            	productservice.save(product);		            	
+		            } else {
+		            	return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error quantityAvailable not enough");
+		            }
+				}
+				orderservice.save(order);
+				return new Response(HttpStatus.OK,"Success!");
+			}
+			else {
+				return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error img Type!");
+			}
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
-	@PutMapping("/auth/order/{id}")
-	public Response check(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
-		String jwtToken = token.replace("Bearer ", "");
-		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
-		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
-		}
-		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
-	}
-	
-	@PutMapping("/auth/pay/{id}")
-	public Response pay(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
-		String jwtToken = token.replace("Bearer ", "");
-		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
-		String username = (String) claims.get("username");
-		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
-			favourite.setFavouriteId(UUID.randomUUID().toString());
-			favourite.setCreatedate(new Date());
-//			favouriteservice.save(favourite);		
-			return new Response(HttpStatus.OK,"Favourite!");
-		}
-		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
-	}
-	
-	@PutMapping("/auth/pay/approve/{id}")
+	@PutMapping("/auth/payment/approve/{id}")
 	public Response payApprove(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
