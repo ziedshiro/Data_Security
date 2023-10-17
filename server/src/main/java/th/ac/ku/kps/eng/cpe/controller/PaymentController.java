@@ -52,7 +52,7 @@ public class PaymentController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		QRCodeResponse reps = new QRCodeResponse();
-		if (user != null) {
+		if (user != null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findById(id);
 			ThaiQRPromptPay qrcode = new ThaiQRPromptPay.Builder().dynamicQR().creditTransfer().mobileNumber("0955523541").amount(order.getTotalAmount()).build();
 			reps.setResults("data:image/png;base64,"+qrcode.drawToBase64(300, 300));
@@ -73,7 +73,7 @@ public class PaymentController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		QRCodeResponse reps = new QRCodeResponse();
-		if (user != null) {
+		if (user != null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findById(id);
 			QRCodeWriter qrCodeWriter = new QRCodeWriter();
 			BitMatrix bitMatrix = qrCodeWriter.encode(order.getPickupCode(), BarcodeFormat.QR_CODE, 300, 300);

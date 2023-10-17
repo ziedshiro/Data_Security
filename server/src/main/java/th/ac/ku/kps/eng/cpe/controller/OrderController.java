@@ -63,7 +63,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			return orderservice.findByUser(user);
 		}
 		return null;
@@ -75,7 +75,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("administrator")) {
 			return orderservice.findPayment();
 		}
 		return null;
@@ -87,7 +87,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("store owner")) {
 			return orderservice.findPickup();
 		}
 		return null;
@@ -99,7 +99,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findById(id);
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 			
@@ -139,7 +139,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("administrator")) {
 			Orders order = orderservice.findById(id);
 			if(orderBody.getPaymentStatus().equals("Approve")) {
 				order.setPaymentStatus("Approve");
@@ -171,7 +171,7 @@ public class OrderController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("store owner")) {
 			Orders order = orderservice.findPickupCode(orderBody.getPickupCode());
 			if(order!=null && !order.getOrderStatus().equals("Success") && !order.getPickupStatus().equals("Received")) {
 				order.setOrderStatus("Success");

@@ -73,7 +73,7 @@ public class ProductController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user != null) {
+		if(user != null && user.getRole().equals("store owner")) {
 			return productservice.findByUser(user);
 		} else {
 			return null;
@@ -86,7 +86,7 @@ public class ProductController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user != null) {
+		if(user != null && user.getRole().equals("store owner")) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			Product product = objectMapper.readValue(productJson, Product.class);
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -110,7 +110,7 @@ public class ProductController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user != null) {
+		if(user != null && user.getRole().equals("store owner")) {
 			Product product = productservice.findById(id);
 			ObjectMapper objectMapper = new ObjectMapper();
 			Product productObj = objectMapper.readValue(productJson, Product.class);
@@ -144,7 +144,7 @@ public class ProductController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("store owner")) {
 			Product product = productservice.findById(id);
 			productservice.delete(product);	
 			return new Response(HttpStatus.OK,"Deleted");

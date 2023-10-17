@@ -46,7 +46,7 @@ public class FavouriteController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			favourite.setFavouriteId(UUID.randomUUID().toString());
 			favourite.setCreatedate(new Date());
 			favourite.setUser(user);
@@ -62,7 +62,7 @@ public class FavouriteController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			Favourite favourite = favouriteservice.findById(id);
 			favouriteservice.delete(favourite);		
 			return new Response(HttpStatus.OK,"Unfavourite!");

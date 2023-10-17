@@ -63,7 +63,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			return orderitemservice.findByUser(user);
 		}
 		return null;
@@ -75,7 +75,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			return orderitemservice.findByOrderId(id);
 		}
 		return null;
@@ -87,7 +87,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			return orderitemservice.findCartByUser(user);
 		}
 		return null;
@@ -99,7 +99,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findCartByUser(user);
 			Product product = productservice.findById(id);
 			BigDecimal subTotal = new BigDecimal(0);
@@ -165,7 +165,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findCartByUser(user);
 			BigDecimal subTotal = new BigDecimal(0);
 			Orderitem orderitem = orderitemservice.findById(id);
@@ -223,7 +223,7 @@ public class OrderitemController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null) {
+		if(user!=null && user.getRole().equals("customer")) {
 			Orders order = orderservice.findCartByUser(user);
 			List<Orderitem> list = orderitemservice.findByUser(user);
 			Orderitem orderitem = orderitemservice.findById(id);
