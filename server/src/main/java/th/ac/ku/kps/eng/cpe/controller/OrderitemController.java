@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,6 +154,63 @@ public class OrderitemController {
 			}
 			else {
 				return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Time not order!");
+			}
+		}
+		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");	
+	}
+	
+	@PutMapping("/auth/orderitem/{id}")
+	public Response updateOrderItem(@RequestHeader("Authorization") String token,@RequestBody Orderitem orderitemBody,@PathVariable("id") String id) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null) {
+			Orders order = orderservice.findCartByUser(user);
+			BigDecimal subTotal = new BigDecimal(0);
+			Orderitem orderitem = orderitemservice.findById(id);
+			
+			if(orderitem!=null) {
+				Product product = orderitem.getProduct();
+				
+				Date storeOpenDate = product.getStore().getStoreOpen();
+				Date storeCloseDate = product.getStore().getStoreClose();
+				LocalTime storeOpenTime = storeOpenDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+				LocalTime storeCloseTime = storeCloseDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+				LocalTime currentTime = LocalTime.now();
+				LocalTime oneHourBeforeClose = storeCloseTime.minusHours(1);
+				
+				if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
+					if(orderitemBody.getQuantity()<=product.getQuantityAvailable() && orderitemBody.getQuantity()!=0) {
+						if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
+							subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));
+						} else {
+							subTotal = product.getPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));				
+						}
+						
+						order.setTotalAmount(order.getTotalAmount().subtract(orderitem.getSubtotal()));
+						order.setTotalAmount(order.getTotalAmount().add(subTotal));
+						order.setUpdatedate(new Date());
+						orderservice.save(order);
+						
+						orderitem.setOrders(order);
+						orderitem.setSubtotal(subTotal);
+						orderitem.setUpdatedate(new Date());
+						
+						orderitemservice.save(orderitem);
+						return new Response(HttpStatus.OK,"Update");
+					}
+					else {
+						return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"QuantityAvailable not enough");
+					}
+				}
+				else {
+					return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Time not order!");
+				
+				}
+			}
+			else {
+				return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Orderitem not found!");
 			}
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
