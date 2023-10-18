@@ -1,12 +1,14 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +41,20 @@ public class FavouriteController {
 	
 	@Autowired
 	private EncryptionServices encryptionservice;
+	
+	@GetMapping("auth/favorite")
+	public List<Favourite> getByUser(@RequestHeader("Authorization") String token) throws Exception{
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null && user.getRole().equals("customer")) {
+			return favouriteservice.findByUser(user);
+		}
+		else {
+			return null;
+		}
+	}
 	
 	@PostMapping("/auth/favorite")
 	public Response create(@RequestHeader("Authorization") String token,@RequestBody Favourite favourite) throws Exception {

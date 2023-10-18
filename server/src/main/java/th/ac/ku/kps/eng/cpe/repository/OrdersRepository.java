@@ -15,7 +15,7 @@ public interface OrdersRepository extends CrudRepository<Orders, Integer> {
 	@Query("from Orders as o where o.orderId = :orderId")
 	public Orders findById(@Param("orderId") String orderId);
 	
-	@Query("from Orders as o where o.user = :user")
+	@Query("from Orders as o where o.user = :user and o.orderStatus != 'Cart'")
 	public List<Orders> findByUser(@Param("user") User user);
 	
 	@Query("from Orders as o where o.user = :user and o.orderStatus = 'Cart'")

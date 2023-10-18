@@ -69,6 +69,18 @@ public class OrderitemController {
 		return null;
 	}
 	
+	@GetMapping("/auth/orderitem/{id}")
+	public Orderitem getById(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null && user.getRole().equals("customer")) {
+			return orderitemservice.findById(id);
+		}
+		return null;
+	}
+	
 	@GetMapping("/auth/orderitem/order/{id}")
 	public List<Orderitem> getByOrderId(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
