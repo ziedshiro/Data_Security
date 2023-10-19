@@ -26,6 +26,10 @@ public class FavouriteServices {
 		return favouriterepository.findById(id);
 	}
 	
+	public Favourite findByIdStoreAndUser(String id,User user) {
+		return favouriterepository.findByIdStoreAndUser(id, user);
+	}
+	
 	public Favourite save(Favourite favourite) {
 		return favouriterepository.save(favourite);
 	}
