@@ -4,12 +4,14 @@ import ModalMFARegister from "../../components/ModalMFARegister";
 import { useRegisterMutation } from "../../store";
 import * as yup from 'yup';
 import { Navbar } from "@material-tailwind/react";
+import Swal from "sweetalert2";
 
 
 function Register() {
     const [ registerCheck ] = useRegisterMutation();
     const [onOpen,setOnOpen] = useState(false);
     const [userData,setUserData] = useState<any>([]);
+    const [spin,setSpin] = useState(false);
 
     const validationSchema = yup.object().shape({
         userId: yup
@@ -48,19 +50,31 @@ function Register() {
         validationSchema: validationSchema,
         validateOnBlur:false,
         validateOnChange:false,
-        onSubmit: async (values) => {
+        onSubmit: (values) => {
             // Manually validate the form on submission
             validationSchema
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then( async () => {
                 if (acceptedPrivacyPolicy) {
-                    await registerCheck(values).then((res)=>{
+                    setSpin(true);
+                    await registerCheck(values).then((res:any)=>{
                         console.log(res);
-                        
+                        if(res?.data.status === "BAD_REQUEST"){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Register Failed',
+                                text: `${res.data.msg[0]}`,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: true,
+                            });
+                        }else{
+                            setUserData(values);
+                            setOnOpen(!onOpen);
+                        }
                     })
-                    
-                    // setUserData(values);
-                    // setOnOpen(!onOpen);
+                    setSpin(false);
                   } else {
                     alert('Please accept both terms & conditions and privacy policy to register.');
                   }
@@ -100,6 +114,7 @@ function Register() {
                             name="userId"
                             onChange={formik.handleChange}
                             value={formik.values.userId}
+                            disabled={spin}
                             className="block w-full px-4 py-2 mt-2 bg-white border rounded-md focus:outline-none"
                         />
                         {formik.errors.userId ? (
@@ -118,6 +133,7 @@ function Register() {
                             onChange={formik.handleChange}
                             value={formik.values.firstname}
                             type="text"
+                            disabled={spin}
                             className="block w-full px-4 py-2 mt-2 bg-white border rounded-md focus:outline-none"
                         />
                         {formik.errors.firstname ? (
@@ -131,6 +147,7 @@ function Register() {
                             Last Name
                         </label>
                         <input
+                            disabled={spin}
                             type="text"
                             id="lastname"
                             name="lastname"
@@ -149,6 +166,7 @@ function Register() {
                             Password
                         </label>
                         <input
+                            disabled={spin}
                             type="password"
                             id="password"
                             name="password"
@@ -163,6 +181,7 @@ function Register() {
                     <div className="mb-4">
                         <label className="flex items-center">
                         <input
+                            disabled={spin}
                             type="checkbox"
                             className="mr-3"
                             checked={acceptedPrivacyPolicy}
@@ -174,6 +193,7 @@ function Register() {
                     <div className="my-6">
                         {acceptedPrivacyPolicy?(
                             <button 
+                                disabled={spin}
                                 type="submit" 
                                 className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-red-700 hover:bg-red-600 focus:outline-none focus:bg-red-600"
                             >
@@ -183,7 +203,7 @@ function Register() {
                             <button 
                                 type="submit" 
                                 className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-300"
-                                disabled
+                                disabled={spin}
                             >
                                     Register
                             </button>
