@@ -3,19 +3,21 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { IoCaretDown } from "react-icons/io5";
-import { BsCart2 } from "react-icons/bs";
-import { AiOutlineHeart, AiOutlineMenu } from "react-icons/ai";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { HiMenu } from "react-icons/hi";
+import Sidebar from "./Sidebar";
+import Menu from "../img/menu.svg";
+import Cart from "../img/icon-bag.svg";
+import Favorite from "../img/icon-favorite.svg"
 import Logo from "../img/logo.png"
+import { useState } from 'react';
 
 function Navbar() {
-    
+    const [openSideBar, setOpenSideBar] = useState(false)
 
     return ( 
         <Disclosure as="nav" className="bg-white">
         {({ open }) => (
             <>
+                <Sidebar open={openSideBar} setOpen={setOpenSideBar}/>
                 <div className="max-w-full py-1 px-2 sm:px-6 lg:px-6">
                     <div className="relative flex h-16 items-center">
                         <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -52,33 +54,29 @@ function Navbar() {
                             </div>
                         </div>
                         {true ? 
-                        <div className='flex pl-5'>
-                            <div className='mr-5'>
-                                <Link to='/cart' className='px-7 py-3'>
-                                    <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
-                                        <BsCart2 className='text-3xl'/>
+                        <>
+                        <div className='flex mx-7'>
+                                <Link to='/cart' className='py-5'>
+                                    <span className='flex items-center'>
+                                        <img src={Cart} alt='cart'/>
                                     </span>
                                 </Link>
-                            </div>
-                            <div className='flex border-r-2 border-l-2 pl-5'>
-                                <div className='mr-5'>
-                                    <Link to='/favorite' className='px-7 py-3'>
-                                        <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
-                                            <AiOutlineHeart className='text-3xl'/>
-                                        </span>
-                                    </Link>
-                                </div>
-                            </div>
-                            <div className='flex pl-5'>
-                                <div className='mr-5'>
-                                    <Link to='/favorite' className='px-7 py-3'>
-                                        <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
-                                            <HiMenu className='text-3xl'/>
-                                        </span>
-                                    </Link>
-                                </div>
-                            </div>
                         </div>
+                        <div className='flex border-r-2 border-l-2 px-6'>
+                                <Link to='/favorite' className='py-5'>
+                                    <span className='flex items-center'>
+                                        <img src={Favorite} alt='favorite'/>
+                                    </span>
+                                </Link>
+                        </div>
+                        <div className='flex mx-6'>
+                                <div onClick={() => setOpenSideBar(!openSideBar)} className='py-5 cursor-pointer'>
+                                    <span className='flex items-center'>
+                                        <img src={Menu} alt='menu'/>
+                                    </span>
+                                </div>
+                        </div>
+                        </>
                         :
                         <div className='flex ml-5'>
                             <div className='mr-3'>
