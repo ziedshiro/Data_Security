@@ -1,4 +1,4 @@
-function ValidatePayment() {
+function ManagePayment() {
     return ( 
         <>
         Admin
@@ -6,4 +6,4 @@ function ValidatePayment() {
      );
 }
 
-export default ValidatePayment;
+export default ManagePayment;
