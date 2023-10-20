@@ -1,6 +1,6 @@
 import { Fragment, ReactNode, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
-import { useMFACodeQuery,useRegisterMutation } from '../store';
+import { useMFACodeQuery,useRegisterMFAMutation } from '../store';
 import { User } from '../Model/User';
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
@@ -14,11 +14,12 @@ interface OpenModal {
     children?: ReactNode;
     title?:string;
     user?:User
+    setUser:React.Dispatch<React.SetStateAction<User | undefined>>; 
 }
 
-export default function Modal({ open, setOpen,children,title,user }: OpenModal) {
+export default function Modal({ open, setOpen,children,title,user ,setUser}: OpenModal) {
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
-    const [register] = useRegisterMutation();
+    const [register] = useRegisterMFAMutation();
     const navigate = useNavigate();
     const cancelButtonRef = useRef(null);
 
@@ -68,7 +69,7 @@ export default function Modal({ open, setOpen,children,title,user }: OpenModal) 
                     });
                 }else{
                     Swal.close();
-  
+                    setUser(undefined);
                     Swal.fire({
                         icon: 'success',
                         title: 'Register Successful',

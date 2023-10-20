@@ -53,7 +53,6 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
         const inputElement = formElement.querySelector('[name="codeTwoFactorAuthentication"]') as HTMLInputElement;
         const inputValue = inputElement.value;
         if (user && MFA) {
-            console.log(user,MFA);
             user.secretcode = inputValue;
             dispatch(userLoginMFA(user)).then((result:any) => {
                if(result.payload?.status ===  "UNAUTHORIZED"){
@@ -69,7 +68,8 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                     allowOutsideClick: true,
                 });
                }else{
-                console.log();
+
+                console.log(result.payload);
                 Cookies.set('jwt', result.payload.accessToken)
                 Swal.close();
                 setOpen(false);
@@ -82,8 +82,16 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                     allowOutsideClick: true,
                     text: 'Login Successful',
                 });
+                const role = result.payload.user.role;
+                if(role === 'customer'){
+                    navigate('/');
+                }else if(role === 'store owner'){
+                    navigate('/store');
+                }
+                else if(role === 'administrator'){
+                    navigate('/admin');
+                }
                 setUser(undefined);
-                navigate('/');
                 const storedJwt = Cookies.get('jwt');
                 console.log('Stored JWT:', storedJwt);
                }

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useFormik } from 'formik';
-import ModalMFA from "../../components/ModalMFA";
+import ModalMFARegister from "../../components/ModalMFARegister";
+import { useRegisterMutation } from "../../store";
 import * as yup from 'yup';
 import { Navbar } from "@material-tailwind/react";
 
 
 function Register() {
+    const [ registerCheck ] = useRegisterMutation();
     const [onOpen,setOnOpen] = useState(false);
     const [userData,setUserData] = useState<any>([]);
 
@@ -46,14 +48,19 @@ function Register() {
         validationSchema: validationSchema,
         validateOnBlur:false,
         validateOnChange:false,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             // Manually validate the form on submission
             validationSchema
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then( async () => {
                 if (acceptedPrivacyPolicy) {
-                    setUserData(values);
-                    setOnOpen(!onOpen);
+                    await registerCheck(values).then((res)=>{
+                        console.log(res);
+                        
+                    })
+                    
+                    // setUserData(values);
+                    // setOnOpen(!onOpen);
                   } else {
                     alert('Please accept both terms & conditions and privacy policy to register.');
                   }
@@ -183,7 +190,7 @@ function Register() {
                         )}
                     </div>
                 </form>
-                <ModalMFA open={onOpen} setOpen={setOnOpen} user={userData} title="MFA Code"/>
+                <ModalMFARegister setUser={setUserData} open={onOpen} setOpen={setOnOpen} user={userData} title="MFA Code"/>
             </div>
         </div>
      );

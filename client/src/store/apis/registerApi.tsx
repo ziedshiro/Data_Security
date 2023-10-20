@@ -18,6 +18,17 @@ const registerApi = createApi({
     }),
     endpoints(builder){
         return{
+            registerMFA: builder.mutation({
+                query: (user) => {
+                    console.log(user);
+                    
+                    return{
+                        url: '/register/totp',
+                        method: 'POST',
+                        body:user
+                    };
+                }
+            }),
             register: builder.mutation({
                 query: (user) => {
                     console.log(user);
@@ -43,6 +54,7 @@ const registerApi = createApi({
 
 export const { 
     useMFACodeQuery,
-    useRegisterMutation
+    useRegisterMutation,
+    useRegisterMFAMutation
  } = registerApi;
 export { registerApi };

@@ -47,7 +47,8 @@ setupListeners(store.dispatch);
 
 export {
     useMFACodeQuery,
-    useRegisterMutation
+    useRegisterMutation,
+    useRegisterMFAMutation
 } from './apis/registerApi';
 
 export {
