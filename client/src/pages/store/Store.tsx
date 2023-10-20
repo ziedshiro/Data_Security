@@ -13,9 +13,9 @@ function NavList({className}:any) {
     let active: string;
     
     if(!className && className !== undefined){
-        active = "pt-3 border-t-4 border-yellow-500 text-yellow-500 text-base";
+        active = "pt-3 text-yellow-500 text-base";
     }else{
-        active = "border-b-4 pb-1 border-yellow-500 text-yellow-500 text-base ";
+        active = "pb-1 text-yellow-500 text-base ";
     }
 
     useEffect(() => {
@@ -107,7 +107,7 @@ function Store() {
  
   return (
     <div>
-        <Navbar className="px-6 py-3 bg-blue-900 border-blue-900 p-0">
+        <Navbar className="px-6 py-3 bg-blue-950 border-blue-900 p-0">
             <div className="flex items-center justify-between text-blue-gray-900">
                 <div className="hidden lg:block">
                     <NavList className={openNav}/>

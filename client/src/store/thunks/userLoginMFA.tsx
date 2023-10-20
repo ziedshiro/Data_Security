@@ -14,7 +14,7 @@ function encrypt(data:string) {
     return encryptedData.toString();
 }
 
-const userLogin = createAsyncThunk('login', async (user:LoginUser) => {
+const userLoginMFA = createAsyncThunk('login', async (user:LoginUser) => {
     
     const encryptedUsername = encrypt(user.userId);
     const encryptedPassword = encrypt(user.password);
@@ -22,12 +22,13 @@ const userLogin = createAsyncThunk('login', async (user:LoginUser) => {
     const data = {
         username:encryptedUsername,
         password:encryptedPassword,
+        secretcode:user.secretcode
     }
     
     // console.log(data);
     
-    const response = await axios.post(`${baseUrl}/login`, data);
+    const response = await axios.post(`${baseUrl}/login/totp`, data);
     return response.data;
 });
 
-export { userLogin }
+export { userLoginMFA }

@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { loginMFAReducer } from "./slices/loginMFASlice";
 import { loginReducer } from "./slices/loginSlice";
 import { registerApi } from "./apis/registerApi";
 import { favouriteApi } from "./apis/favouriteApi";
@@ -14,6 +15,7 @@ import { productApi } from "./apis/productApi";
 
 export const store = configureStore({
     reducer: {
+        loginMFA: loginMFAReducer,
         login: loginReducer,
         [registerApi.reducerPath]: registerApi.reducer,
         [favouriteApi.reducerPath]: favouriteApi.reducer,
@@ -104,6 +106,7 @@ export {
     useFetchProductQuery
 } from './apis/productApi'
 
+export { userLoginMFA } from './thunks/userLoginMFA';
 export { userLogin } from './thunks/userLogin';
 
 export type RootState = ReturnType<typeof store.getState>

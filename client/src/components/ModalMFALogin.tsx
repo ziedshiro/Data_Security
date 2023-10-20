@@ -7,8 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import Swal from 'sweetalert2';
 import Media from './Media';
-import { userLogin } from '../store';
+import { userLoginMFA } from '../store';
 import { useAppDispatch } from '../hook/use-dispatch-selector';
+import Cookies from "js-cookie";
 
 interface OpenModal {
     open: boolean;
@@ -16,13 +17,14 @@ interface OpenModal {
     children?: ReactNode;
     title?:string;
     user?:LoginUser
+    setUser:React.Dispatch<React.SetStateAction<LoginUser | undefined>>; 
 }
 
-export default function ModalMFALogin({ open, setOpen,children,title,user }: OpenModal) {
+export default function ModalMFALogin({ open, setOpen,children,title,user,setUser }: OpenModal) {
     const dispatch = useAppDispatch();
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
     const navigate = useNavigate();
-    const cancelButtonRef = useRef(null);
+    const cancelButtonRef = useRef(null);;
 
     let content;
     if(MFAFetching || MFAError){
@@ -35,9 +37,8 @@ export default function ModalMFALogin({ open, setOpen,children,title,user }: Ope
         navigate("/");
     }
 
-    const handleRegistrationSubmit = async (e: React.FormEvent) => {
+    const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         Swal.fire({
             timerProgressBar: true,
             allowEscapeKey: false,
@@ -52,11 +53,42 @@ export default function ModalMFALogin({ open, setOpen,children,title,user }: Ope
         const inputElement = formElement.querySelector('[name="codeTwoFactorAuthentication"]') as HTMLInputElement;
         const inputValue = inputElement.value;
         if (user && MFA) {
+            console.log(user,MFA);
             user.secretcode = inputValue;
-            dispatch(userLogin(user)).then((result) => {
-               console.log(result);
-            });
-             
+            dispatch(userLoginMFA(user)).then((result:any) => {
+               if(result.payload?.status ===  "UNAUTHORIZED"){
+                Swal.close();
+                setOpen(false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Register Failed',
+                    text: `${result.payload.msg[0]}`,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: true,
+                });
+               }else{
+                console.log();
+                Cookies.set('jwt', result.payload.accessToken)
+                Swal.close();
+                setOpen(false);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Welcome',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: true,
+                    text: 'Login Successful',
+                });
+                setUser(undefined);
+                navigate('/');
+                const storedJwt = Cookies.get('jwt');
+                console.log('Stored JWT:', storedJwt);
+               }
+               
+            }); 
         }
       };
 
@@ -106,7 +138,7 @@ export default function ModalMFALogin({ open, setOpen,children,title,user }: Ope
                                                 <div className="flex justify-center w-full rounded-lg overflow-hidden mb-2">
                                                     {content}
                                                 </div>
-                                                <form onSubmit={handleRegistrationSubmit}>
+                                                <form onSubmit={handleLoginSubmit}>
                                                     {MFAFetching ? <Media height={30} width={120} />:
                                                     <label
                                                         className="block text-sm font-semibold text-gray-800 mb-3"

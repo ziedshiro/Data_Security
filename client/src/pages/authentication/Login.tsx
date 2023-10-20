@@ -4,9 +4,13 @@ import * as yup from 'yup';
 import ModalMFALogin from "../../components/ModalMFALogin";
 import { useState } from "react";
 import { LoginUser } from "../../Model/User";
+import { userLogin } from "../../store";
+import { useAppDispatch } from '../../hook/use-dispatch-selector';
+import Swal from "sweetalert2";
 
 function Login() {
     const [onOpen,setOnOpen] = useState(false);
+    const dispatch = useAppDispatch();
     const [userData,setUserData] = useState<LoginUser>();
     const validationSchema = yup.object().shape({
         userId: yup
@@ -22,8 +26,6 @@ function Login() {
                 'Password must contain at least one character and one number'
             )
             .required('Password is required.'),
-    
-    
     });
 
     const formik = useFormik({
@@ -40,8 +42,23 @@ function Login() {
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then(() => {
                 // Validation successful, you can proceed with form submission
-               setUserData(values);
-               setOnOpen(true);
+               
+                dispatch(userLogin(values)).then((result:any) => {
+                    if(result.payload?.status ===  "UNAUTHORIZED"){
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Register Failed',
+                         text: `${result.payload.msg[0]}`,
+                         timer: 2000,
+                         timerProgressBar: true,
+                         showConfirmButton: false,
+                         allowOutsideClick: true,
+                     });
+                    }else{
+                        setUserData(values);
+                        setOnOpen(true);
+                    }            
+                 }); 
               })
               .catch((errors) => {
                 // Validation failed, set the form errors
@@ -102,7 +119,7 @@ function Login() {
                         </button>
                     </div>
                 </form>
-                <ModalMFALogin open={onOpen} setOpen={setOnOpen} user={userData} title="MFA Code"/>          
+                <ModalMFALogin open={onOpen} setOpen={setOnOpen} user={userData} setUser={setUserData} title="MFA Code"/>          
                 <p className="mt-8 text-xs font-light text-center text-gray-700">
                     {" "}
                     Don't have an account?{" "}
