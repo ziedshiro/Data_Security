@@ -180,10 +180,80 @@ public class AuthenticationController {
 			}
 			
 			if(!user.getAccountLockStatus()) {
+				if(hashservices.verifyPassword(password, user.getSalt(), user.getPassword())) {
+					loginresp.setStatus(HttpStatus.OK);
+					List<String> msg = new ArrayList<String>();
+					msg.add("Success");
+					loginresp.setMsg(msg);
+					userservice.save(user);
+					return loginresp;
+				}
+				else {
+					user.setAttemptLogin(user.getAttemptLogin()+1);
+					if(user.getAttemptLogin()==3) {
+						user.setAccountLockStatus(true);
+						user.setAttemptTimeLogin(new Date());
+					}
+					userservice.save(user);
+					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+					List<String> msg = new ArrayList<String>();
+					msg.add("Invalid Password");
+					loginresp.setMsg(msg);
+					return loginresp;
+				}
+			}
+			else {
+				loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+				List<String> msg = new ArrayList<String>();
+				msg.add("Account Lock");
+				loginresp.setMsg(msg);
+				return loginresp;
+			}	
+		}
+		else {
+			loginresp.setStatus(HttpStatus.UNAUTHORIZED);
+			List<String> errors = new ArrayList<String>();
+			if(user == null) {
+				errors.add("Invalid USER not Found");
+			}
+			loginresp.setMsg(errors);
+			return loginresp;
+		}
+	}
+	
+	@PostMapping("/login/totp")
+	public LoginResponse logintotp(@RequestBody LoginDTO login, BindingResult bindingResult) throws Exception {
+		LoginResponse loginresp = new LoginResponse();
+		String userId = decryptionservice.Decrypt(login.getUsername());
+		String password = decryptionservice.Decrypt(login.getPassword());
+		
+		String encodedUserId = encryptionservice.encrypt(userId);
+		
+		User user = userservice.findByUserId(encodedUserId);
+		if(user!=null) {
+			Date current = new Date();
+			
+			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
+				Calendar calendarDatabaseDate = Calendar.getInstance();
+				calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
+				
+				Calendar calendarCurrentDate = Calendar.getInstance();
+				calendarCurrentDate.setTime(current);
+				
+				calendarDatabaseDate.add(Calendar.HOUR, 1);	
+				
+				if(calendarCurrentDate.after(calendarDatabaseDate)) {
+					user.setAccountLockStatus(false);
+					user.setAttemptLogin(0);
+					user.setAttemptTimeLogin(null);
+					userservice.save(user);
+				}
+			}
+			
+			if(!user.getAccountLockStatus()) {
 				TimeProvider timeProvider = new SystemTimeProvider();
 				CodeGenerator codeGenerator = new DefaultCodeGenerator();
 				CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-				System.out.print(login.getSecretcode()+" "+user.getCodeTwoFactorAuthentication());
 				boolean successful = verifier.isValidCode(user.getCodeTwoFactorAuthentication(),login.getSecretcode());
 				
 				if(successful) {
@@ -216,14 +286,17 @@ public class AuthenticationController {
 				}
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);
+					List<String> msg = new ArrayList<String>();
 					if(user.getAttemptLogin()==3) {
 						user.setAccountLockStatus(true);
 						user.setAttemptTimeLogin(new Date());
+						msg.add("Code not match, attempt left: "+user.getAttemptLogin()+", Account Lock");
+					}
+					else {						
+						msg.add("Code not match, attempt left: "+user.getAttemptLogin());
 					}
 					userservice.save(user);
 					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
-					List<String> msg = new ArrayList<String>();
-					msg.add("Code not Match");
 					loginresp.setMsg(msg);
 					return loginresp;
 				}
@@ -238,9 +311,7 @@ public class AuthenticationController {
 		}
 		else {
 			loginresp.setStatus(HttpStatus.UNAUTHORIZED);
-			List<String> errors = bindingResult.getAllErrors().stream()
-					.map(ObjectError::getDefaultMessage)
-					.collect(Collectors.toList());
+			List<String> errors = new ArrayList<String>();
 			if(user == null) {
 				errors.add("Invalid USER not Found");
 			}
