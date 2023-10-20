@@ -129,7 +129,7 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-3 text-center sm:mt-0 sm:text-left">                         
-                                            {MFAFetching ? <Media height={40} width={310} />:
+                                            {MFAFetching ? <Media height={38} width={310} />:
                                             <Dialog.Title as="h2" className="text-xl font-semibold leading-6 text-gray-900 flex justify-center">
                                                 Setup Multi-Factor Authentication
                                             </Dialog.Title>}
@@ -145,7 +145,7 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                                                     >
                                                         Verification Code
                                                     </label>}
-                                                    {MFAFetching ? <Media height={65} width={310} />:
+                                                    {MFAFetching ? <Media height={50} width={310} />:
                                                     <input
                                                         type="text"
                                                         id="codeTwoFactorAuthentication"
@@ -153,7 +153,7 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                                                         className="block w-full px-4 py-2 my-2 bg-white border rounded-md  focus:outline-none"
                                                     />}
                                                     <div className='flex justify-center mb-3'>
-                                                    {MFAFetching ? <Media height={60} width={145} />:
+                                                    {MFAFetching ? <Media height={55} width={145} />:
                                                         <Button className="mt-3 w-40" color="red" type="submit">Verify</Button>
                                                     }
                                                     </div>

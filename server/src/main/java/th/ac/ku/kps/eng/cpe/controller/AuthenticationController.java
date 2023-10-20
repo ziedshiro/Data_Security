@@ -107,6 +107,33 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws Exception {
 		RegisterResponse resp = new RegisterResponse();
+		
+		String userId = encryptionservice.encrypt(user.getUserId());
+		
+		if(bindingResult.hasErrors()||(userservice.findByUserId(userId)!=null)) {
+			resp.setStatus(HttpStatus.BAD_REQUEST);
+			List<String> errors = bindingResult.getAllErrors().stream()
+					.map(ObjectError::getDefaultMessage)
+					.collect(Collectors.toList());
+			if(userservice.findByUserId(userId)!=null) {
+				errors.add("Invalid USER ID: USER ID DUPLICATE");
+			}
+			resp.setMsg(errors);
+			
+			return resp;
+		}
+		else {
+			resp.setStatus(HttpStatus.OK);
+			List<String> msg = new ArrayList<String>();
+			msg.add("Success");
+			
+			return resp;
+		}
+	}
+	
+	@PostMapping("/register/totp")
+	public RegisterResponse registertotp(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws Exception {
+		RegisterResponse resp = new RegisterResponse();
 		TimeProvider timeProvider = new SystemTimeProvider();
 		CodeGenerator codeGenerator = new DefaultCodeGenerator();
 		CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
