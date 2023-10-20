@@ -3,18 +3,11 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { IoCaretDown } from "react-icons/io5";
+import { BsCart2 } from "react-icons/bs";
+import { AiOutlineHeart, AiOutlineMenu } from "react-icons/ai";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { HiMenu } from "react-icons/hi";
 import Logo from "../img/logo.png"
-
-const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
-]
-
-function classNames(...classes:any) {
-    return classes.filter(Boolean).join(' ')
-}
 
 function Navbar() {
     
@@ -58,7 +51,35 @@ function Navbar() {
                                 </Link>
                             </div>
                         </div>
-
+                        {true ? 
+                        <div className='flex pl-5'>
+                            <div className='mr-5'>
+                                <Link to='/cart' className='px-7 py-3'>
+                                    <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
+                                        <BsCart2 className='text-3xl'/>
+                                    </span>
+                                </Link>
+                            </div>
+                            <div className='flex border-r-2 border-l-2 pl-5'>
+                                <div className='mr-5'>
+                                    <Link to='/favorite' className='px-7 py-3'>
+                                        <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
+                                            <AiOutlineHeart className='text-3xl'/>
+                                        </span>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='flex pl-5'>
+                                <div className='mr-5'>
+                                    <Link to='/favorite' className='px-7 py-3'>
+                                        <span className='flex items-center kanit text-gray-700 hover:text-red-500 text-base font-semibold'>
+                                            <HiMenu className='text-3xl'/>
+                                        </span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                        :
                         <div className='flex ml-5'>
                             <div className='mr-3'>
                                 <Link to='/register' className='rounded-full border-2 border-red-400 px-7 py-3'>
@@ -71,29 +92,11 @@ function Navbar() {
                                 </Link>
                             </div>
                         </div>
-                            
+                        }       
                         </div>
                     </div>
                 </div>
                 
-                <Disclosure.Panel className="sm:hidden">
-                    <div className="space-y-1 px-2 pb-3 pt-2">
-                        {navigation.map((item) => (
-                            <Disclosure.Button
-                            key={item.name}
-                            as="a"
-                            href={item.href}
-                            className={classNames(
-                                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                'block rounded-md px-3 py-2 text-base font-medium'
-                            )}
-                            aria-current={item.current ? 'page' : undefined}
-                            >
-                            {item.name}
-                            </Disclosure.Button>
-                        ))}
-                    </div>
-                </Disclosure.Panel>
             </>
             )}
             </Disclosure>

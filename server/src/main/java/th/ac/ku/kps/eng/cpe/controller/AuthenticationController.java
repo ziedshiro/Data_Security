@@ -33,6 +33,7 @@ import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.dto.LoginDTO;
+import th.ac.ku.kps.eng.cpe.dto.RegisterDTO;
 import th.ac.ku.kps.eng.cpe.dto.UserDTO;
 import th.ac.ku.kps.eng.cpe.dto.UserLogin;
 import th.ac.ku.kps.eng.cpe.model.User;
@@ -105,7 +106,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/register")
-	public RegisterResponse register(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws Exception {
+	public RegisterResponse register(@Valid @RequestBody RegisterDTO user, BindingResult bindingResult) throws Exception {
 		RegisterResponse resp = new RegisterResponse();
 		
 		String userId = encryptionservice.encrypt(user.getUserId());
@@ -291,7 +292,7 @@ public class AuthenticationController {
 						List<String> msg = new ArrayList<String>();
 						msg.add("Login Success");
 						loginresp.setMsg(msg);
-						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname())));
+						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname()),user.getRole()));
 						user.setLastLoginTimestamp(new Date());
 						user.setAttemptLogin(0);
 						userservice.save(user);
@@ -390,7 +391,7 @@ public class AuthenticationController {
 						List<String> msg = new ArrayList<String>();
 						msg.add("Login Success");
 						loginresp.setMsg(msg);
-						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname())));
+						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname()),user.getRole()));
 						user.setLastLoginTimestamp(new Date());
 						user.setAttemptLogin(0);
 						userservice.save(user);

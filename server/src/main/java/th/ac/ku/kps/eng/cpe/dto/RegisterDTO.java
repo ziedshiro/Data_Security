@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class UserDTO {
+public class RegisterDTO {
 	@Email(message = "Invalid Email")
 	@NotBlank(message = "Invalid Email: Empty Email")
 	private String userId;
@@ -17,26 +17,17 @@ public class UserDTO {
 	@NotBlank(message = "Invalid Password: Empty Password")
     @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters")
 	private String password;
-	@NotBlank(message = "Invalid Code: Empty codeTwoFactorAuthentication")
-	private String codeTwoFactorAuthentication;
-	@NotBlank(message = "Invalid Code: Empty secretCode")
-	private String secretCode;
 	
-	public UserDTO() {}
-
-	public UserDTO(@Email(message = "Invalid Email") @NotBlank(message = "Invalid Email: Empty Email") String userId,
+	public RegisterDTO(
+			@Email(message = "Invalid Email") @NotBlank(message = "Invalid Email: Empty Email") String userId,
 			@NotBlank(message = "Invalid Firstname: Empty Firstname") @Size(min = 3, max = 20, message = "Invalid firstname: Must be of 3 - 20 characters") String firstname,
 			@NotBlank(message = "Invalid Lastname: Empty Lastname") @Size(min = 3, max = 20, message = "Invalid Lastname: Must be of 3 - 20 characters") String lastname,
-			@NotBlank(message = "Invalid Password: Empty Password") @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters") String password,
-			@NotBlank(message = "Invalid Code: Empty Code") String codeTwoFactorAuthentication,
-			@NotBlank(message = "Invalid Code: Empty Code") String secretCode) {
+			@NotBlank(message = "Invalid Password: Empty Password") @Size(min = 8, max = 20, message = "Invalid Password: Must be of 8 - 15 characters") String password) {
 		super();
 		this.userId = userId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.password = password;
-		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
-		this.secretCode = secretCode;
 	}
 
 	public String getUserId() {
@@ -70,21 +61,6 @@ public class UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getCodeTwoFactorAuthentication() {
-		return codeTwoFactorAuthentication;
-	}
-
-	public void setCodeTwoFactorAuthentication(String codeTwoFactorAuthentication) {
-		this.codeTwoFactorAuthentication = codeTwoFactorAuthentication;
-	}
 	
-	public String getSecretCode() {
-		return secretCode;
-	}
-	
-	public void setSecretCode(String secretCode) {
-		this.secretCode = secretCode;
-	}
 	
 }

@@ -4,14 +4,16 @@ public class UserLogin {
 	private String email;
 	private String firstname;
 	private String lasname;
+	private String role;
 	
 	public UserLogin() {}
 	
-	public UserLogin(String email, String firstname, String lasname) {
+	public UserLogin(String email, String firstname, String lasname, String role) {
 		super();
 		this.email = email;
 		this.firstname = firstname;
 		this.lasname = lasname;
+		this.role = role;
 	}
 	
 	public String getFirstname() {
@@ -31,5 +33,13 @@ public class UserLogin {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 }
