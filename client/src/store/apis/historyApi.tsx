@@ -37,7 +37,7 @@ const historyApi = createApi({
     endpoints(builder){
         return{
             //for user ,show order history
-            fetchHistory: builder.query({
+            fetchHistory: builder.query<string, void>({
                 query: () => {
                     return{
                         url: '/auth/order',
@@ -60,8 +60,8 @@ const historyApi = createApi({
 })
 
 export const {
-    useFetchHistoryDetailQuery,
-    useFetchHistoryQuery
+    useFetchHistoryQuery,
+    useFetchHistoryDetailQuery
 } = historyApi;
 
 export { historyApi };
