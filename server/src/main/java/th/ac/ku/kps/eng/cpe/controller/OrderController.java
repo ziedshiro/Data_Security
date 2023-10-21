@@ -165,8 +165,8 @@ public class OrderController {
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
-	@PutMapping("/auth/pickup/{id}")
-	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody,@PathVariable("id")String id) throws Exception {
+	@PutMapping("/auth/pickup")
+	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
