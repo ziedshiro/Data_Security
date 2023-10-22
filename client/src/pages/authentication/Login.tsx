@@ -70,6 +70,13 @@ function Login() {
           },
     });
 
+    const handleClose = () => {
+        setOnOpen(false);
+    }
+    const handleResetUser = () => {
+        setUserData(undefined);
+    }
+
     return ( 
         <div className="relative flex bg-gray-50 flex-col justify-center min-h-screen overflow-hidden">
             <div className="w-full p-5 m-auto bg-white rounded-md shadow-md lg:max-w-md">
@@ -119,7 +126,7 @@ function Login() {
                         </button>
                     </div>
                 </form>
-                <ModalMFALogin open={onOpen} setOpen={setOnOpen} user={userData} setUser={setUserData} title="MFA Code"/>          
+                <ModalMFALogin open={onOpen} onHide={handleClose} user={userData} setUser={handleResetUser} title="MFA Code"/>          
                 <p className="mt-8 text-xs font-light text-center text-gray-700">
                     {" "}
                     Don't have an account?{" "}

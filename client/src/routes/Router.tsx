@@ -39,21 +39,15 @@ function Router() {
           <Route path="payment" element={<Payment/>}/>
           <Route path="success" element={<Success/>}/>
         </Route>
-        <Route element={<OwnerRoutes/>}>
-          <Route path="/store/product" element={<Product />} />
-          <Route path="/store/product/:id" element={<EditProduct />} />
-          <Route path="/store/create/product" element={<CreateProduct />} />
-        <Route path="/store/order" element={<Order />} />
+        <Route path='/store' element={<OwnerRoutes children={<Store />}/>}>
+          <Route path="product" element={<Product />} />
+          <Route path="product/:id" element={<EditProduct />} />
+          <Route path="product/create" element={<CreateProduct />} />
+          <Route path="order" element={<Order />} />
         </Route>
 
         <Route element={<AdminRoutes/>}>
           <Route path="/admin" element={<ValidatePayment />}/>
-        </Route>
-
-          <Route path="store" element={<Store />}>
-        {/* <Route path="/profile" element={<Profile />} /> */}
-
-
         </Route>
         
       </Routes>

@@ -13,14 +13,14 @@ import Cookies from "js-cookie";
 
 interface OpenModal {
     open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>; 
+    onHide: Function; 
     children?: ReactNode;
     title?:string;
     user?:LoginUser
-    setUser:React.Dispatch<React.SetStateAction<LoginUser | undefined>>; 
+    setUser:Function; 
 }
 
-export default function ModalMFALogin({ open, setOpen,children,title,user,setUser }: OpenModal) {
+export default function ModalMFALogin({ open, onHide,children,title,user,setUser }: OpenModal) {
     const dispatch = useAppDispatch();
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
     const navigate = useNavigate();
@@ -54,11 +54,12 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
         const inputValue = inputElement.value;
         if (user && MFA) {
             user.secretcode = inputValue;
-            dispatch(userLoginMFA(user)).then((result:any) => {
-               if(result.payload?.status ===  "UNAUTHORIZED"){
+            const result = await dispatch(userLoginMFA(user));
+
+            if (result.payload?.status === 'UNAUTHORIZED') {
                 Swal.close();
-                setOpen(false);
-                Swal.fire({
+                onHide();
+                    Swal.fire({
                     icon: 'error',
                     title: 'Register Failed',
                     text: `${result.payload.msg[0]}`,
@@ -67,12 +68,11 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                     showConfirmButton: false,
                     allowOutsideClick: true,
                 });
-               }else{
-
+            }else{
                 console.log(result.payload);
-                Cookies.set('jwt', result.payload.accessToken)
+                Cookies.set('jwt', result.payload.accessToken);
                 Swal.close();
-                setOpen(false);
+                onHide();
                 Swal.fire({
                     icon: 'success',
                     title: 'Welcome',
@@ -83,22 +83,19 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                     text: 'Login Successful',
                 });
                 const role = result.payload.user.role;
-                if(role === 'customer'){
+                if(role === 'customer') {
                     navigate('/');
-                }else if(role === 'store owner'){
+                }else if(role === 'store owner') {
                     navigate('/store');
-                }
-                else if(role === 'administrator'){
+                }else if(role === 'administrator') {
                     navigate('/admin');
                 }
                 setUser(undefined);
                 const storedJwt = Cookies.get('jwt');
                 console.log('Stored JWT:', storedJwt);
-               }
-               
-            }); 
+            }
         }
-      };
+    };
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -107,7 +104,7 @@ export default function ModalMFALogin({ open, setOpen,children,title,user,setUse
                 className="relative z-10" 
                 initialFocus={cancelButtonRef} 
                 onClose={()=>{
-                    setOpen(false);
+                    onHide();
                 }}
                 >
                 <Transition.Child

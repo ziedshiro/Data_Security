@@ -12,6 +12,7 @@ import { historyApi } from "./apis/historyApi";
 import { authProductApi } from "./apis/authProductApi";
 import { storeApi } from "./apis/storeApi";
 import { productApi } from "./apis/productApi";
+import { authStoreApi } from "./apis/authStoreApi";
 
 export const store = configureStore({
     reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
         [historyApi.reducerPath]:historyApi.reducer,
         [authProductApi.reducerPath]: authProductApi.reducer,
         [storeApi.reducerPath]: storeApi.reducer,
+        [authStoreApi.reducerPath]: authStoreApi.reducer,
         [productApi.reducerPath]: productApi.reducer,
     },
     middleware: (getDefaultMiddleware) => {
@@ -39,6 +41,7 @@ export const store = configureStore({
             .concat(historyApi.middleware)
             .concat(authProductApi.middleware)
             .concat(storeApi.middleware)
+            .concat(authStoreApi.middleware)
             .concat(productApi.middleware);
     }
 })
@@ -106,6 +109,10 @@ export {
     useFetchProductByTypeQuery,
     useFetchProductQuery
 } from './apis/productApi'
+
+export {
+    useFetchAuthStoreQuery
+} from './apis/authStoreApi';
 
 export { userLoginMFA } from './thunks/userLoginMFA';
 export { userLogin } from './thunks/userLogin';
