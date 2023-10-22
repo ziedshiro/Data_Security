@@ -44,7 +44,7 @@ function CreateProduct() {
             .required('Please select an image')
             .test(
                 'fileSize',
-                'ขนาดไฟล์ต้องน้อยกว่า 8MB',
+                'ขนาดไฟล์ต้องน้อยกว่า 1MB',
                 (value:any) => value && value.size <= MAX_FILE_SIZE 
             )
             .test(
@@ -95,8 +95,9 @@ function CreateProduct() {
                         }
                         console.log(productData);
                         setIsSubmit(true);
-                        await addProduct(productData);
+                        // await addProduct(productData);
                         setIsSubmit(false);
+                        navigate('/store/product');
                     }else{
                         formik.setFieldError('file', 'Please upload image file');
                     }
