@@ -1,8 +1,7 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseUrl } from "../../env/utils";
+import { StoreAuth } from '../../Model/Store'
 import Cookies from "js-cookie";
-
-const jwt = Cookies.get('jwt')
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
@@ -10,24 +9,15 @@ const pause = (duration:number) => {
     });
 }
 
-interface TokenData {
-    accessToken: string | null;
-}
-
-const getBearerToken = () => {
-    if (jwt) {
-        return jwt;
-    } else {
-        return null;
-    }
-};
-
 const authStoreApi = createApi({
     reducerPath:'authStores',
     baseQuery: fetchBaseQuery({
         baseUrl: baseUrl,
         prepareHeaders: (headers) => {
-            headers.set('Authorization', `Bearer ${getBearerToken()}`);
+            const jwt = Cookies.get('jwt');
+            if(jwt){
+                headers.set('Authorization', `Bearer ${jwt}`);
+            }
             return headers;
         },
         fetchFn: async (...args) => {
@@ -37,7 +27,7 @@ const authStoreApi = createApi({
     }),
     endpoints(builder){
         return{
-            fetchAuthStore: builder.query({
+            fetchAuthStore: builder.query<StoreAuth,void>({
                 query: () => {
                     return{
                         url: '/auth/store',

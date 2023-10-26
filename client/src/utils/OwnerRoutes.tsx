@@ -3,15 +3,19 @@ import { useFetchAuthStoreQuery } from '../store';
 import Swal from 'sweetalert2';
 import { Navigate } from 'react-router';
 import { Skeleton } from '@mui/joy';
+import Store from '../pages/store/Store';
+import { StoreAuth } from '../Model/Store'
+import { store } from '../store/index';
 
-function OwnerRoutes({ children }: { children: ReactNode }) {
-    const { data,isFetching } = useFetchAuthStoreQuery('fetch');
+function OwnerRoutes() {
 
+    const { data,isFetching } = useFetchAuthStoreQuery();
+    
     let content;
     if(isFetching){
         content = <Skeleton />
     }else if(data){
-        content = children;
+        content = <Store {...data}/>
         
     }else{
         Swal.fire({

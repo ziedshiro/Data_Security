@@ -70,7 +70,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                 });
             }else{
                 console.log(result.payload);
-                Cookies.set('jwt', result.payload.accessToken);
+                Cookies.set('jwt', result.payload.accessToken,{ expires: 1 });
                 Swal.close();
                 onHide();
                 Swal.fire({
@@ -91,8 +91,6 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                     navigate('/admin');
                 }
                 setUser(undefined);
-                const storedJwt = Cookies.get('jwt');
-                console.log('Stored JWT:', storedJwt);
             }
         }
     };

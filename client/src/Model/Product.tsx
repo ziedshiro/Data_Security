@@ -15,3 +15,22 @@ export interface CreateProduct {
     discountPrice:floated,
     quantityAvailable:number
 }
+
+export interface ProductData {
+    productId: string,
+    store: object,
+    type: {
+        typeId: number,
+        typeName: string
+    },
+    name: string,
+    description: string,
+    expiryDate: string,
+    price: number,
+    discountPrice: number,
+    quantityAvailable: number,
+    imgProduct: string,
+    isactive: true,
+    createdate: string,
+    updatedate: string
+}

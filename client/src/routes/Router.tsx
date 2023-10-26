@@ -39,7 +39,7 @@ function Router() {
           <Route path="payment" element={<Payment/>}/>
           <Route path="success" element={<Success/>}/>
         </Route>
-        <Route path='/store' element={<OwnerRoutes children={<Store />}/>}>
+        <Route path='/store' element={<OwnerRoutes />}>
           <Route path="product" element={<Product />} />
           <Route path="product/:id" element={<EditProduct />} />
           <Route path="product/create" element={<CreateProduct />} />

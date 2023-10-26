@@ -1,16 +1,46 @@
-import { Button } from "@material-tailwind/react";
 import { Link, Navigate } from "react-router-dom";
 import { Skeleton } from '@mui/joy';
-import { useFetchAuthStoreQuery } from "../../store";
+import { useFetchAuthStoreQuery,useFetchAuthProductQuery } from "../../store";
+import { ProductData } from "../../Model/Product";
+import { Button, IconButton } from "@material-tailwind/react";
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
+import TableProductList from "../../components/TableProductList";
 
 function Product() {
-    const { data,isFetching } = useFetchAuthStoreQuery('fetch');
+    const { data,isFetching } = useFetchAuthStoreQuery();
+    const { data:product,isFetching:isProduct,isError:errorProduct } = useFetchAuthProductQuery();
 
     let content;
     if(isFetching){
         content = <Skeleton />
     }else if(data){
+        let content_list;
+        if(isProduct){
+            content_list =
+            <tr>
+                <td>
+                    <Skeleton width={587} height={250}/>
+                </td>
+            </tr>
+        }else if(errorProduct){
+            content_list = 
+            <tr>
+                <td>
+                    Error
+                </td>
+            </tr>
+        }else if(product){
+            console.log(product);
+            content_list = 
+                product.map((item: ProductData) => {
+                    return(
+                        <TableProductList key={item.productId} {...item}/>
+                    );
+                });
+        }
+
+
         content = 
         <div className="w-screen h-full justify-center items-center flex flex-col px-10 py-8 mt-8">
             <h1 className="text-3xl font-bold">Product</h1>
@@ -19,6 +49,7 @@ function Product() {
                     <div className="w-full flex flex-row justify-between mb-3">
                         <div className="flex w-2/6">
                             <input
+                                disabled={isProduct}
                                 type="text"
                                 id="form-subscribe-Filter"
                                 className="mr-4 rounded-lg border-transparent flex-1 appearance-none border border-gray-400 w-40 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
@@ -40,65 +71,46 @@ function Product() {
                         <table className="min-w-full text-center">
                         <thead className="border-b bg-blue-900">
                             <tr>
-                            <th
-                                scope="col"
-                                className="text-sm font-medium text-white px-6 py-4"
-                            >
-                                #
-                            </th>
-                            <th
-                                scope="col"
-                                className="text-sm font-lg text-white px-6 py-4"
-                            >
-                                Name
-                            </th>
-                            <th
-                                scope="col"
-                                className="text-sm font-lg text-white px-6 py-4"
-                            >
-                                Expiry Date
-                            </th>
-                            <th
-                                scope="col"
-                                className="text-sm font-lg text-white px-6 py-4"
-                            >
-                                Round
-                            </th>
-                            <th
-                                scope="col"
-                                className="text-sm font-lg text-white px-6 py-4"
-                            >
-                                Status
-                            </th>
-                            <th
-                                scope="col"
-                                className="text-sm font-lg text-white px-6 py-4"
-                            >
-                                Action
-                            </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    Name
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    Expiry Date
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    Price
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    Discount Price
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    Quantity
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="text-sm font-lg text-white px-6 py-4"
+                                >
+                                    
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="border-black border-b-2">
-                            <tr>
-                                <td className="px-3">
-                                    Lorem ipsum
-                                </td>
-                                <td className="px-3">
-                                    Aenean dignissim 
-                                </td>
-                                <td className="px-3">
-                                    Aliquam at erat 
-                                </td>
-                                <td className="px-3">
-                                    Phasellus nec 
-                                </td>
-                                <td className="px-3">
-                                    imperdiet massa 
-                                </td>
-                                <td className="px-3">
-                                    gravida leo id dui
-                                </td>
-                            </tr>
+                            {content_list}
                         </tbody>
                         </table>
                     </div>

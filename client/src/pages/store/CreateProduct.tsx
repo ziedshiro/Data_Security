@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 function CreateProduct() {
     const [addProduct] = useAddProductMutation();
-    const { data,isFetching } = useFetchAuthStoreQuery('fetch');
+    const { data,isFetching } = useFetchAuthStoreQuery();
     const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
     const ALLOWED_FILE_TYPES = ['image/png','image/jpg','image/jpeg'];
     const navigate = useNavigate();
@@ -78,26 +78,28 @@ function CreateProduct() {
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then( async () => {
                     if(values.file.length){
-                        const productData = {
-                            store:{
-                                storeId:data.storeId
-                            },
-                            type:{
-                                typeId:parseInt(values.type)
-                            },
-                            name:values.name,
-                            description:values.description,
-                            expiryDate:`${values.expiryDate}:00`,
-                            price:values.price,
-                            discountPrice:values.discountPrice,
-                            quantityAvailable:values.quantityAvailable,
-                            file:values.file[0]
+                        if(data){
+                            const productData = {
+                                store:{
+                                    storeId:data.storeId
+                                },
+                                type:{
+                                    typeId:parseInt(values.type)
+                                },
+                                name:values.name,
+                                description:values.description,
+                                expiryDate:`${values.expiryDate}:00`,
+                                price:values.price,
+                                discountPrice:values.discountPrice,
+                                quantityAvailable:values.quantityAvailable,
+                                file:values.file[0]
+                            }
+                            console.log(productData);
+                            setIsSubmit(true);
+                            await addProduct(productData);
+                            setIsSubmit(false);
+                            navigate('/store/product');
                         }
-                        console.log(productData);
-                        setIsSubmit(true);
-                        // await addProduct(productData);
-                        setIsSubmit(false);
-                        navigate('/store/product');
                     }else{
                         formik.setFieldError('file', 'Please upload image file');
                     }

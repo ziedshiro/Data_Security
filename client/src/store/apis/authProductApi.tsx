@@ -1,8 +1,7 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseUrl } from "../../env/utils";
 import Cookies from "js-cookie";
-
-const jwt = Cookies.get('jwt');
+import { ProductData } from '../../Model/Product';
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
@@ -10,24 +9,15 @@ const pause = (duration:number) => {
     });
 }
 
-interface TokenData {
-    accessToken: string;
-}
-
-const getBearerToken = () => {
-    if (jwt) {
-        return jwt;
-    } else {
-        return null;
-    }
-};
-
 const authProductApi = createApi({
     reducerPath:'authProducts',
     baseQuery: fetchBaseQuery({
         baseUrl: baseUrl,
         prepareHeaders: (headers) => {
-            headers.set('Authorization', `Bearer ${getBearerToken()}`);
+            const jwt = Cookies.get('jwt');
+            if(jwt){
+                headers.set('Authorization', `Bearer ${jwt}`);
+            }
             return headers;
         },
         fetchFn: async (...args) => {
@@ -38,7 +28,7 @@ const authProductApi = createApi({
     tagTypes: ['Products'],
     endpoints(builder){
         return{
-            fetchAuthProduct: builder.query({
+            fetchAuthProduct: builder.query<Array<ProductData>,void>({
                 query: () => {
                     return{
                         url: '/auth/product',
@@ -60,14 +50,6 @@ const authProductApi = createApi({
                         discountPrice:productData.discountPrice,
                         quantityAvailable:productData.quantityAvailable,
                     }
-                    // product.append(`store`,  productData.store);
-                    // product.append(`type`,  productData.type);
-                    // product.append(`name`,  productData.name);
-                    // product.append(`description`,  productData.type);
-                    // product.append(`expiryDate`,  productData.description);
-                    // product.append(`price`,  productData.price);
-                    // product.append(`discountPrice`,  productData.discountPrice);
-                    // product.append(`quantityAvailable`,  productData.quantityAvailable);
                     product.append(`product`, JSON.stringify(data));
                     product.append(`file`, productData.file);
                     return{

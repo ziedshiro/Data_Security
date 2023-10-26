@@ -11,6 +11,8 @@ import { FaBars,FaXmark } from "react-icons/fa6";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { StoreAuth } from '../../Model/Store'
+import { store } from '../../store/index';
 
 function NavList({className}:any) {
     let active: string;
@@ -101,7 +103,7 @@ function NavList({className}:any) {
     );
 }
  
-function Store() {
+function Store(storeData:StoreAuth) {
     const [openNav, setOpenNav] = useState(false);
     const navigate = useNavigate();
     const handleWindowResize = () =>
@@ -114,7 +116,8 @@ function Store() {
             window.removeEventListener("resize", handleWindowResize);
         };
     }, []);
-  
+    console.log(storeData);
+    
     const handleLogout = () => {
         Cookies.remove('jwt');
         Swal.fire({
