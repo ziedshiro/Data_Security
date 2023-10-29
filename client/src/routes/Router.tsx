@@ -20,7 +20,7 @@ import ValidatePayment from '../pages/administrator/ManagePayment';
 import Product from '../pages/store/Product';
 import EditProduct from '../pages/store/EditProduct';
 import CreateProduct from '../pages/store/CreateProduct';
-
+import InfoStore from '../pages/general/InfoStore';
 function Router() {
   return (
     <BrowserRouter>
@@ -30,6 +30,7 @@ function Router() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/address" element={<Address/>}/>
+          <Route path="/InfoStore" element={<InfoStore/>}/>
           <Route path="/*" element={<NoPage/>}/>
         </Route>
         <Route element={<CustomerRoutes/>}>
