@@ -209,6 +209,8 @@ public class AuthenticationController {
 			
 			if(!user.getAccountLockStatus()) {
 				if(hashservices.verifyPassword(password, user.getSalt(), user.getPassword())) {
+					user.setAttemptLogin(0);
+					userservice.save(user);
 					loginresp.setStatus(HttpStatus.OK);
 					List<String> msg = new ArrayList<String>();
 					msg.add("Success");
@@ -218,14 +220,14 @@ public class AuthenticationController {
 				}
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);
-					if(user.getAttemptLogin()==3) {
+					if(user.getAttemptLogin()>=3) {
 						user.setAccountLockStatus(true);
 						user.setAttemptTimeLogin(new Date());
 					}
 					userservice.save(user);
 					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 					List<String> msg = new ArrayList<String>();
-					msg.add("Invalid Password");
+					msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));
 					loginresp.setMsg(msg);
 					return loginresp;
 				}
@@ -233,7 +235,8 @@ public class AuthenticationController {
 			else {
 				loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 				List<String> msg = new ArrayList<String>();
-				msg.add("Account Lock");
+				user.getAttemptTimeLogin().setHours(user.getAttemptTimeLogin().getHours()+1);
+				msg.add("Account Lock ,Try again at "+(user.getAttemptTimeLogin()));
 				loginresp.setMsg(msg);
 				return loginresp;
 			}	
@@ -258,9 +261,10 @@ public class AuthenticationController {
 		String encodedUserId = encryptionservice.encrypt(userId);
 		
 		User user = userservice.findByUserId(encodedUserId);
+		System.out.print(user.getAttemptLogin());
+		
 		if(user!=null) {
 			Date current = new Date();
-			
 			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
 				Calendar calendarDatabaseDate = Calendar.getInstance();
 				calendarDatabaseDate.setTime(user.getAttemptTimeLogin());
@@ -289,6 +293,8 @@ public class AuthenticationController {
 						String token = jwtUtil.createToken(user);
 						loginresp.setStatus(HttpStatus.OK);
 						loginresp.setAccessToken(token);
+						user.setAttemptLogin(0);
+						userservice.save(user);
 						List<String> msg = new ArrayList<String>();
 						msg.add("Login Success");
 						loginresp.setMsg(msg);
@@ -300,14 +306,15 @@ public class AuthenticationController {
 					}
 					else {
 						user.setAttemptLogin(user.getAttemptLogin()+1);
-						if(user.getAttemptLogin()==3) {
+						System.out.print(user.getAttemptLogin());
+						if(user.getAttemptLogin()>=3) {
 							user.setAccountLockStatus(true);
 							user.setAttemptTimeLogin(new Date());
 						}
 						userservice.save(user);
 						loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 						List<String> msg = new ArrayList<String>();
-						msg.add("Invalid Password");
+						msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));
 						loginresp.setMsg(msg);
 						return loginresp;
 					}
@@ -315,13 +322,14 @@ public class AuthenticationController {
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);
 					List<String> msg = new ArrayList<String>();
-					if(user.getAttemptLogin()==3) {
+					if(user.getAttemptLogin()>=3) {
 						user.setAccountLockStatus(true);
 						user.setAttemptTimeLogin(new Date());
-						msg.add("Code not match, attempt left: "+user.getAttemptLogin()+", Account Lock");
+						user.getAttemptTimeLogin().setHours(user.getAttemptTimeLogin().getHours()+1);
+						msg.add("Account Lock ,Try again at "+(user.getAttemptTimeLogin()));
 					}
 					else {						
-						msg.add("Code not match, attempt left: "+user.getAttemptLogin());
+						msg.add("Code not match, attempt left: "+(4-user.getAttemptLogin()));
 					}
 					userservice.save(user);
 					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
@@ -332,7 +340,8 @@ public class AuthenticationController {
 			else {
 				loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 				List<String> msg = new ArrayList<String>();
-				msg.add("Account Lock");
+				user.getAttemptTimeLogin().setHours(user.getAttemptTimeLogin().getHours()+1);
+				msg.add("Account Lock ,Try again at "+(user.getAttemptTimeLogin()));
 				loginresp.setMsg(msg);
 				return loginresp;
 			}	
