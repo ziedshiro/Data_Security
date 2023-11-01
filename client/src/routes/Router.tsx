@@ -35,10 +35,10 @@ function Router() {
         </Route>
         <Route element={<CustomerRoutes/>}>
           <Route path="/favorite" element={<Favorite/>}/>
-          <Route path="cart" element={<Cart/>}/>
+          <Route path="/cart" element={<Cart/>}/>
           <Route path="/history" element={<History/>}/>
           <Route path="payment" element={<Payment/>}/>
-          <Route path="success" element={<Success/>}/>
+          <Route path="/success" element={<Success/>}/>
         </Route>
         <Route path='/store' element={<OwnerRoutes />}>
           <Route path="product" element={<Product />} />

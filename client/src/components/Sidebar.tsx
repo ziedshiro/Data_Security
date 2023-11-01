@@ -1,11 +1,16 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { Link } from 'react-router-dom';
 interface OpenModal {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>; 
 }
 export default function Sidebar({open,setOpen}:OpenModal) {
+
+    const handleClick = () => {
+      console.log("logout")
+    }
+
     return (
       <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -33,14 +38,38 @@ export default function Sidebar({open,setOpen}:OpenModal) {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
-                    <div className="px-4 sm:px-6">
-                      <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
+                <Dialog.Panel className="pointer-events-auto relative w-screen max-w-xs">
+                  <div className="flex h-full flex-col bg-white py-9 shadow-xl">
+                    <div className="px-6">
+                      <Dialog.Title className="text-2xl font-semibold leading-6 text-gray-900 kanit">
                         ยินดีต้อนรับ
                       </Dialog.Title>
+                      <Dialog.Title className="text-lg mt-3 ml-2 font-semibold leading-6 text-red-600  kanit">
+                        คุณ บอส โสภพ
+                      </Dialog.Title>
                     </div>
-                    <div className="relative mt-6 flex-1 px-4 sm:px-6">{/* Your content */}</div>
+                    <div className="relative mt-6 flex-1 px-4 sm:px-6 kanit">
+                      <div>
+                        <Link to='/history'>
+                          ออเดอร์
+                        </Link>
+                      </div>
+                      <div>
+                        <Link to='/cart'>
+                          ตะกร้าสินค้า
+                        </Link>
+                      </div>                      
+                      <div>
+                        <Link to='/favorite'>
+                          ร้านค้าที่ชื่นชอบ
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="relative px-4 kanit">
+                      <div className='cursor-pointer' onClick={handleClick}>
+                        ออกจากระบบ
+                      </div>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

@@ -21,12 +21,11 @@ function Home() {
             />
             <div className="container mx-auto my-10">
                 <div className="container mx-auto my-10">
-                    <h1 className="text-3xl font-semibold mb-4 my-4">โปรโมชัน Yummy ใน <span style={{ color: 'red' }}>KAMPHANGSAEN</span></h1>
+                    <h1 className="text-3xl font-semibold mb-7 my-4 kanit">ร้านค้ายอดนิยมใน <span style={{ color: 'red' }}>Yummy Hub</span></h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {ordersToDisplay.map((product, index) => (
                             <div key={index}>
-                                {/* แสดงข้อมูลสินค้าที่คุณต้องการ */}
-                                <img src={imagepath} className="rounded shadow-lg" />
+                                <img src={imagepath} alt="img_store" className="rounded shadow-lg" />
                                 <h2 className="text-xl font-semibold my-2">{product.name}</h2>
                             </div>
                         ))}

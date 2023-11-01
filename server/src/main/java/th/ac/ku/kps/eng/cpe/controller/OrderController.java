@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
@@ -164,7 +166,21 @@ public class OrderController {
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
-//	@GetMapping("/auth/pickup")
+	
+	@GetMapping("/auth/pickup/check")
+	public Orders findByCode(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null && user.getRole().equals("store owner")) {
+			Orders order = orderservice.findPickupCode(orderBody.getPickupCode());
+			if(order!=null) {
+				return order;
+			}
+		}
+		return null;
+	}
 	
 	@PutMapping("/auth/pickup")
 	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody) throws Exception {
