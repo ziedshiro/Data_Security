@@ -69,8 +69,8 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                     allowOutsideClick: true,
                 });
             }else{
-                console.log(result.payload);
                 Cookies.set('jwt', result.payload.accessToken,{ expires: 1 });
+                Cookies.set('userData', JSON.stringify(result.payload.user));
                 Swal.close();
                 onHide();
                 Swal.fire({

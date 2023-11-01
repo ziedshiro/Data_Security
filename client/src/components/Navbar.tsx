@@ -8,11 +8,17 @@ import Menu from "../img/menu.svg";
 import Cart from "../img/icon-bag.svg";
 import Favorite from "../img/icon-favorite.svg"
 import Logo from "../img/logo.png"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import { useLocation } from 'react-router-dom';
 
 function Navbar() {
     const [openSideBar, setOpenSideBar] = useState(false)
+    const user = Cookies.get('userData') !== undefined ? Cookies.get('userData') : null;
+    const { state } = useLocation();
 
+    useEffect(()=>{},[state])
+    
     return ( 
         <Disclosure as="nav" className="bg-white">
         {({ open }) => (
@@ -53,7 +59,7 @@ function Navbar() {
                                 </Link>
                             </div>
                         </div>
-                        {true ? 
+                        {user ? 
                         <>
                         <div className='flex mx-7'>
                                 <Link to='/cart' className='py-5'>
