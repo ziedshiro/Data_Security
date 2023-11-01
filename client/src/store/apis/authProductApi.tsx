@@ -61,11 +61,24 @@ const authProductApi = createApi({
                 invalidatesTags: ['Products'],
             }),
             updateProduct: builder.mutation({
-                query: ({ id, productData }) => {
+                query: (productData) => {
+                    const product = new FormData();  
+                    const data = {
+                        store:productData.store,
+                        type:productData.type,
+                        name:productData.name,
+                        description:productData.description,
+                        expiryDate:productData.expiryDate,
+                        price:productData.price,
+                        discountPrice:productData.discountPrice,
+                        quantityAvailable:productData.quantityAvailable,
+                    }
+                    product.append(`product`, JSON.stringify(data));
+                    product.append(`file`, productData.file);
                     return{
-                        url: `/auth/product/${id}`,
+                        url: `/auth/product/${productData.productId}`,
                         method: 'PUT',
-                        body:productData
+                        body:product
                     };
                 },
                 invalidatesTags: ['Products'],

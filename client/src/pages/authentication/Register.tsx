@@ -37,7 +37,6 @@ function Register() {
                 'Password must contain at least one character and one number'
             )
             .required('Password is required.'),
-    
     });
 
     const formik = useFormik({
@@ -58,7 +57,6 @@ function Register() {
                 if (acceptedPrivacyPolicy) {
                     setSpin(true);
                     await registerCheck(values).then((res:any)=>{
-                        console.log(res);
                         if(res?.data.status === "BAD_REQUEST"){
                             Swal.fire({
                                 icon: 'error',

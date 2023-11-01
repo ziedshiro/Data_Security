@@ -29,6 +29,7 @@ function NavList({className}:any) {
 
     const handleLogout = () => {
         Cookies.remove('jwt');
+        Cookies.remove('userData');
         Swal.fire({
             icon: 'success',
             title: 'Logout',

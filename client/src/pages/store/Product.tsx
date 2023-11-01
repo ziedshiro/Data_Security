@@ -2,8 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 import { Skeleton } from '@mui/joy';
 import { useFetchAuthStoreQuery,useFetchAuthProductQuery } from "../../store";
 import { ProductData } from "../../Model/Product";
-import { Button, IconButton } from "@material-tailwind/react";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Button } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 import TableProductList from "../../components/TableProductList";
 

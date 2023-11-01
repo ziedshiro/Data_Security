@@ -11,7 +11,6 @@ interface OpenModal {
 }
 
 function ModalDeleteProduct({ open, onHide, productId,productName }: OpenModal) {
-  console.log(productId,productName);
   
   const [spin,setSpin] = useState(false);
   const [removeProduct] = useRemoveProductMutation();

@@ -30,7 +30,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
     if(MFAFetching || MFAError){
         content = <Skeleton className='my-5'  animation="wave" variant="rectangular" width={200}  height={200}/>
     }else{
-        content =  <img className='w-60' src={MFA.uri} alt="mfaImage"/>
+        content =  <></>
     }
 
     if(MFAError){
@@ -134,7 +134,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                                         <div className="mt-3 text-center sm:mt-0 sm:text-left">                         
                                             {MFAFetching ? <Media height={38} width={310} />:
                                             <Dialog.Title as="h2" className="text-xl font-semibold leading-6 text-gray-900 flex justify-center">
-                                                Setup Multi-Factor Authentication
+                                                Multi-Factor Authentication
                                             </Dialog.Title>}
 
                                             <div className="mt-2">

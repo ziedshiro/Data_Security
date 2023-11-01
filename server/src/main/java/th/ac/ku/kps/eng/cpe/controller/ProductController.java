@@ -127,6 +127,8 @@ public class ProductController {
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 			if ((fileName != null) && (fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$"))) {
 				if(!fileName.equals(product.getImgProduct())) {
+					System.out.println(fileName);
+					System.out.println(product.getImgProduct());
 					String img = FileUploadUtil.saveFile(fileName, file);	
 					product.setImgProduct(img);					
 				}
