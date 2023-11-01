@@ -11,14 +11,14 @@ interface OpenModal {
 }
 export default function Sidebar({open,setOpen}:OpenModal) {
   const navigate = useNavigate();
-  const user = Cookies.get('userData') !== undefined ? Cookies.get('userData') : null;
+  const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
   let userData;
   if(user){
     userData = JSON.parse(user)
   }
   const handleLogout = () => {
-    Cookies.remove('jwt');
-    Cookies.remove('userData');
+    Cookies.remove('jwt',{ path: '/' });
+    Cookies.remove('userdata', { path: '/' });
     Swal.fire({
         icon: 'success',
         title: 'Logout',
@@ -66,7 +66,7 @@ export default function Sidebar({open,setOpen}:OpenModal) {
                       ยินดีต้อนรับ
                     </Dialog.Title>
                     <Dialog.Title className="text-lg mt-3 ml-2 font-semibold leading-6 text-red-600  kanit">
-                      คุณ {userData?.firstname}
+                      คุณ {userData?.firstname} {userData?.lasname}
                     </Dialog.Title>
                   </div>
                   <div className="relative mt-6 flex-1 px-4 sm:px-6 kanit">

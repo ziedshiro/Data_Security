@@ -14,9 +14,10 @@ import { useLocation } from 'react-router-dom';
 
 function Navbar() {
     const [openSideBar, setOpenSideBar] = useState(false)
-    const user = Cookies.get('userData') !== undefined ? Cookies.get('userData') : null;
+    const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
     const { state } = useLocation();
-
+    console.log(user);
+    
     useEffect(()=>{},[state])
     
     return ( 

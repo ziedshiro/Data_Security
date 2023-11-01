@@ -3,9 +3,8 @@ import { useFormik } from 'formik';
 import ModalMFARegister from "../../components/ModalMFARegister";
 import { useRegisterMutation } from "../../store";
 import * as yup from 'yup';
-import { Navbar } from "@material-tailwind/react";
 import Swal from "sweetalert2";
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Register() {
     const [ registerCheck ] = useRegisterMutation();
@@ -189,7 +188,16 @@ function Register() {
                         </label>
                     </div>
                     <div className="my-6">
-                        {acceptedPrivacyPolicy?(
+                        {!acceptedPrivacyPolicy && !spin && (
+                            <button 
+                                type="submit" 
+                                className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-300"
+                                disabled={spin}
+                            >
+                                Register
+                            </button>
+                        )}
+                        {acceptedPrivacyPolicy && !spin && (
                             <button 
                                 disabled={spin}
                                 type="submit" 
@@ -197,13 +205,14 @@ function Register() {
                             >
                                 Register
                             </button>
-                        ) : (
+                        )}
+                        {acceptedPrivacyPolicy && spin && (
                             <button 
                                 type="submit" 
-                                className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-300"
+                                className="rounded-full w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-300 flex justify-center items-center"
                                 disabled={spin}
                             >
-                                    Register
+                                <CircularProgress size={25}  thickness={5}/>
                             </button>
                         )}
                     </div>

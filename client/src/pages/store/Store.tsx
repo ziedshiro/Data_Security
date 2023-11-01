@@ -28,8 +28,8 @@ function NavList({className}:any) {
     }, [className]);
 
     const handleLogout = () => {
-        Cookies.remove('jwt');
-        Cookies.remove('userData');
+        Cookies.remove('userdata', { path: '/' });
+        Cookies.remove('jwt',{ path: '/' });
         Swal.fire({
             icon: 'success',
             title: 'Logout',

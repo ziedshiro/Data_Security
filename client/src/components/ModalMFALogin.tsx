@@ -70,7 +70,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                 });
             }else{
                 Cookies.set('jwt', result.payload.accessToken,{ expires: 1 });
-                Cookies.set('userData', JSON.stringify(result.payload.user));
+                Cookies.set('userdata',JSON.stringify(result.payload.user));
                 Swal.close();
                 onHide();
                 Swal.fire({
