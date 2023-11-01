@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 15, 2023 at 06:11 PM
+-- Generation Time: Nov 01, 2023 at 09:47 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -1012,7 +1012,7 @@ CREATE TABLE `orders` (
   `TotalAmount` decimal(11,2) DEFAULT NULL,
   `filepath` text DEFAULT NULL,
   `payment_date` datetime DEFAULT NULL,
-  `payment_status` enum('Failed','Pending','Success','') DEFAULT NULL,
+  `payment_status` enum('Reject','Pending','Approve') DEFAULT NULL,
   `pickup_code` varchar(200) DEFAULT NULL,
   `pickup_date` datetime DEFAULT NULL,
   `pickup_status` enum('Failed','Pending','Received','') DEFAULT NULL,
@@ -8580,20 +8580,21 @@ INSERT INTO `subdistricts` (`id`, `code`, `name_in_thai`, `name_in_english`, `la
 
 CREATE TABLE `type` (
   `type_id` int(11) NOT NULL,
-  `type_name` varchar(50) NOT NULL
+  `type_name` varchar(50) NOT NULL,
+  `img` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `type`
 --
 
-INSERT INTO `type` (`type_id`, `type_name`) VALUES
-(1, 'อาหารแห้ง'),
-(2, 'เครื่องดื่ม'),
-(3, 'ขนมปัง'),
-(4, 'อาหารกระป๋อง'),
-(5, 'ผัก'),
-(6, 'ผลไม้');
+INSERT INTO `type` (`type_id`, `type_name`, `img`) VALUES
+(1, 'อาหารแห้ง', ''),
+(2, 'เครื่องดื่ม', ''),
+(3, 'ขนมปัง', ''),
+(4, 'อาหารกระป๋อง', ''),
+(5, 'ผัก', ''),
+(6, 'ผลไม้', '');
 
 -- --------------------------------------------------------
 

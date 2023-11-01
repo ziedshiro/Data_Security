@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Oct 15, 2023, 11:09:00 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 1, 2023, 3:42:21 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Type" optimistic-lock="none" table="type">
         <id name="typeId" type="java.lang.Integer">
@@ -8,6 +8,9 @@
         </id>
         <property name="typeName" type="string">
             <column length="50" name="type_name" not-null="true"/>
+        </property>
+        <property name="img" type="string">
+            <column length="65535" name="img" not-null="true"/>
         </property>
         <set fetch="select" inverse="true" lazy="true" name="products" table="product">
             <key>

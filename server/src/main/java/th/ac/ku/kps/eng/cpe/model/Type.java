@@ -15,17 +15,20 @@ public class Type implements java.io.Serializable {
 
 	private Integer typeId;
 	private String typeName;
+	private String img;
 	@JsonIgnore private Set products = new HashSet(0);
 
 	public Type() {
 	}
 
-	public Type(String typeName) {
+	public Type(String typeName, String img) {
 		this.typeName = typeName;
+		this.img = img;
 	}
 
-	public Type(String typeName, Set products) {
+	public Type(String typeName, String img, Set products) {
 		this.typeName = typeName;
+		this.img = img;
 		this.products = products;
 	}
 
@@ -43,6 +46,14 @@ public class Type implements java.io.Serializable {
 
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+
+	public String getImg() {
+		return this.img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
 	}
 
 	public Set getProducts() {

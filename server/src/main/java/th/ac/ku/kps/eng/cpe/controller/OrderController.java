@@ -164,6 +164,7 @@ public class OrderController {
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
+//	@GetMapping("/auth/pickup")
 	
 	@PutMapping("/auth/pickup")
 	public Response pickup(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody) throws Exception {

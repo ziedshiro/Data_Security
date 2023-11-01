@@ -1,5 +1,3 @@
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
 import landingpage from "../../img/landingpage.jpg";
 import imagepath from "../../img/Example1.webp";
 import React, { useState } from 'react';
@@ -7,7 +5,7 @@ function Home() {
 
     const [showMore, setShowMore] = useState(false);
     const initialOrdersToShow = 8;
-    const totalOrders = promotions.length; // Assuming promotions is your array of orders
+    const totalOrders = promotions.length; 
 
     const toggleShowMore = () => {
         setShowMore(!showMore);
@@ -18,7 +16,7 @@ function Home() {
         <>
             <img
                 src={landingpage}
-                alt="Landing Image"
+                alt="landingPage"
                 className="w-full rounded shadow-lg"
             />
             <div className="container mx-auto my-10">
@@ -55,7 +53,7 @@ function Home() {
                             {/* แสดงข้อมูลสินค้าที่คุณต้องการ */}
                             <img
                                 src={imagepath}
-
+                                alt="test"
                                 className="rounded shadow-lg"
                             />
                             <h2 className="text-xl font-semibold my-2">{product.name}</h2>
