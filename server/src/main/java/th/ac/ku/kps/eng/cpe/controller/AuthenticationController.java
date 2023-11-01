@@ -209,13 +209,10 @@ public class AuthenticationController {
 			
 			if(!user.getAccountLockStatus()) {
 				if(hashservices.verifyPassword(password, user.getSalt(), user.getPassword())) {
-					user.setAttemptLogin(0);
-					userservice.save(user);
 					loginresp.setStatus(HttpStatus.OK);
 					List<String> msg = new ArrayList<String>();
 					msg.add("Success");
 					loginresp.setMsg(msg);
-					userservice.save(user);
 					return loginresp;
 				}
 				else {
@@ -261,8 +258,7 @@ public class AuthenticationController {
 		String encodedUserId = encryptionservice.encrypt(userId);
 		
 		User user = userservice.findByUserId(encodedUserId);
-		System.out.print(user.getAttemptLogin());
-		
+
 		if(user!=null) {
 			Date current = new Date();
 			if(user.getAttemptTimeLogin()!=null && user.getAccountLockStatus()) {
