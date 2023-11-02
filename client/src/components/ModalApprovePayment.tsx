@@ -1,21 +1,42 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Button, } from "@material-tailwind/react";
-import { ProductData } from '../Model/Product';
+import { Payment } from '../Model/Payment';
 import thaiDateFormat from "../utils/thaiDateFormat";
 import { useNavigate } from 'react-router-dom';
+import { useUpdateStatusPaymentMutation } from '../store';
 
 interface OpenModal {
     open: boolean;
     onHide: Function; 
-    product: ProductData;
+    payment: Payment;
 }
 
-function ModalProduct({ open, onHide, product }: OpenModal) {
-    const navigate = useNavigate();
-    console.log(product);
-  
+function ModalApprovePayment({ open, onHide, payment }: OpenModal) {
+    const [ updatePayment ] = useUpdateStatusPaymentMutation();
     const [spin,setSpin] = useState(false);
+
+    const handleUpdate =  async (status:string) => {
+        setSpin(true);
+        const paymentData = {
+            id:payment.orderId,
+            orderData:{
+                createdate: payment.createdate,
+                filepath: payment.filepath,
+                orderDate: payment.orderDate,
+                orderId: payment.orderId,
+                orderStatus: payment.orderStatus,
+                paymentDate: payment.paymentDate,
+                paymentStatus: status,
+                pickupDate: payment.pickupDate,
+                pickupStatus: payment.pickupStatus,
+                totalAmount: payment.totalAmount,
+                updatedate: payment.updatedate
+            }
+        }
+        await updatePayment(paymentData);
+        setSpin(false);
+    }   
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -46,7 +67,7 @@ function ModalProduct({ open, onHide, product }: OpenModal) {
                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
-                    <Dialog.Panel className="p-5 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-4xl">
+                    <Dialog.Panel className="p-5 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-xl">
                         <Dialog.Title
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
@@ -55,49 +76,52 @@ function ModalProduct({ open, onHide, product }: OpenModal) {
                         </Dialog.Title>
                         <div className="mt-2 flex flex-col">
                             <p className="text-sm text-gray-700">
-                                <b>Name:</b> {product.name}
+                                <b>Order Date:</b> {thaiDateFormat(payment.orderDate)}
                             </p>
                             <p className="text-sm text-gray-700">
-                                <b>Type:</b> {product.type.typeName}
+                                <b>Payment Date:</b> {thaiDateFormat(payment.paymentDate)}
                             </p>
                             <p className="text-sm text-gray-700">
-                                <b>Description:</b> {product.description}
+                                <b>Order Status:</b> {payment.orderStatus}
                             </p>
                             <p className="text-sm text-gray-700">
-                                <b>Expire-Date:</b> {thaiDateFormat(product.expiryDate)}
+                                <b>Payment Status:</b> {payment.paymentStatus}
                             </p>
                             <p className="text-sm text-gray-700">
-                                <b>Price:</b> {product.price}
-                            </p>
-                            <p className="text-sm text-gray-700">
-                                <b>Discount-Price:</b> {product.discountPrice}
-                            </p>
-                            <p className="text-sm text-gray-700">
-                                <b>Quantity:</b> {product.quantityAvailable}
+                                <b>Total Amount:</b> {payment.totalAmount}
                             </p>
                             <img
-                                className="h-5/12 w-5/12 object-cover object-center mt-2 self-center"
-                                src={require(`C:/image/Files-Upload/products/${product.imgProduct}`)}
-                                alt={'img-'+product.productId}
+                                className="h-7/12 w-7/12 object-cover object-center mt-2 self-center"
+                                src={require(`C:/image/Files-Upload/payments/${payment.filepath}`)}
+                                alt={'img-'+payment.orderId}
                             />
                         </div>
-                        <div className="mt-4 h-1/4">
+                        <div className="mt-4 h-1/4 flex flex-row justify-center">
                         <Button
+                            disabled={spin}
                             color='blue'
                             variant='outlined'
                             className='mr-2'
-                            disabled={spin}
                             onClick={()=>onHide()}
                         >
                             Cancel
                         </Button>
                         <Button
-                            color='yellow'
-                            variant='outlined'
                             disabled={spin}
-                            onClick={()=>navigate(`/store/product/${product.productId}`)}
+                            color='red'
+                            variant='outlined'
+                            className='mr-2'
+                            onClick={()=>handleUpdate('Reject')}
                         >
-                            Edit
+                            Reject
+                        </Button>
+                        <Button
+                            disabled={spin}
+                            color='green'
+                            variant='outlined'
+                            onClick={()=>handleUpdate('Approve')}
+                        >
+                            Approve
                         </Button>
                         </div>
                     </Dialog.Panel>
@@ -109,4 +133,4 @@ function ModalProduct({ open, onHide, product }: OpenModal) {
     )
 }
 
-export default ModalProduct;
+export default ModalApprovePayment;

@@ -16,7 +16,7 @@ import Payment from '../pages/customer/Payment';
 import History from '../pages/customer/History';
 import Cart from '../pages/customer/Cart';
 import Favorite from '../pages/customer/Favorite';
-import ValidatePayment from '../pages/administrator/ManagePayment';
+import ManagePayment from '../pages/administrator/ManagePayment';
 import Product from '../pages/store/Product';
 import EditProduct from '../pages/store/EditProduct';
 import CreateProduct from '../pages/store/CreateProduct';
@@ -53,7 +53,7 @@ function Router() {
         </Route>
 
         <Route element={<AdminRoutes/>}>
-          <Route path="/admin" element={<ValidatePayment />}/>
+          <Route path="/admin" element={<ManagePayment />}/>
         </Route>
         
       </Routes>
