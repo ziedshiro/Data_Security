@@ -16,7 +16,6 @@ function Navbar() {
     const [openSideBar, setOpenSideBar] = useState(false)
     const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
     const { state } = useLocation();
-    console.log(user);
     
     useEffect(()=>{},[state])
     

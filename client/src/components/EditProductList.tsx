@@ -74,7 +74,7 @@ function EditProductList({product,storeId}:EditProduct) {
       price:product.price,
       discountPrice:product.discountPrice,
       quantityAvailable:product.quantityAvailable,
-      file: [fileImage]
+      file: []
     },
     validationSchema: validationSchema,
     validateOnBlur:false,
@@ -276,17 +276,25 @@ function EditProductList({product,storeId}:EditProduct) {
                 }
               }}
             />
-            {formik.values.file[0] && (
+            {formik.values.file.length === 0 ? (
+              <div className="p-4 mt-4 bg-sky-100 overflow-hidden text-ellipsis flex justify-center">
+                <img
+                  src={require(`C:/image/Files-Upload/products/${product.imgProduct}`)}
+                  alt={formik.values?.file[0]}
+                  className="max-w-xs flex"
+                />
+              </div>
+              ):(
               <div className="p-4 mt-4 bg-sky-100 overflow-hidden text-ellipsis flex justify-center">
                 <img
                   src={URL.createObjectURL(formik.values?.file[0])}
-                  alt={formik.values?.file[0].name}
+                  alt={formik.values?.file[0]}
                   className="max-w-xs flex"
                 />
               </div>
             )}
             {formik.errors.file ? (
-              <div className="text-red-500 text-xs mb-3">{formik.errors.name}</div>
+              <div className="text-red-500 text-xs mb-3">{formik.errors.file}</div>
             ) : null}
           </div>
           <div className='flex row'>

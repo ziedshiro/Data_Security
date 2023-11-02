@@ -47,37 +47,37 @@ function ModalProduct({ open, onHide, product }: OpenModal) {
                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
-                    <Dialog.Panel className="p-5 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all">
+                    <Dialog.Panel className="p-5 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-4xl">
                         <Dialog.Title
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
                         >
                             รายละเอียด
                         </Dialog.Title>
-                        <div className="mt-2">
+                        <div className="mt-2 flex flex-col">
                             <p className="text-sm text-gray-700">
-                                Name: {product.name}
+                                <b>Name:</b> {product.name}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Type: {product.type.typeName}
+                                <b>Type:</b> {product.type.typeName}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Description: {product.description}
+                                <b>Description:</b> {product.description}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Expire-Date: {thaiDateFormat(product.expiryDate)}
+                                <b>Expire-Date:</b> {thaiDateFormat(product.expiryDate)}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Price: {product.price}
+                                <b>Price:</b> {product.price}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Discount-Price: {product.discountPrice}
+                                <b>Discount-Price:</b> {product.discountPrice}
                             </p>
                             <p className="text-sm text-gray-700">
-                                Quantity: {product.quantityAvailable}
+                                <b>Quantity:</b> {product.quantityAvailable}
                             </p>
                             <img
-                                className="h-80 w-full object-cover object-center mt-2"
+                                className="h-5/12 w-5/12 object-cover object-center mt-2 self-center"
                                 src={require(`C:/image/Files-Upload/products/${product.imgProduct}`)}
                                 alt={'img-'+product.productId}
                             />

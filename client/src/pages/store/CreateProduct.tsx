@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { useState } from 'react';
 
 function CreateProduct() {
-    const [addProduct] = useAddProductMutation();
+    const [ addProduct,isError ] = useAddProductMutation();
     const { data,isFetching } = useFetchAuthStoreQuery();
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 1MB
     const ALLOWED_FILE_TYPES = ['image/png','image/jpg','image/jpeg'];
@@ -182,7 +182,6 @@ function CreateProduct() {
                             id="description"
                             name="description"
                             onChange={formik.handleChange}
-                            value={formik.values.description}
                         />
                         {formik.errors.description ? (
                             <div className="text-red-500 text-xs">{formik.errors.description}</div>

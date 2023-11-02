@@ -12,7 +12,7 @@ function TableProductList(item:ProductData) {
 
     return (
         <tr key={item.productId}>
-            <td className="px-3">
+            <td className="px-3 text-start">
                 {item.name}
             </td>
             <td className="px-3">
