@@ -16,9 +16,9 @@ export default function Sidebar({open,setOpen}:OpenModal) {
   if(user){
     userData = JSON.parse(user)
   }
-  const handleLogout = () => {
-    Cookies.remove('jwt',{ path: '/' });
-    Cookies.remove('userdata', { path: '/' });
+  const handleLogout = async () => {
+    await Cookies.remove('jwt',{ path: '/' });
+    await Cookies.remove('userdata', { path: '/' });
     Swal.fire({
         icon: 'success',
         title: 'Logout',
