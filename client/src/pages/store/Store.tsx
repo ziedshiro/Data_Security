@@ -27,9 +27,9 @@ function NavList({className}:any) {
         
     }, [className]);
 
-    const handleLogout = () => {
-        Cookies.remove('userdata', { path: '/' });
+    const handleLogout = async () => {
         Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'success',
             title: 'Logout',
@@ -120,7 +120,8 @@ function Store(storeData:StoreAuth) {
     console.log(storeData);
     
     const handleLogout = () => {
-        Cookies.remove('jwt');
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'success',
             title: 'Logout',

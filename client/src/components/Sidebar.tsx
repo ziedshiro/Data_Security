@@ -29,6 +29,7 @@ export default function Sidebar({open,setOpen}:OpenModal) {
         text: 'Logout Successful',
     });
     setOpen(false);
+    window.location.reload();
     navigate("/");
   }
 

@@ -1,6 +1,6 @@
 import { ProductData } from "../Model/Product"
 import * as yup from 'yup';
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import { Input,Button,Select,Option } from "@material-tailwind/react";
 import { Textarea } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ interface EditProduct {
 
 function EditProductList({product,storeId}:EditProduct) {
   const [ updateProduct ] = useUpdateProductMutation();
-  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 1MB
   const ALLOWED_FILE_TYPES = ['image/png','image/jpg','image/jpeg'];
   const navigate = useNavigate();
   const [isSubmit,setIsSubmit] = useState(false);
@@ -60,7 +60,7 @@ function EditProductList({product,storeId}:EditProduct) {
     ),
     
   });
-  const filePath = require(`M:/Program Files/Eclipse/eclipse/image/Files-Upload/${product.imgProduct}`);
+  const filePath = require(`C:/image/Files-Upload/products/${product.imgProduct}`);
   const parsedDate = new Date(product.expiryDate);
   const formattedDate = parsedDate.toISOString().slice(0, 16);
   const fileImage = new File([filePath], product.imgProduct, { type: 'image/jpeg' });
@@ -74,7 +74,7 @@ function EditProductList({product,storeId}:EditProduct) {
       price:product.price,
       discountPrice:product.discountPrice,
       quantityAvailable:product.quantityAvailable,
-      file: []
+      file: [fileImage]
     },
     validationSchema: validationSchema,
     validateOnBlur:false,
@@ -263,18 +263,30 @@ function EditProductList({product,storeId}:EditProduct) {
               crossOrigin={undefined}  
               id="file"
               name="file"
+              accept=".jpg, .jpeg, .png"
               type='file'
               variant='standard'
               onChange={(event:any) => {
                 const inputElement = event.target as HTMLInputElement;
                 if (inputElement.files) {
                   const filesArray = Array.from(inputElement.files);
+                  console.log(filesArray);
+                  
                   formik.setFieldValue('file', filesArray);
                 }
               }}
             />
+            {formik.values.file[0] && (
+              <div className="p-4 mt-4 bg-sky-100 overflow-hidden text-ellipsis flex justify-center">
+                <img
+                  src={URL.createObjectURL(formik.values?.file[0])}
+                  alt={formik.values?.file[0].name}
+                  className="max-w-xs flex"
+                />
+              </div>
+            )}
             {formik.errors.file ? (
-              <div className="text-red-500 text-xs mb-3">{formik.errors.file}</div>
+              <div className="text-red-500 text-xs mb-3">{formik.errors.name}</div>
             ) : null}
           </div>
           <div className='flex row'>
