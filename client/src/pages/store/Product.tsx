@@ -6,10 +6,12 @@ import { Button } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 import TableProductList from "../../components/TableProductList";
 import Cookies from "js-cookie";
+import { useState } from "react";
 
 function Product() {
     const { data,isFetching } = useFetchAuthStoreQuery();
     const { data:product,isFetching:isProduct,isError:errorProduct } = useFetchAuthProductQuery();
+    const [ search,setSearch ] = useState('');
 
     let content;
     if(isFetching){
@@ -31,13 +33,21 @@ function Product() {
                 </td>
             </tr>
         }else if(product){
-            console.log(product);
-            content_list = 
-                product.map((item: ProductData) => {
-                    return(
-                        <TableProductList key={item.productId} {...item}/>
+            const filteredData = product?.filter((item: ProductData) => item.name.toLowerCase().includes(search.toLowerCase()));
+            if(search === ''){
+                content_list = 
+                    product.map((item: ProductData) => {
+                        return(
+                            <TableProductList key={item.productId} {...item}/>
                     );
                 });
+            }else if(filteredData){
+                content_list = filteredData.map((item: ProductData) => {
+                    return(
+                        <TableProductList key={item.productId} {...item}/>
+                     );
+                });
+            }
         }
 
 
@@ -54,6 +64,7 @@ function Product() {
                                 id="form-subscribe-Filter"
                                 className="mr-4 rounded-lg border-transparent flex-1 appearance-none border border-gray-400 w-40 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                                 placeholder="ค้นหา"
+                                onChange={(e)=>setSearch(e.target.value)}
                             />
                         </div>
                         <Link to='create'>
