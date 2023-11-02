@@ -1,10 +1,16 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import { BsPower } from 'react-icons/bs'
+import { AiOutlinePoweroff } from 'react-icons/ai'
+import  CartDefault from "../img/icon-bag.svg";
+import CartHover from "../img/icon-bag copy.svg";
+import FavoriteDefault from "../img/icon-favorite.svg"
+import FavoriteHover from "../img/icon-favorite copy.svg"
+import { IoDocumentTextOutline } from 'react-icons/io5'
+
 
 interface OpenModal {
   open: boolean;
@@ -13,13 +19,33 @@ interface OpenModal {
 export default function Sidebar({open,setOpen}:OpenModal) {
   const navigate = useNavigate();
   const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
+  const [isCart, setIsCart] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleMouseEnterCart = () => {
+    setIsCart(true);
+  };
+
+  const handleMouseLeaveCart = () => {
+    setIsCart(false);
+  };
+
+  const handleMouseEnterFavorite = () => {
+    setIsFavorite(true);
+  };
+
+  const handleMouseLeaveFavorite = () => {
+    setIsFavorite(false);
+  };
+
   let userData;
   if(user){
     userData = JSON.parse(user)
   }
-  const handleLogout = async () => {
-    await Cookies.remove('jwt',{ path: '/' });
-    await Cookies.remove('userdata', { path: '/' });
+  const handleLogout = () => {
+    Cookies.remove('jwt',{ path: '/' });
+    Cookies.remove('userdata', { path: '/' });
+
     Swal.fire({
         icon: 'success',
         title: 'Logout',
@@ -71,26 +97,44 @@ export default function Sidebar({open,setOpen}:OpenModal) {
                       คุณ {userData?.firstname} {userData?.lasname}
                     </Dialog.Title>
                   </div>
-                  <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
-                      <Link to='/history'>
+                  <div className="relative mt-6 flex-1 px-6">
+                    <div className='kanit text-gray-500 hover:text-red-500 font-thin my-8'>
+                      <Link to='/history' className='flex items-center'>
+                        <IoDocumentTextOutline size={23} className='mr-2'/>
                         ออเดอร์
                       </Link>
                     </div>
-                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
-                      <Link to='/cart'>
+                    <div 
+                        className={`kanit font-thin my-8 ${isCart ? 'text-red-500' : 'text-gray-500'}`}
+                        onMouseEnter={handleMouseEnterCart}
+                        onMouseLeave={handleMouseLeaveCart}
+                    >
+                      <Link to='/cart' className='flex items-center'>
+                        <img  
+                              src={isCart ? CartHover : CartDefault}
+                              className='mr-2 w-5' 
+                              alt='cart' 
+                        />
                         ตะกร้าสินค้า
                       </Link>
                     </div>                      
-                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
-                      <Link to='/favorite'>
+                    <div 
+                        className={`kanit font-thin my-8 ${isFavorite ? 'text-red-500' : 'text-gray-500'}`}
+                        onMouseEnter={handleMouseEnterFavorite}
+                        onMouseLeave={handleMouseLeaveFavorite}
+                    >
+                      <Link to='/favorite' className='flex items-center'>
+                        <img  src={isFavorite ? FavoriteHover : FavoriteDefault} 
+                              className='mr-2 w-6' 
+                              alt='cart'
+                        />
                         ร้านค้าที่ชื่นชอบ
                       </Link>
                     </div>
                   </div>
-                  <div className="relative px-4 kanit">
-                    <div className='cursor-pointer text-gray-500 font-thin hover:text-red-500 flex' onClick={handleLogout}>
-                      <BsPower/>
+                  <div className="relative px-4 kanit px-6">
+                    <div className='cursor-pointer text-gray-500 font-thin hover:text-red-500 flex items-center' onClick={handleLogout}>
+                      <AiOutlinePoweroff className='mr-2'/>
                       ออกจากระบบ
                     </div>
                   </div>

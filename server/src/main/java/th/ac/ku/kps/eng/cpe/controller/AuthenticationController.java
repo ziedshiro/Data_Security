@@ -289,12 +289,10 @@ public class AuthenticationController {
 						String token = jwtUtil.createToken(user);
 						loginresp.setStatus(HttpStatus.OK);
 						loginresp.setAccessToken(token);
-						user.setAttemptLogin(0);
-						userservice.save(user);
 						List<String> msg = new ArrayList<String>();
 						msg.add("Login Success");
 						loginresp.setMsg(msg);
-						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getFirstname()),user.getRole()));
+						loginresp.setUser(new UserLogin(encryptionservice.decrypt(user.getUserId()),encryptionservice.decrypt(user.getFirstname()),encryptionservice.decrypt(user.getLastname()),user.getRole()));
 						user.setLastLoginTimestamp(new Date());
 						user.setAttemptLogin(0);
 						userservice.save(user);
