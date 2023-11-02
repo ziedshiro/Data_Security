@@ -5,6 +5,7 @@ import { ProductData } from "../../Model/Product";
 import { Button } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 import TableProductList from "../../components/TableProductList";
+import Cookies from "js-cookie";
 
 function Product() {
     const { data,isFetching } = useFetchAuthStoreQuery();
@@ -117,6 +118,8 @@ function Product() {
             </div>
         </div>
     }else{
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',

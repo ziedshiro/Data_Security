@@ -7,6 +7,7 @@ import { Skeleton } from '@mui/joy';
 import { useFetchAuthStoreQuery,useAddProductMutation } from "../../store";
 import Swal from "sweetalert2";
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 function CreateProduct() {
     const [ addProduct,isError ] = useAddProductMutation();
@@ -305,6 +306,8 @@ function CreateProduct() {
                 </form>
             </div>
     }else{
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',

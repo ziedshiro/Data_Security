@@ -4,6 +4,7 @@ import { useFetchAuthStoreQuery,useUpdateProductMutation,useFetchProductByIdQuer
 import Swal from "sweetalert2";
 import { ProductData } from '../../Model/Product';
 import EditProductList from '../../components/EditProductList';
+import Cookies from 'js-cookie';
 
 function EditProduct() {
     const productId = useLocation().pathname.split('/store/product/');
@@ -34,6 +35,8 @@ function EditProduct() {
         content = <EditProductList product={product} storeId={data.storeId}/>
             
     }else{
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',
