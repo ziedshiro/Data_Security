@@ -53,7 +53,7 @@ function Navbar() {
                                 <Link to='/address' className='px-7 py-3'>
                                     <span className='flex items-center kanit text-gray-600 hover:text-red-500 text-base font-medium'>
                                         <FaMapMarkerAlt className='mr-3 text-xl'/>
-                                        Select a delivery address
+                                        เลือกร้านค้าใกล้เคียง
                                         <IoCaretDown className='ml-3'/>
                                     </span>
                                 </Link>

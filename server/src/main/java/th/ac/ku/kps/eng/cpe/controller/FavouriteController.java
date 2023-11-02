@@ -43,7 +43,7 @@ public class FavouriteController {
 	@Autowired
 	private EncryptionServices encryptionservice;
 	
-	@GetMapping("auth/favorite")
+	@GetMapping("/auth/favorite")
 	public List<Favourite> getByUser(@RequestHeader("Authorization") String token) throws Exception{
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
@@ -57,7 +57,7 @@ public class FavouriteController {
 		}
 	}
 	
-	@GetMapping("auth/favorite/{id}")
+	@GetMapping("/auth/favorite/{id}")
 	public BooleanResponse checkFavorite(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception{
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
@@ -97,6 +97,7 @@ public class FavouriteController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		System.out.print(id);
 		if(user!=null && user.getRole().equals("customer")) {
 			Favourite favourite = favouriteservice.findById(id);
 			favouriteservice.delete(favourite);		

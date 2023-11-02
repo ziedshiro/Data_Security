@@ -1,9 +1,16 @@
 import landingpage from "../../img/landingpage.jpg";
 import imagepath from "../../img/Example1.webp";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFetchStoreQuery, useFetchTypeQuery } from "../../store";
 import { Box, Skeleton } from "@mui/material";
 import Swal from "sweetalert2";
+import { StarIcon } from '@heroicons/react/20/solid'
+import { Link } from "react-router-dom";
+
+function classNames(...classes: (string | undefined | null | false)[]): string {
+    return classes.filter(Boolean).join(' ');
+}
+
 function Home() {
 
     const [showMore, setShowMore] = useState(false);
@@ -12,6 +19,8 @@ function Home() {
 
     const { data:store,isFetching:isStore,isError:errorStore } = useFetchStoreQuery("");
     const { data:type,isFetching:isType,isError:errorType } = useFetchTypeQuery("");
+
+    const sortedStores = store?.slice().sort((a:any, b:any) => b.rating - a.rating);
 
     const toggleShowMore = () => {
         setShowMore(!showMore);
@@ -45,7 +54,6 @@ function Home() {
         );
       }
 
-    const ordersToDisplay = showMore ? promotions : promotions.slice(0, initialOrdersToShow);
     return (
         <>
             <img
@@ -57,12 +65,47 @@ function Home() {
                 <div className="container mx-auto my-10">
                     <h1 className="text-3xl font-semibold my-10 kanit">ร้านค้ายอดนิยมใน <span style={{ color: 'red' }}>Yummy Hub</span></h1>
                     <div className="grid gap-x-8 gap-y-10 grid-cols-4">
-                        {ordersToDisplay.map((product:any, index:any) => (
-                            <div key={index}>
-                                <img src={imagepath} alt="img_store" className="rounded shadow-lg hover:scale-105" />
-                                <h2 className="text-lg font-thin my-2 kanit">{product.name}</h2>
+                        {
+                        isStore ?
+                        <div>
+                            <div className='flex'>
+                                <Media/>
+                                <Media/>
+                                <Media/>
+                                <Media/>
                             </div>
-                        ))}
+                            <div className='flex'>
+                                <Media/>
+                                <Media/>
+                                <Media/>
+                                <Media/>
+                            </div>
+                        </div>
+                        :
+                        ((showMore ? sortedStores : sortedStores.slice(0, initialOrdersToShow)).map((store:any, index:number) => (
+                            <Link to={`/infostore/${store.storeId}`} key={index}>
+                                <img src={imagepath} alt="img_store" className="rounded shadow-lg hover:scale-105" />
+                                <div className="flex justify-between">
+                                    <h2 className="text-lg font-thin my-2 kanit">{store.name}</h2>
+                                    <div className="flex items-center">
+                                        {[0, 1, 2, 3, 4].map((rating) => (
+                                            <StarIcon
+                                            key={rating}
+                                            className={classNames(
+                                                store.rating > rating ? 'text-red-500' : 'text-gray-200',
+                                                'h-5 w-5 flex-shrink-0'
+                                            )}
+                                            aria-hidden="true"
+                                            />
+                                        ))}
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <p className="text-sm font-thin my-2 kanit">{store.provinces.nameInThai}</p>
+                                        <p className="text-sm font-thin my-2 kanit">{store.storeOpen.split(":").slice(0, 2).join(":")} - {store.storeClose.split(":").slice(0, 2).join(":")}</p>
+                                    </div>
+                                </Link>
+                        )))}
                     </div>
                     {totalOrders > initialOrdersToShow && (
                      <div className="text-center p-4 mx-auto">
@@ -96,17 +139,18 @@ function Home() {
                             </div>
                         </div>
                     :
-                    (type.map((product:any, index:number) => (
-                        <div
+                    (type.map((type:any, index:number) => (
+                        <Link
+                            to={`/type/${type.typeId}`}
                             key={index}
                         >
                             <img
-                                src={imagepath}
-                                alt="test"
+                                src={require(`../../img/types/${type?.img}`)}
+                                alt="img_type"
                                 className="rounded shadow-lg hover:scale-105"
                             />
-                            <h2 className="text-lg font-thin my-2 kanit">{product.typeName}</h2>
-                        </div>
+                            <h2 className="text-lg font-thin my-2 kanit">{type.typeName}</h2>
+                        </Link>
                     )))
                     }
                 </div>

@@ -95,7 +95,6 @@ function CreateProduct() {
                                 quantityAvailable:values.quantityAvailable,
                                 file:values.file[0]
                             }
-                            console.log(productData);
                             setIsSubmit(true);
                             await addProduct(productData);
                             setIsSubmit(false);
