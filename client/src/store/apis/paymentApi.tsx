@@ -1,5 +1,6 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseUrl } from "../../env/utils";
+import Cookies from 'js-cookie';
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
@@ -7,26 +8,15 @@ const pause = (duration:number) => {
     });
 }
 
-interface TokenData {
-    accessToken: string;
-}
-
-const getBearerToken = () => {
-    const tokenData = localStorage.getItem('token');
-    const token:TokenData | null = tokenData ? JSON.parse(tokenData) : null;
-    if (token) {
-        return token.accessToken;
-    } else {
-        return null;
-    }
-};
-
 const paymentApi = createApi({
     reducerPath:'Payments',
     baseQuery: fetchBaseQuery({
         baseUrl: baseUrl,
         prepareHeaders: (headers) => {
-            headers.set('Authorization', `Bearer ${getBearerToken()}`);
+            const jwt = Cookies.get('jwt');
+            if(jwt){
+                headers.set('Authorization', `Bearer ${jwt}`);
+            }
             return headers;
         },
         fetchFn: async (...args) => {

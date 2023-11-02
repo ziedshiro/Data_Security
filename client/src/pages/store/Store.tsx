@@ -1,7 +1,6 @@
 import { useState,useEffect } from "react";
-import { NavLink,Outlet,Link } from "react-router-dom";
+import { NavLink,Outlet } from "react-router-dom";
 import {
-  Navbar,
   Collapse,
   Typography,
   IconButton,
@@ -12,7 +11,6 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { StoreAuth } from '../../Model/Store'
-import { store } from '../../store/index';
 
 function NavList({className}:any) {
     let active: string;
