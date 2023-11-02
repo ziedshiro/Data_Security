@@ -217,14 +217,19 @@ public class AuthenticationController {
 				}
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);
-					if(user.getAttemptLogin()>=3) {
+					if(user.getAttemptLogin()>3) {
 						user.setAccountLockStatus(true);
 						user.setAttemptTimeLogin(new Date());
 					}
 					userservice.save(user);
 					loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 					List<String> msg = new ArrayList<String>();
-					msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));
+					if(user.getAttemptLogin()==4) {
+						msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin())+" ,Your Account Lock!");
+					}
+					else {
+						msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));						
+					}
 					loginresp.setMsg(msg);
 					return loginresp;
 				}
@@ -301,14 +306,19 @@ public class AuthenticationController {
 					else {
 						user.setAttemptLogin(user.getAttemptLogin()+1);
 						System.out.print(user.getAttemptLogin());
-						if(user.getAttemptLogin()>=3) {
+						if(user.getAttemptLogin()>3) {
 							user.setAccountLockStatus(true);
 							user.setAttemptTimeLogin(new Date());
 						}
 						userservice.save(user);
 						loginresp.setStatus(HttpStatus.UNAUTHORIZED);
 						List<String> msg = new ArrayList<String>();
-						msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));
+						if(user.getAttemptLogin()==4) {
+							msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin())+" ,Your Account Lock!");
+						}
+						else {
+							msg.add("Invalid Password attempt left: "+(4-user.getAttemptLogin()));						
+						}
 						loginresp.setMsg(msg);
 						return loginresp;
 					}
@@ -316,14 +326,14 @@ public class AuthenticationController {
 				else {
 					user.setAttemptLogin(user.getAttemptLogin()+1);
 					List<String> msg = new ArrayList<String>();
-					if(user.getAttemptLogin()>=3) {
+					if(user.getAttemptLogin()>3) {
 						user.setAccountLockStatus(true);
 						user.setAttemptTimeLogin(new Date());
 						user.getAttemptTimeLogin().setHours(user.getAttemptTimeLogin().getHours()+1);
-						msg.add("Account Lock ,Try again at "+(user.getAttemptTimeLogin()));
+						msg.add("Code not match, attempt left: "+(4-user.getAttemptLogin())+" ,Your Account Lock! ,Try again at ");
 					}
-					else {						
-						msg.add("Code not match, attempt left: "+(4-user.getAttemptLogin()));
+					else {		
+						msg.add("Code not match, attempt left: "+(4-user.getAttemptLogin()));						
 					}
 					userservice.save(user);
 					loginresp.setStatus(HttpStatus.UNAUTHORIZED);

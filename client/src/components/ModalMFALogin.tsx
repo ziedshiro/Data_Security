@@ -128,7 +128,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                                         <div className="mt-3 text-center">                         
                                             {MFAFetching ? 
                                             <div className='flex justify-center'>
-                                                <Media height={60} width={180} />
+                                                <Media height={50} width={210} />
                                             </div>
                                             :
                                             <Dialog.Title as="h2" className="text-2xl font-semibold leading-6 text-gray-900 flex justify-center">
@@ -147,7 +147,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                                                     >
                                                         <img className='w-32' src={otp} alt='otp'/>
                                                     </label>}
-                                                    {MFAFetching ? <Media height={70} width={220} />:
+                                                    {MFAFetching ? <Media height={60} width={200} />:
                                                     <input
                                                         type="text"
                                                         id="codeTwoFactorAuthentication"
