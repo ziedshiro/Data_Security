@@ -11,7 +11,7 @@ import { useState } from 'react';
 function CreateProduct() {
     const [addProduct] = useAddProductMutation();
     const { data,isFetching } = useFetchAuthStoreQuery();
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 1MB
     const ALLOWED_FILE_TYPES = ['image/png','image/jpg','image/jpeg'];
     const navigate = useNavigate();
     const [isSubmit,setIsSubmit] = useState(false);
