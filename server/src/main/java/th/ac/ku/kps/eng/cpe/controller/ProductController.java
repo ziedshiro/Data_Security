@@ -91,7 +91,7 @@ public class ProductController {
 			Product product = objectMapper.readValue(productJson, Product.class);
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 			if (fileName != null && fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$")) {
-				String img = FileUploadUtil.saveFile(fileName, file);
+				String img = FileUploadUtil.saveFile(fileName,"products", file);
 				product.setImgProduct(img);
 				product.setCreatedate(new Date());
 				product.setIsactive(true);
@@ -129,7 +129,7 @@ public class ProductController {
 				if(!fileName.equals(product.getImgProduct())) {
 					System.out.println(fileName);
 					System.out.println(product.getImgProduct());
-					String img = FileUploadUtil.saveFile(fileName, file);	
+					String img = FileUploadUtil.saveFile(fileName,"products", file);	
 					product.setImgProduct(img);					
 				}
 				productservice.save(product);

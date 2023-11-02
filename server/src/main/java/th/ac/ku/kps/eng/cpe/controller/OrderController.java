@@ -108,7 +108,7 @@ public class OrderController {
 			if (fileName != null && fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$")) {
 				order.setOrderDate(new Date());
 				order.setOrderStatus("Pending");
-				String img = FileUploadUtil.saveFile(fileName, file);
+				String img = FileUploadUtil.saveFile(fileName,"payments", file);
 				order.setFilepath(img);
 				order.setPaymentDate(new Date());
 				order.setPaymentStatus("Pending");

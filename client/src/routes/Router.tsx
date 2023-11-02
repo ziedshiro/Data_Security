@@ -21,6 +21,7 @@ import Product from '../pages/store/Product';
 import EditProduct from '../pages/store/EditProduct';
 import CreateProduct from '../pages/store/CreateProduct';
 import InfoStore from '../pages/general/InfoStore';
+import Type from '../pages/general/Type';
 function Router() {
   return (
     <BrowserRouter>
@@ -30,7 +31,8 @@ function Router() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/address" element={<Address/>}/>
-          <Route path="/InfoStore" element={<InfoStore/>}/>
+          <Route path="/infostore/:id" element={<InfoStore/>}/>
+          <Route path="/type/:id" element={<Type/>}/>
           <Route path="/*" element={<NoPage/>}/>
         </Route>
         <Route element={<CustomerRoutes/>}>

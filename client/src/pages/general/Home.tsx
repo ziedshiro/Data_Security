@@ -25,8 +25,8 @@ function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {ordersToDisplay.map((product, index) => (
                             <div key={index}>
-                                <img src={imagepath} alt="img_store" className="rounded shadow-lg" />
-                                <h2 className="text-xl font-semibold my-2">{product.name}</h2>
+                                <img src={imagepath} alt="img_store" className="rounded shadow-lg hover:scale-105" />
+                                <h2 className="text-lg font-semibold my-2 kanit">{product.name}</h2>
                             </div>
                         ))}
                     </div>
@@ -34,7 +34,7 @@ function Home() {
                      <div className="text-center p-4 mx-auto">
                      <button
                        onClick={toggleShowMore}
-                       className="my-4 border border-gray-400 rounded-lg px-5 py-5 hover:text-red-500 hover:bg-red-300"
+                       className="my-4 border border-gray-400 rounded-lg px-5 py-4 hover:text-red-500 hover:border-red-500"
                      >
                        {showMore ? 'Show Less' : 'See More'}
                      </button>
@@ -53,9 +53,9 @@ function Home() {
                             <img
                                 src={imagepath}
                                 alt="test"
-                                className="rounded shadow-lg"
+                                className="rounded shadow-lg hover:scale-105"
                             />
-                            <h2 className="text-xl font-semibold my-2">{product.name}</h2>
+                            <h2 className="text-lg font-semibold my-2 kanit">{product.name}</h2>
                         </div>
                     ))}
                 </div>
