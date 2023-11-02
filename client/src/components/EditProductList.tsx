@@ -60,7 +60,7 @@ function EditProductList({product,storeId}:EditProduct) {
     ),
     
   });
-  const filePath = require(`M:/Program Files/Eclipse/eclipse/image/Files-Upload/${product.imgProduct}`);
+  const filePath = require(`C:/image/Files-Upload/products/${product.imgProduct}`);
   const parsedDate = new Date(product.expiryDate);
   const formattedDate = parsedDate.toISOString().slice(0, 16);
   const fileImage = new File([filePath], product.imgProduct, { type: 'image/jpeg' });

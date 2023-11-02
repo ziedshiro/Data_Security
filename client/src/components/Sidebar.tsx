@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { BsPower } from 'react-icons/bs'
 
 interface OpenModal {
   open: boolean;
@@ -69,25 +70,26 @@ export default function Sidebar({open,setOpen}:OpenModal) {
                       คุณ {userData?.firstname} {userData?.lasname}
                     </Dialog.Title>
                   </div>
-                  <div className="relative mt-6 flex-1 px-4 sm:px-6 kanit">
-                    <div>
+                  <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
                       <Link to='/history'>
                         ออเดอร์
                       </Link>
                     </div>
-                    <div>
+                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
                       <Link to='/cart'>
                         ตะกร้าสินค้า
                       </Link>
                     </div>                      
-                    <div>
+                    <div className='kanit text-gray-500 hover:text-red-500 font-thin'>
                       <Link to='/favorite'>
                         ร้านค้าที่ชื่นชอบ
                       </Link>
                     </div>
                   </div>
                   <div className="relative px-4 kanit">
-                    <div className='cursor-pointer' onClick={handleLogout}>
+                    <div className='cursor-pointer text-gray-500 font-thin hover:text-red-500 flex' onClick={handleLogout}>
+                      <BsPower/>
                       ออกจากระบบ
                     </div>
                   </div>

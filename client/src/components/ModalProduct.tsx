@@ -78,7 +78,7 @@ function ModalProduct({ open, onHide, product }: OpenModal) {
                             </p>
                             <img
                                 className="h-80 w-full object-cover object-center mt-2"
-                                src={require(`M:/Program Files/Eclipse/eclipse/image/Files-Upload/${product.imgProduct}`)}
+                                src={require(`C:/image/Files-Upload/products/${product.imgProduct}`)}
                                 alt={'img-'+product.productId}
                             />
                         </div>
