@@ -37,7 +37,7 @@ const favouriteApi = createApi({
     tagTypes: ['Favorites'],
     endpoints(builder){
         return{
-            fetchFavourite: builder.query<string, void>({
+            fetchFavourite: builder.query({
                 query: () => {
                     return{
                         url: '/auth/favorite',

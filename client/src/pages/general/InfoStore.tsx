@@ -87,7 +87,7 @@ const InfoStore = () => {
                                     {/* แสดงข้อมูลสินค้าที่คุณต้องการ */}
                                     <img
                                         src={imagepath}
-
+                                        alt='img'
                                         className="rounded shadow-lg"
                                     />
                                     <h2 className="text-xl font-semibold my-2">{product.name}</h2>
@@ -104,7 +104,7 @@ const InfoStore = () => {
                                     {/* แสดงข้อมูลสินค้าที่คุณต้องการ */}
                                     <img
                                         src={imagepath}
-
+                                        alt='img'
                                         className="rounded shadow-lg"
                                     />
                                     <h2 className="text-xl font-semibold my-2">{product.name}</h2>
@@ -121,7 +121,7 @@ const InfoStore = () => {
                                     {/* แสดงข้อมูลสินค้าที่คุณต้องการ */}
                                     <img
                                         src={imagepath}
-
+                                        alt='img'
                                         className="rounded shadow-lg"
                                     />
                                     <h2 className="text-xl font-semibold my-2">{product.name}</h2>

@@ -10,6 +10,7 @@ import Media from './Media';
 import { userLoginMFA } from '../store';
 import { useAppDispatch } from '../hook/use-dispatch-selector';
 import Cookies from "js-cookie";
+import otp from '../img/transaction-password-otp-verification-code-security.svg'
 
 interface OpenModal {
     open: boolean;
@@ -25,13 +26,6 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
     const navigate = useNavigate();
     const cancelButtonRef = useRef(null);;
-
-    let content;
-    if(MFAFetching || MFAError){
-        content = <Skeleton className='my-5'  animation="wave" variant="rectangular" width={200}  height={200}/>
-    }else{
-        content =  <></>
-    }
 
     if(MFAError){
         navigate("/");
@@ -129,35 +123,40 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all">
-                                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <div className="bg-white px-20 py-8">
                                     <div className="sm:flex sm:items-start">
-                                        <div className="mt-3 text-center sm:mt-0 sm:text-left">                         
-                                            {MFAFetching ? <Media height={38} width={310} />:
-                                            <Dialog.Title as="h2" className="text-xl font-semibold leading-6 text-gray-900 flex justify-center">
-                                                Multi-Factor Authentication
+                                        <div className="mt-3 text-center">                         
+                                            {MFAFetching ? 
+                                            <div className='flex justify-center'>
+                                                <Media height={60} width={180} />
+                                            </div>
+                                            :
+                                            <Dialog.Title as="h2" className="text-2xl font-semibold leading-6 text-gray-900 flex justify-center">
+                                                Verification Code
                                             </Dialog.Title>}
 
-                                            <div className="mt-2">
-                                                <div className="flex justify-center w-full rounded-lg overflow-hidden mb-2">
-                                                    {content}
-                                                </div>
+                                            <div>
                                                 <form onSubmit={handleLoginSubmit}>
-                                                    {MFAFetching ? <Media height={30} width={120} />:
+                                                    {MFAFetching ? 
+                                                    <div className="flex justify-center mb-2">
+                                                        <Skeleton className='my-5'  animation="wave" variant="rectangular" width={150}  height={150}/>
+                                                    </div>
+                                                    :
                                                     <label
-                                                        className="block text-sm font-semibold text-gray-800 mb-3"
+                                                        className="flex justify-center mt-7"
                                                     >
-                                                        Verification Code
+                                                        <img className='w-32' src={otp} alt='otp'/>
                                                     </label>}
-                                                    {MFAFetching ? <Media height={50} width={310} />:
+                                                    {MFAFetching ? <Media height={70} width={220} />:
                                                     <input
                                                         type="text"
                                                         id="codeTwoFactorAuthentication"
                                                         name="codeTwoFactorAuthentication"
-                                                        className="block w-full px-4 py-2 my-2 bg-white border rounded-md  focus:outline-none"
+                                                        className="block w-full mt-7 px-4 py-2 my-2 bg-white border rounded-md  focus:outline-none"
                                                     />}
-                                                    <div className='flex justify-center mb-3'>
-                                                    {MFAFetching ? <Media height={55} width={145} />:
-                                                        <Button className="mt-3 w-40" color="red" type="submit">Verify</Button>
+                                                    <div className='flex justify-center'>
+                                                    {MFAFetching ? <Media height={60} width={125} />:
+                                                        <Button className="mt-5 w-32  mb-4" color="red" type="submit">Verify</Button>
                                                     }
                                                     </div>
                                                 </form>

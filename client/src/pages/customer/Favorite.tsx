@@ -1,10 +1,46 @@
-import { useState } from "react";
 import { useFetchFavouriteQuery } from "../../store";
+import imagepath from "../../img/Example1.webp";
+import { Box, Skeleton } from "@mui/material";
+import Swal from "sweetalert2";
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function Favorite() {
-    const { data, isFetching, error } = useFetchFavouriteQuery();
+    const { data, isFetching, error } = useFetchFavouriteQuery("");
+    console.log(data)
 
-    const [selectedStatus, setSelectedStatus] = useState('All');
+    if(error){
+        Cookies.remove('userdata')
+        Cookies.remove('jwt');
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Authentication Error',
+            text: `Please Login!`,
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: true,
+        });
+
+        return <Navigate to='/'  />
+    }
+
+    const Media = () => {
+        return (
+          <div className='mr-10'>
+            <Box sx={{ width: 295, height:260 }}>
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7">
+                <Skeleton variant="rectangular" width={295} height={185} />
+              </div>
+                <Box sx={{ pt: 0.5 }}>
+                  <Skeleton />
+                  <Skeleton width="60%" />
+                </Box>
+            </Box>
+          </div>
+        );
+    }
 
     return ( 
         <div className="bg-gray-50">
@@ -14,71 +50,42 @@ function Favorite() {
                         <h2 className="text-2xl leading-tight font-semibold text-gray-600">
                             Favorite
                         </h2>
-                        <div className="text-end mt-5">
-                            <select
-                                className="rounded-lg border-transparent flex-1 border-2 border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-md text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-                                value={selectedStatus}
-                                onChange={(e) => setSelectedStatus(e.target.value)}
+                        <div className="grid gap-x-8 gap-y-10 grid-cols-4">
+                        {
+                            isFetching || error ?
+                            <div>
+                                <div className='flex'>
+                                    <Media/>
+                                    <Media/>
+                                    <Media/>
+                                    <Media/>
+                                </div>
+                                <div className='flex'>
+                                    <Media/>
+                                    <Media/>
+                                    <Media/>
+                                    <Media/>
+                                </div>
+                            </div>
+                        :
+                        (data.map((product:any, index:number) => (
+                            <div
+                                key={index}
                             >
-                                <option value="All">All</option>
-                                <option value="Approved">Approve</option>
-                                <option value="Waiting">Waiting</option>
-                                <option value="Reject">Reject</option>
-                            </select>
-                        </div>
+                                <img
+                                    src={imagepath}
+                                    alt="test"
+                                    className="rounded shadow-lg hover:scale-105"
+                                />
+                                <h2 className="text-lg font-thin my-2 kanit">{product.typeName}</h2>
+                            </div>
+                        )))
+                        }
+                    </div>
                     </div>
                     <div className="px-4 py-4 -mx-4 overflow-x-auto sm:-mx-8 sm:px-8">
                         <div className="inline-block min-w-full overflow-hidden rounded-lg shadow">
-                            <table className="min-w-full leading-normal">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200">
-                                            ร้าน
-                                        </th>
-                                        <th scope="col" className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200">
-                                            วันที่
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {/* { isFetching || error ? 
-                                        <tr className="bg-white border-b-2 border-black">
-                                            <td colSpan={10}>
-                                                <Skeleton className='px-5 py-5 my-4' variant="text" level="h1" />
-                                                <Skeleton className='px-5 py-5 my-4' variant="text" level="h1" />
-                                                <Skeleton className='px-5 py-5 my-4' variant="text" level="h1" />
-                                            </td>
-                                        </tr> :
-                                    ( filteredData.map((data, index) => (
-                                    <tr key={data.reserveId}>
-                                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                                            <div className="flex items-center">
-                                                <div className="ml-3">
-                                                    <p className="text-gray-900 whitespace-no-wrap">
-                                                        {data.reserveId}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                                            <p className="text-gray-900 whitespace-no-wrap">
-                                            {data.court.building.name} / {data.court.building.sport.name} / {data.court.name}
-                                            </p>
-                                        </td>
-                                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                                            <p className="text-gray-900 whitespace-no-wrap">
-                                                {data.date}
-                                            </p>
-                                        </td>
-                                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                                            <p className="text-gray-900 whitespace-no-wrap">
-                                                {data.timestart.split(":").slice(0, 2).join(":")} - {data.timeend.split(":").slice(0, 2).join(":")}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    )))} */}
-                                </tbody>
-                            </table>
+                            
                         </div>
                     </div>
                 </div>
