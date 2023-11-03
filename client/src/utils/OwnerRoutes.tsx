@@ -16,8 +16,8 @@ function OwnerRoutes() {
         content = <Store {...data}/>
         
     }else{
-        Cookies.remove('jwt');
-        Cookies.remove('userData')
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',
