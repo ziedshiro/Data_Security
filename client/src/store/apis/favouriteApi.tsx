@@ -36,6 +36,15 @@ const favouriteApi = createApi({
                 },
                 providesTags: ['Favorites'],
             }),
+            fetchFavouriteById: builder.query({
+                query: (id) => {
+                    return{
+                        url: `/auth/favorite/${id}`,
+                        method: 'GET',
+                    };
+                },
+                providesTags: ['Favorites'],
+            }),
             addFavourite: builder.mutation({
                 query: (favouriteData) => {
                     return{
@@ -62,7 +71,8 @@ const favouriteApi = createApi({
 export const {
     useFetchFavouriteQuery,
     useAddFavouriteMutation,
-    useRemoveFavouriteMutation
+    useRemoveFavouriteMutation,
+    useFetchFavouriteByIdQuery
 } = favouriteApi;
 
 export { favouriteApi };

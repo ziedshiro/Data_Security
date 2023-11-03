@@ -58,21 +58,16 @@ public class FavouriteController {
 	}
 	
 	@GetMapping("/auth/favorite/{id}")
-	public BooleanResponse checkFavorite(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception{
+	public Favourite checkFavorite(@RequestHeader("Authorization") String token,@PathVariable("id") String id) throws Exception{
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {new BooleanResponse();
 			Favourite favourite = favouriteservice.findByIdStoreAndUser(id, user);
-			if(favourite!=null) {
-				return new BooleanResponse(HttpStatus.OK,true,"");				
-			}
-			else {
-				return new BooleanResponse(HttpStatus.OK,false,"");
-			}
+			return favourite;
 		}
-		return new BooleanResponse(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
+		return null;
 	}
 	
 	@PostMapping("/auth/favorite")
@@ -97,7 +92,6 @@ public class FavouriteController {
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		System.out.print(id);
 		if(user!=null && user.getRole().equals("customer")) {
 			Favourite favourite = favouriteservice.findById(id);
 			favouriteservice.delete(favourite);		

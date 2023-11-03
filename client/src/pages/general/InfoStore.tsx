@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import imagepath from "../../img/Example1.webp";
-import { useAddFavouriteMutation, useFetchFavouriteQuery, useFetchProductByStoreIdQuery, useFetchStoreByIdQuery, useRemoveFavouriteMutation } from '../../store';
+import { useAddFavouriteMutation, useFetchFavouriteByIdQuery, useFetchProductByStoreIdQuery, useFetchStoreByIdQuery, useRemoveFavouriteMutation } from '../../store';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Box, Skeleton } from '@mui/material';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { async } from 'q';
+import { format } from 'date-fns';
 import Cookies from 'js-cookie';
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
@@ -17,7 +16,7 @@ const InfoStore = () => {
     const { id } = useParams();
     const { data:store,isFetching:isStore,isError:errorStore } = useFetchStoreByIdQuery(id);
     const { data:products,isFetching:isProduct,isError:errorProduct } = useFetchProductByStoreIdQuery(id);
-    const { data:favourite,isFetching:isFavourite,isError:errorFavourite } = useFetchFavouriteQuery(id);
+    const { data:favourite,isFetching:isFavourite,isError:errorFavourite } = useFetchFavouriteByIdQuery(id);
     const [ addFavorite ] = useAddFavouriteMutation();
     const [ unFavorite ] = useRemoveFavouriteMutation();
     const [activeTab, setActiveTab] = useState(0);
@@ -27,12 +26,37 @@ const InfoStore = () => {
     ));
     const navigate = useNavigate();
     const user = Cookies.get('userdata');
+    const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
 
     const handleTabClick = (tabNumber: number) => {
         setActiveTab(tabNumber);
     };
 
-    console.log(favourite)
+    const timeCheck = () => {
+        const startTime = store?.storeOpen?.split(":").slice(0, 2).join(":");
+        const endTime = store?.storeClose?.split(":").slice(0, 2).join(":");
+        if(currentTime >= startTime && currentTime <= endTime){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+
+    const discountCheck = () => {
+        const targetTime = new Date(); // Replace this with your dynamic target time
+        targetTime.setHours(store?.storeClose?.split(":")[0], store?.storeClose?.split(":")[1], store?.storeClose?.split(":")[2]);
+        const oneHourBeforeTarget = new Date(targetTime);
+        oneHourBeforeTarget.setHours(oneHourBeforeTarget.getHours() - 1);
+        const current = new Date();
+        if (current > oneHourBeforeTarget && current < targetTime) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
     const handleFavourite = async () => {
         Swal.fire({
@@ -49,7 +73,7 @@ const InfoStore = () => {
                 storeId:id
             }}).then( async (result:any) => {
                 console.log(result)
-                if(result.error.status === 500){
+                if(result?.error?.status === 500){
                     await Swal.fire({
                         icon: 'error',
                         title: 'Authentication Error',
@@ -75,8 +99,8 @@ const InfoStore = () => {
               Swal.showLoading();
             }
         })
-        await unFavorite(id).then( async (result:any) => {
-                if(result.error.status === 500){
+        await unFavorite(favourite?.favouriteId).then( async (result:any) => {
+                if(result?.error?.status === 500){
                     await Swal.fire({
                         icon: 'error',
                         title: 'Authentication Error',
@@ -105,17 +129,9 @@ const InfoStore = () => {
         navigate("/login");
     }
 
-
-
-    const products4 = [
-        { name: 'Product 1', d: 's' },
-        { name: 'Product 2', d: 's' },
-        { name: 'Product 3', d: 's' },
-        { name: 'Product 1', d: 's' },
-        { name: 'Product 2', d: 's' },
-        { name: 'Product 3', d: 's' },
-        // Add more products as needed
-    ];
+    const handleClickProduct = (id:number) => {
+        navigate(`/infoproduct/${id}`);
+    }
 
     const typeOption = [
         { label: 'สินค้าทั้งหมด', value: 0 },
@@ -155,6 +171,8 @@ const InfoStore = () => {
         });
     }
     else if(errorFavourite&&user){
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',
@@ -174,7 +192,7 @@ const InfoStore = () => {
             <div className='bg-gray-50'>
                 <div className='container mx-auto kanit px-4 py-5'>
                     {
-                    isStore || isFavourite ?
+                    isStore || errorStore || isFavourite ?
                     <>
                         <Skeleton width="20%" height={30} />
                         <div className='mt-2'>
@@ -217,14 +235,14 @@ const InfoStore = () => {
                             </ol>
                         </nav>
                         <div className="flex items-center">
-                            <p className="text-5xl font-medium my-3 mr-7">{store.name}</p>
+                            <p className="text-5xl font-medium my-3 mr-7">{store?.name}</p>
                             {user ? 
                                 favourite ?
-                                    <AiOutlineHeart size={25} className="text-red-500 cursor-pointer" onClick={handleFavourite}/>:
-                                <AiFillHeart size={25} className="text-red-500 cursor-pointer" onClick={handleUnFavourite}/>:
+                                    <AiFillHeart size={25} className="text-red-500 cursor-pointer" onClick={handleUnFavourite}/>:
+                                <AiOutlineHeart size={25} className="text-red-500 cursor-pointer" onClick={handleFavourite}/>:
                             <AiOutlineHeart size={25} className="text-red-500 cursor-pointer" onClick={handleClickNotLogin}/>}
                         </div>
-                        <p className="font-medium mb-3 text-gray-500">{store.address}</p>
+                        <p className="font-medium mb-3 text-gray-500">{store?.address}</p>
                         <div className="flex text-sm text-gray-500 font-medium mb-3">
                             <p className="mr-3">{store.districts.nameInThai}</p>
                             <p className="mr-3">{store.subdistricts.nameInThai}</p>
@@ -243,13 +261,19 @@ const InfoStore = () => {
                                 />
                             ))}
                         </div>
-                        <div className="flex mt-3  kanit">
-                            <p className="mr-5">
-                                Opening Hours:
+                        <div className="flex mt-3 items-center kanit">
+                            <p className="mr-4">
+                                Opening Hours
                             </p>
-                            <p>
-                                {store.storeOpen.split(":").slice(0, 2).join(":")} - {store.storeClose.split(":").slice(0, 2).join(":")}
+                            <p className="mr-3 text-gray-500">
+                                {store?.storeOpen.split(":").slice(0, 2).join(":")} - {store?.storeClose.split(":").slice(0, 2).join(":")}
                             </p>
+                            {
+                                timeCheck() ?
+                                <div className='bg-green-400 rounded-md px-2 py-1 text-white text-xs'>Open</div>
+                                :
+                                <div className='bg-red-400 rounded-md px-2 py-1 text-white text-xs'>Close</div>
+                            }
                         </div>
                     </>
                     }
@@ -275,12 +299,12 @@ const InfoStore = () => {
             </div>
 
             <div className=''>
-                <div className="container mx-auto">
+                <div className="container mx-auto mt-3 mb-10">
                     <div className="px-4">
                         <div className='container mx-auto'>
                         <p className="text-2xl font-medium mb-10 my-6 kanit">{typeOption[activeTab].label}</p> 
                             {
-                                isProduct || errorProduct ?
+                                isProduct || errorProduct || isFavourite ?
                                 <div className="grid gap-x-8 gap-y-10 grid-cols-4">
                                     <Media/>
                                     <Media/>
@@ -292,7 +316,7 @@ const InfoStore = () => {
                                     <Media/>
                                 </div>
                             :
-                                (filteredProducts.length === 0 ?
+                                (filteredProducts?.length === 0 ?
                                     <div className="flex flex-col justify-center py-20 items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="4 4 40 40" className="w-20">
                                             <path className="fill-slate-200" d="M22 30h4v4h-4zm0-16h4v12h-4zm1.99-10C12.94 4 4 12.95 4 24s8.94 20 19.99 20S44 35.05 44 24 35.04 4 23.99 4zM24 40c-8.84 0-16-7.16-16-16S15.16 8 24 8s16 7.16 16 16-7.16 16-16 16z" fill="#000000"/>
@@ -303,46 +327,54 @@ const InfoStore = () => {
                                 :
                                     <div className="grid gap-x-8 gap-y-10 grid-cols-4">
                                         {filteredProducts.map((product:any, index:number) => (
-                                            <Link
-                                                to={`/infoproduct/${product?.productId}`}
-                                                key={index}
-                                                className='bg-white hover:scale-105 rounded-lg'
-                                            >
-                                                <img
-                                                    src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
-                                                    alt="img_product"
-                                                    className="rounded-xl shadow-lg w-80 h-48"
-                                                />
-                                                <div className='m-3'>
-                                                    <p className="kanit">{product?.name}</p>
-                                                    <p className="text-base kanit text-red-500">{product?.price} บาท</p>
+                                            (
+                                            timeCheck() ?
+                                                <div
+                                                    onClick={() => handleClickProduct(product?.productId)}
+                                                    key={index}
+                                                    className='bg-white hover:scale-105 rounded-lg'
+                                                >
+                                                    <img
+                                                        src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
+                                                        alt="img_product"
+                                                        className="rounded-xl shadow-lg w-80 h-48"
+                                                    />
+                                                    <div className='m-3'>
+                                                        <p className="kanit">{product?.name} EXP ({format(new Date(product?.expiryDate), 'dd-MM-yyyy')})</p>
+                                                        (
+                                                            discountCheck() ?
+                                                            <div className="flex items-center">
+                                                                <p className="text-sm kanit text-red-500 line-through mr-1">{product?.price}</p>
+                                                                <p className="text-base kanit text-red-500">{product?.discountPrice} บาท</p>
+                                                            </div>
+                                                            :
+                                                            <p className="text-base kanit text-red-500">{product?.price} บาท</p>)
+                                                    </div>
                                                 </div>
-                                            </Link>
-                                        ))}
+                                                :
+                                                <div
+                                                    key={index}
+                                                    className='bg-white hover:scale-105 rounded-lg relative'
+                                                >
+                                                    <img
+                                                        src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
+                                                        alt="img_product"
+                                                        className="rounded-xl shadow-lg w-80 h-48 opacity-40"
+                                                    />
+                                                    <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
+                                                        <div className="text-sm kanit font-bold cursor-default bg-red-500 px-2 py-1 rounded">ORDER FOR LATER</div>
+                                                    </div>
+                                                    <div className='m-3'>
+                                                        <p className="kanit">{product?.name} EXP ({format(new Date(product?.expiryDate), 'dd-MM-yyyy')})</p>
+                                                        <div className="flex justify-between items-center">
+                                                            <p className="text-base kanit text-red-500">{product?.price} บาท</p>
+                                                            <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        )))}
                                     </div>
                             )}
-                            {/* <hr  className='my-4'/> */}
-
-                            <h1 className="text-3xl font-semibold mb-4 my-4">สินค้าที่หมดแล้ว </h1> 
-                            <div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {products4.map((product, index) => (
-                                        <button key={index} className="relative">
-                                                <div className="rounded shadow-lg" style={{
-                                                    backgroundImage: `url(${imagepath}), linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 1))`,
-                                                    width: '308px',
-                                                    height: '190px',
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-
-                                                }} ><h1 className="text-3xl font-semibold mb-4 my-4" style={{ backgroundColor: 'lightgray', padding: '10px' }}>สินค้าหมด </h1></div>
-                                                <h2 className="text-xl font-semibold my-2">{product.name}</h2>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>

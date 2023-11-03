@@ -57,7 +57,8 @@ export {
 export {
     useAddFavouriteMutation,
     useFetchFavouriteQuery,
-    useRemoveFavouriteMutation
+    useRemoveFavouriteMutation,
+    useFetchFavouriteByIdQuery
 } from './apis/favouriteApi';
 
 export {
