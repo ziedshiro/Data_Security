@@ -1,5 +1,7 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -114,16 +116,31 @@ public class OrderController {
 				order.setPaymentStatus("Pending");
 				order.setUpdatedate(new Date());
 				List<Orderitem> orderItems = orderitemservice.findByOrderId(id);
+				
+				LocalTime currentTime = LocalTime.now();
 				for (Orderitem orderItem : orderItems) {
 					Product product = orderItem.getProduct();
-					int quantityAvailable = product.getQuantityAvailable();
-		            int orderedQuantity = orderItem.getQuantity();
-		            if (quantityAvailable >= orderedQuantity) {
-		            	product.setQuantityAvailable(quantityAvailable - orderedQuantity);
-		            	productservice.save(product);		            	
-		            } else {
-		            	return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error quantityAvailable not enough");
-		            }
+					
+					Date storeOpenDate = product.getStore().getStoreOpen();
+					Date storeCloseDate = product.getStore().getStoreClose();
+					LocalTime storeOpenTime = storeOpenDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+					LocalTime storeCloseTime = storeCloseDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+					
+					if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
+						int quantityAvailable = product.getQuantityAvailable();
+			            int orderedQuantity = orderItem.getQuantity();
+			            if (quantityAvailable >= orderedQuantity) {
+			            	product.setQuantityAvailable(quantityAvailable - orderedQuantity);
+			            	productservice.save(product);		            	
+			            } else {
+			            	orderservice.deleteById(order);
+			            	return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error quantityAvailable not enough");
+			            }
+					}
+					else {
+						orderservice.deleteById(order);
+		            	return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Error Time not order!");
+					}
 				}
 				orderservice.save(order);
 				return new Response(HttpStatus.OK,"Success!");

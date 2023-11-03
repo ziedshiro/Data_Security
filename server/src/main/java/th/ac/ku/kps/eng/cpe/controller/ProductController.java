@@ -1,6 +1,8 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,9 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Product;
+import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.ProductServices;
+import th.ac.ku.kps.eng.cpe.service.StoreServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 import th.ac.ku.kps.eng.cpe.util.FileUploadUtil;
 import th.ac.ku.kps.eng.cpe.response.Response;
@@ -43,6 +47,9 @@ public class ProductController {
 	
 	@Autowired
 	private UserServices userservice;
+	
+	@Autowired
+	private StoreServices storeservice;
 	
 	@Autowired
 	private EncryptionServices encryptionservice;
@@ -65,6 +72,16 @@ public class ProductController {
 	@GetMapping("/product/store/{id}")
 	public List<Product> getByOrder(@PathVariable("id")String id){
 		return productservice.findByStoreId(id);
+	}
+	
+	@GetMapping("/product/type/{id}/{districtId}/{subdistrictId}/{provinceId}")
+	public List<Product> getByLocationAndType(@PathVariable("id")int id,@PathVariable("districtId")int districtId,@PathVariable("subdistrictId")int subdistrictId,@PathVariable("provinceId")int provinceId){
+		List<Store> stores = storeservice.findByLocation(districtId, subdistrictId, provinceId);
+		List<Product> products = new ArrayList<>();
+		for (Store store : stores) {
+			products.addAll(productservice.findByStoreAndType(store, id));
+		}
+		return products;
 	}
 	
 	@GetMapping("/auth/product")

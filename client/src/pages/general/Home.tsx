@@ -147,7 +147,7 @@ function Home() {
                             <img
                                 src={require(`../../img/types/${type?.img}`)}
                                 alt="img_type"
-                                className="rounded shadow-lg hover:scale-105"
+                                className="rounded shadow-lg hover:scale-105 w-80 h-48"
                             />
                             <h2 className="text-lg font-thin my-2 kanit">{type.typeName}</h2>
                         </Link>

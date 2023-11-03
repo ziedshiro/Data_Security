@@ -24,7 +24,7 @@ public interface OrdersRepository extends CrudRepository<Orders, Integer> {
 	@Query("from Orders as o where o.orderStatus = 'Pending' and o.pickupStatus is null")
 	public List<Orders> findPayment();
 	
-	@Query("from Orders as o where o.orderStatus = 'Pending' and o.paymentStatus = 'Success'")
+	@Query("from Orders as o where o.orderStatus = 'Pending' and o.paymentStatus = 'Approve'")
 	public List<Orders> findPickup();
 	
 	@Query("from Orders as o where o.pickupCode = :pickupCode")
