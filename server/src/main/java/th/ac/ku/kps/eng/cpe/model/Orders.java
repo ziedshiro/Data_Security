@@ -24,7 +24,7 @@ public class Orders implements java.io.Serializable {
 	private String filepath;
 	private Date paymentDate;
 	private String paymentStatus;
-	@JsonIgnore private String pickupCode;
+	private String pickupCode;
 	private Date pickupDate;
 	private String pickupStatus;
 	private Date createdate;

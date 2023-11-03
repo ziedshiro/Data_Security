@@ -184,13 +184,14 @@ public class OrderController {
 		return new Response(HttpStatus.UNAUTHORIZED,"Unauthorized!");
 	}
 	
-	@GetMapping("/auth/pickup/check")
+	@PostMapping("/auth/pickup/check")
 	public Orders findByCode(@RequestHeader("Authorization") String token,@RequestBody Orders orderBody) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("store owner")) {
+			System.out.println(orderBody.getPickupCode());
 			Orders order = orderservice.findPickupCode(orderBody.getPickupCode());
 			if(order!=null) {
 				return order;
