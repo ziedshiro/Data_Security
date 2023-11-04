@@ -24,15 +24,13 @@ public class Orderitem implements java.io.Serializable {
 	public Orderitem() {
 	}
 
-	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, BigDecimal subtotal, Date createdate,
-			Date updatedate) {
+	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, BigDecimal subtotal, Date createdate) {
 		this.orderItemId = orderItemId;
 		this.product = product;
 		this.orders = orders;
 		this.quantity = quantity;
 		this.setSubtotal(subtotal);
 		this.createdate = createdate;
-		this.updatedate = updatedate;
 	}
 
 	public String getOrderItemId() {

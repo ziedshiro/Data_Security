@@ -30,8 +30,13 @@ public class OrdersServices {
 	public List<Orders> findPickupByStore(String storeId){
 		return (List<Orders>) ordersrepository.findPickupByStore(storeId);
 	}
+	
 	public List<Orders> findPickup(){
 		return (List<Orders>) ordersrepository.findPickup();
+	}
+	
+	public List<Orders> findCart(){
+		return (List<Orders>) ordersrepository.findCart();
 	}
 	
 	public Orders findPickupCode(String code){

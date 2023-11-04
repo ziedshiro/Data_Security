@@ -136,6 +136,36 @@ public class OrderitemController {
 						boolean ck = true;
 						for (Orders order : orders) {
 							if(product.getStore().getStoreId().equals(order.getStore().getStoreId())) {
+								List<Orderitem> orderitems = orderitemservice.findByOrderId(order.getOrderId());
+								for (Orderitem item : orderitems) {
+									if(item.getProduct().equals(product)) {
+										if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
+											order.setTotalAmount(order.getTotalAmount().subtract(item.getSubtotal()));
+											orderitemservice.deleteById(item);
+											order.setTotalAmount(order.getTotalAmount().add(subTotal));
+											orderitemservice.save(new Orderitem(
+													UUID.randomUUID().toString(),
+													product,
+													order,
+													orderitem.getQuantity(),
+													subTotal,
+													new Date()
+											));
+										}
+										else {
+											item.setQuantity(item.getQuantity()+orderitem.getQuantity());
+											item.setSubtotal(item.getSubtotal().add(subTotal));
+											item.setUpdatedate(new Date());
+											
+											order.setTotalAmount(order.getTotalAmount().add(subTotal));
+											order.setUpdatedate(new Date());
+											orderitemservice.save(item);											
+										}
+										orderservice.save(order);
+										return new Response(HttpStatus.OK,"Created");
+									}
+								}
+								
 								order.setTotalAmount(order.getTotalAmount().add(subTotal));
 								order.setUpdatedate(new Date());
 								
@@ -214,6 +244,7 @@ public class OrderitemController {
 				
 				if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
 					if(orderitemBody.getQuantity()<=product.getQuantityAvailable() && orderitemBody.getQuantity()>0) {
+						
 						if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
 							subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));
 						} else {
@@ -225,10 +256,9 @@ public class OrderitemController {
 						order.setUpdatedate(new Date());
 						orderservice.save(order);
 						
-						orderitem.setOrders(order);
+						orderitem.setQuantity(orderitemBody.getQuantity());
 						orderitem.setSubtotal(subTotal);
-						orderitem.setUpdatedate(new Date());
-						
+						orderitem.setUpdatedate(new Date());						
 						orderitemservice.save(orderitem);
 						return new Response(HttpStatus.OK,"Update");
 					}

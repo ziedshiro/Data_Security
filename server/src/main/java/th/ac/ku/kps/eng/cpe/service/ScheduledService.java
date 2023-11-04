@@ -18,13 +18,19 @@ public class ScheduledService {
 	
     @Scheduled(cron = "0 0 0 * * *") 
     public void ScheduledMethod() {
-        List<Orders> orders = orderservice.findPickup();
-        if(orders.size()>0) {
-        	for (Orders order : orders) {
+        List<Orders> ordersPickup = orderservice.findPickup();
+        List<Orders> ordersCart = orderservice.findCart();
+        if(ordersPickup.size()>0) {
+        	for (Orders order : ordersPickup) {
 				order.setOrderStatus("Failed");
 				order.setPickupStatus("Failed");
 				order.setUpdatedate(new Date());
 				orderservice.save(order);
+			}
+        }
+        if(ordersCart.size()>0) {
+        	for (Orders order : ordersCart) {
+				orderservice.deleteById(order);
 			}
         }
     }

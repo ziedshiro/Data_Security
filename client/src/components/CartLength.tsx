@@ -23,10 +23,9 @@ function CartLength() {
 
         navigate("/login");
     }
-
     return ( 
         <>
-        {isFetching ?
+        {isFetching || data === 0 ?
         <></>
         :<div className="kanit absolute bg-red-500 rounded-full px-2 mb-5 ml-4 text-sm text-white">{data}</div>}
         </>

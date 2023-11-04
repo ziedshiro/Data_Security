@@ -13,7 +13,6 @@ interface OpenModal {
 
 function ModalProduct({ open, onHide, product }: OpenModal) {
     const navigate = useNavigate();
-    console.log(product);
   
     const [spin,setSpin] = useState(false);
 

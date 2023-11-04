@@ -31,6 +31,9 @@ public interface OrdersRepository extends CrudRepository<Orders, Integer> {
 	@Query("from Orders as o where o.orderStatus = 'Pending' and o.paymentStatus = 'Approve'")
 	public List<Orders> findPickup();
 	
+	@Query("from Orders as o where o.orderStatus = 'Cart'")
+	public List<Orders> findCart();
+	
 	@Query("from Orders as o where o.pickupCode = :pickupCode")
 	public Orders findPickupCode(@Param("pickupCode") String pickupCode);
 }
