@@ -2,7 +2,7 @@ import { EyeIcon } from "@heroicons/react/24/outline";
 import thaiDateFormat from "../utils/thaiDateFormat";
 import { useState } from "react";
 import { Payment } from "../Model/Payment";
-import { useFetchPaymentQuery } from "../store";
+import { useFetchPickupQuery } from "../store";
 import { Skeleton } from "@mui/joy";
 import ModalApprovePayment from "./ModalApprovePayment";
 
@@ -10,23 +10,23 @@ interface TablePayment {
     search: string;
 }
 
-function TablePaymentList({search}:TablePayment) {
-    const { data,isFetching  } = useFetchPaymentQuery('') as {
+function TableOrderList({search}:TablePayment) {
+    const { data,isFetching  } = useFetchPickupQuery('') as {
         data:Array<Payment>,
-        isFetching:Boolean
+        isFetching:boolean
     };
     const [viewPayment,setViewPayment] = useState(false);
-
+    
     let content;
     if(isFetching){
         content = 
             <tr>
                 <td>
-                    <Skeleton width={726} height={500}/>
+                    <Skeleton width={815} height={500}/>
                 </td>
             </tr>
     }else if(data.length > 0){
-        const filterData = data.filter((item)=>{
+        const filterData = data.filter((item:Payment)=>{
             return(
                 thaiDateFormat(item.paymentDate).includes(search) || thaiDateFormat(item.orderDate).includes(search)
             )
@@ -51,13 +51,8 @@ function TablePaymentList({search}:TablePayment) {
                         <td className="px-3">
                             {item.paymentStatus}
                         </td>
-                        <td className="px-3 py-2 flex">
-                            <EyeIcon onClick={()=>setViewPayment(true)} height={25} className="hover:text-yellow-600 cursor-pointer mr-1"/>
-                            <ModalApprovePayment 
-                                onHide={()=>setViewPayment(false)}
-                                open={viewPayment}
-                                payment={item}
-                            />
+                        <td className="px-3 py-2">
+                            {item.pickupStatus}
                         </td>
                     </tr>
                 )
@@ -107,4 +102,4 @@ function TablePaymentList({search}:TablePayment) {
     )
 }
 
-export default TablePaymentList;
+export default TableOrderList;

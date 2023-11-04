@@ -1,6 +1,7 @@
 import { createApi,fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseUrl } from "../../env/utils";
 import Cookies from 'js-cookie';
+import { Payment } from '../../Model/Payment';
 
 const pause = (duration:number) => {
     return new Promise((resolve) => {
@@ -37,6 +38,16 @@ const pickupApi = createApi({
                 },
                 providesTags: ['Pickups'],
             }),
+            //for store owner
+            fetchPickupCheck: builder.mutation({
+                query: (pickupCode) => {
+                    return{
+                        url: '/auth/pickup/check',
+                        method: 'POST',
+                        body:pickupCode,
+                    };
+                },
+            }),
             //provide user
             generatePickupQRCode: builder.mutation({
                 query: (id) => {
@@ -48,9 +59,9 @@ const pickupApi = createApi({
             }),
             //for store owner change status order
             updateStatusPickup: builder.mutation({
-                query: ({ id, orderData }) => {
+                query: (orderData) => {
                     return{
-                        url: `/auth/pickup/${id}`,
+                        url: `/auth/pickup/`,
                         method: 'PUT',
                         body:orderData
                     };
@@ -64,7 +75,8 @@ const pickupApi = createApi({
 export const {
     useFetchPickupQuery,
     useGeneratePickupQRCodeMutation,
-    useUpdateStatusPickupMutation
+    useUpdateStatusPickupMutation,
+    useFetchPickupCheckMutation
 } = pickupApi;
 
 export { pickupApi };
