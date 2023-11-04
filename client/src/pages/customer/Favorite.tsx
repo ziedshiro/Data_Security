@@ -25,8 +25,8 @@ function Favorite() {
     }
 
     if(error){
-        Cookies.remove('userdata')
-        Cookies.remove('jwt');
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
 
         Swal.fire({
             icon: 'error',
@@ -38,7 +38,7 @@ function Favorite() {
             allowOutsideClick: true,
         });
 
-        return <Navigate to='/'  />
+        return <Navigate to='/login'  />
     }
 
     const Media = () => {

@@ -36,10 +36,28 @@ const cartApi = createApi({
                 },
                 providesTags: ['Carts'],
             }),
+            fetchCartOrder: builder.query({
+                query: () => {
+                    return{
+                        url: '/auth/order/cart',
+                        method: 'GET',
+                    };
+                },
+                providesTags: ['Carts'],
+            }),
             fetchCartDetail: builder.query({
                 query: (id) => {
                     return{
                         url: `/auth/orderitem/${id}`,
+                        method: 'GET',
+                    };
+                },
+                providesTags: ['Carts'],
+            }),
+            fetchCartLength: builder.query({
+                query: () => {
+                    return{
+                        url: '/auth/order/cart/length',
                         method: 'GET',
                     };
                 },
@@ -82,7 +100,9 @@ export const {
     useAddItemMutation,
     useFetchCartQuery,
     useRemoveItemMutation,
-    useUpdateItemMutation
+    useUpdateItemMutation,
+    useFetchCartOrderQuery,
+    useFetchCartLengthQuery
 } = cartApi;
 
 export { cartApi };

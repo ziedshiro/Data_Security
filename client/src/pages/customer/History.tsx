@@ -3,7 +3,7 @@ import { useFetchHistoryQuery } from "../../store";
 import { Skeleton } from "@mui/joy";
 
 function History() {
-    const { data, isFetching, error } = useFetchHistoryQuery();
+    const { data, isFetching, error } = useFetchHistoryQuery("");
 
     const [selectedStatus, setSelectedStatus] = useState('All');
     // const filteredData = data?.filter((item) =>

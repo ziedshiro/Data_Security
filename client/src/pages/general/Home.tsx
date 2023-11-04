@@ -82,7 +82,7 @@ function Home() {
                             </div>
                         </div>
                         :
-                        ((showMore ? sortedStores : sortedStores.slice(0, initialOrdersToShow)).map((store:any, index:number) => (
+                        ((showMore ? sortedStores : sortedStores?.slice(0, initialOrdersToShow))?.map((store:any, index:number) => (
                             <Link to={`/infostore/${store.storeId}`} className="hover:scale-105 bg-white rounded-lg" key={index}>
                                 <img src={imagepath} alt="img_store" className="rounded shadow-lg" />
                                 <div className="flex justify-between">
@@ -101,8 +101,8 @@ function Home() {
                                         </div>
                                     </div>
                                     <div className="flex justify-between">
-                                        <p className="text-sm font-thin my-2 kanit">{store.provinces.nameInThai}</p>
-                                        <p className="text-sm font-thin my-2 kanit">{store.storeOpen.split(":").slice(0, 2).join(":")} - {store.storeClose.split(":").slice(0, 2).join(":")}</p>
+                                        <p className="text-sm font-thin my-2 kanit">{store?.provinces?.nameInThai}</p>
+                                        <p className="text-sm font-thin my-2 kanit">{store?.storeOpen?.split(":").slice(0, 2).join(":")} - {store?.storeClose?.split(":").slice(0, 2).join(":")}</p>
                                     </div>
                                 </Link>
                         )))}
@@ -139,7 +139,7 @@ function Home() {
                             </div>
                         </div>
                     :
-                    (type.map((type:any, index:number) => (
+                    (type?.map((type:any, index:number) => (
                         <Link
                             to={`/type/${type.typeId}`}
                             key={index}

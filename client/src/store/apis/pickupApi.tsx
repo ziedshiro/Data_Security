@@ -30,9 +30,9 @@ const pickupApi = createApi({
         return{
             //for store owner
             fetchPickup: builder.query({
-                query: () => {
+                query: (id) => {
                     return{
-                        url: '/auth/pickup',
+                        url: `/auth/pickup/${id}`,
                         method: 'GET',
                     };
                 },

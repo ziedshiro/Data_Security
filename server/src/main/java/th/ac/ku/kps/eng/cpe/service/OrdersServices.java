@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.ac.ku.kps.eng.cpe.model.Orders;
+import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.repository.OrdersRepository;
 
@@ -26,6 +27,9 @@ public class OrdersServices {
 		return (List<Orders>) ordersrepository.findPayment();
 	}
 	
+	public List<Orders> findPickupByStore(String storeId){
+		return (List<Orders>) ordersrepository.findPickupByStore(storeId);
+	}
 	public List<Orders> findPickup(){
 		return (List<Orders>) ordersrepository.findPickup();
 	}
@@ -34,8 +38,8 @@ public class OrdersServices {
 		return  ordersrepository.findPickupCode(code);
 	}
 	
-	public Orders findCartByUser(User user){
-		return  ordersrepository.findCartByUser(user);
+	public List<Orders> findCartByUser(User user){
+		return  (List<Orders>) ordersrepository.findCartByUser(user);
 	}
 	
 	public Orders findById(int id) {

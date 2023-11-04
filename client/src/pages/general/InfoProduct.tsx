@@ -101,7 +101,7 @@ function Product() {
 
     return ( 
         <>
-            <div className='h-[1%] bg-gray-50'>
+            <div className='bg-gray-50'>
                 <div className='container mx-auto kanit px-4 py-5'>
                     {
                     isProduct || errorProduct ?
@@ -178,7 +178,7 @@ function Product() {
                                 <img
                                     src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
                                     alt="img_product"
-                                    className="rounded-3xl shadow-lg w-96"
+                                    className="rounded-3xl shadow-lg w-96 h-64"
                                 />
                                 <div className='mt-10 mx-3'>
                                     <p className="kanit text-3xl font-semibold">{product?.name}</p>
@@ -242,7 +242,7 @@ function Product() {
                                 <img
                                     src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
                                     alt="img_product"
-                                    className="rounded-3xl shadow-lg w-96 opacity-40"
+                                    className="rounded-3xl shadow-lg w-96 h-64 opacity-40"
                                 />
                                 <div className="absolute top-80 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
                                     <div className="text-sm kanit font-bold cursor-default bg-red-500 px-2 py-1 rounded">ORDER FOR LATER</div>

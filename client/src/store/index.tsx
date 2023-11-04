@@ -69,7 +69,9 @@ export {
     useFetchCartQuery,
     useAddItemMutation,
     useRemoveItemMutation,
-    useUpdateItemMutation
+    useUpdateItemMutation,
+    useFetchCartOrderQuery,
+    useFetchCartLengthQuery
 } from './apis/cartApi';
 
 export {

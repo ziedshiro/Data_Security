@@ -27,6 +27,7 @@ public class Store implements java.io.Serializable {
 	private Time storeOpen;
 	private Time storeClose;
 	private int rating;
+	@JsonIgnore private Set orderses = new HashSet(0);
 	@JsonIgnore private Set favourites = new HashSet(0);
 	@JsonIgnore private Set products = new HashSet(0);
 
@@ -170,6 +171,14 @@ public class Store implements java.io.Serializable {
 
 	public void setRating(int rating) {
 		this.rating = rating;
+	}
+	
+	public Set getOrderses() {
+		return this.orderses;
+	}
+
+	public void setOrderses(Set orderses) {
+		this.orderses = orderses;
 	}
 
 	public Set getFavourites() {

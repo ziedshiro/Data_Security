@@ -1,71 +1,109 @@
 import React, { useState } from 'react';
+import { useFetchCartOrderQuery, useFetchCartQuery } from '../../store';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([
-        { id: 1, name: 'Product 1', price: 10, quantity: 2 },
-        { id: 2, name: 'Product 2', price: 20, quantity: 1 },
-        { id: 3, name: 'Product 1', price: 10, quantity: 2 },
-        { id: 4, name: 'Product 2', price: 20, quantity: 1 },
-        { id: 5, name: 'Product 1', price: 10, quantity: 2 },
-        { id: 6, name: 'Product 2', price: 20, quantity: 1 },
+    const navigate = useNavigate();
+    const { data:orderItem, isFetching:isOrderItem, error:errorOrderItem } = useFetchCartQuery("");
+    const { data:orders, isFetching:isOrder, error:errorOrder } = useFetchCartOrderQuery("");
+    const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
+    const total = orders?.map((result:any) => {
+        // result?.totalAmount
+    })
 
-    ]);
+    console.log(orderItem)
+    let userData;
+    if(user){
+        userData = JSON.parse(user)
+    }
 
     const getTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        // return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
     const removeFromCart = (itemId: number) => {
-        setCartItems(cartItems.filter((item) => item.id !== itemId));
+        // setCartItems(cartItems.filter((item) => item.id !== itemId));
     };
 
+    const handlePayment = () => {
+        navigate('/payment')
+    }
+
+    if(errorOrder || errorOrderItem){
+        Cookies.remove('jwt',{ path: '/' });
+        Cookies.remove('userdata', { path: '/' });
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Authentication Error',
+            text: `Please Login!`,
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: true,
+        });
+
+        navigate('/login');
+    }
+
     return (
+        <>
+        <div className="bg-red-500">
+            <p className="text-4xl leading-tight font-semibold text-white px-24 py-10 kanit">
+                ตะกร้าสินค้า
+            </p>
+        </div>
         <div className="bg-gray-50">
             <div className="container mx-auto p-4 ">
-
-                <h1 className="text-2xl font-bold mb-4 kanit">ตะกร้าสินค้า</h1>
-                <div className="grid grid-rows-3 grid-flow-col gap-4  mx-10">
-
-                    {cartItems.length === 0 ? (
+                <div className="grid grid-rows-3  mx-10">
+                    {orders?.length === 0 ? (
                         <p>Your cart is empty.</p>
                     ) : (
-
-                        <div className='row-end-3 row-span-2'>
+                        <div className='row-end-3 row-span-2 bg-white rounded-xl shadow-md'>
                         
-                    
+                            {orders?.map((order:any) => (
+                                <>
+                                <div key={order?.orderId} className="mb-4 p-2 border border-gray-200 flex justify-between items-center">
+                                    <span className="kanit">
+                                        {order?.orderId}
+                                    {/* {item?.product?.name} {item?.product?.price} x {item?.quantity} */}
+                                    </span>
+                                    {/* <button
+                                    onClick={() => removeFromCart(order?.orderId)}
+                                    className="text-red-500 hover:text-red-700"
+                                    >
+                                    Edit
+                                    </button> */}
+                                </div>
+                                {/* {orderItem?.filter((item:any) => (
+                                   <div>
 
-                            {cartItems.map((item) => (
-                            <div key={item.id} className="mb-4 p-2 border border-gray-200 flex justify-between items-center">
-                                <span>
-                                {item.name} - ${item.price} x {item.quantity}
-                                </span>
-                                <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="text-red-500 hover:text-red-700"
-                                >
-                                Remove
-                                </button>
-                            </div>
+                                    </div> 
+                                ))
+                                } */}
+                                </>
                             ))}
-                            <p className="font-semibold text-xl mt-4">Total: ${getTotalPrice()}</p>
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
-                            Checkout
-                            </button>
                         </div>
                         
                     
                     )}
                     <div className='row-end-3 row-span-2'>
                         <div className='flex justify-center'>
-                            <div >
-                                <a href="/" className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 ">
-                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">รายละเอียดร้านค้า</h5>
-                                    <p className="font-normal text-gray-700">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-                                </a>
-                                <a href="/" className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
-                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">รายละเอียดผู้รับสินค้า</h5>
-                                    <p className="font-normal text-gray-700">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-                                </a>
+                            <div>
+                                <div className="kanit block py-8 pr-44 pl-8 bg-white border border-gray-200 rounded-xl shadow-md">
+                                    <p className="mb-4 text-2xl font-semibold ">ข้อมูลผู้รับสินค้า</p>
+                                    <p className="mb-1 font-normal text-gray-600">คุณ {userData?.firstname} {userData?.lasname}</p>
+                                    <p className="font-normal text-gray-600">อีเมล {userData?.email}</p>
+                                </div>
+                                <div className="kanit mt-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
+                                    <div className="flex justify-between items-center mb-7">
+                                        <p className="text-2xl font-semibold">ราคารวม</p>
+                                        <p className="text-2xl font-semibold text-red-500">{} บาท</p>
+                                    </div>
+                                    <div className="text-white bg-red-500 flex justify-center rounded-full text-sm py-3 mx-6 cursor-pointer" onClick={handlePayment}>ชำระเงิน</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -75,6 +113,7 @@ const Cart = () => {
 
             </div>
         </div>
+        </>
     );
 };
 

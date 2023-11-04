@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import th.ac.ku.kps.eng.cpe.model.Orders;
+import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
 
 @Repository
@@ -19,10 +20,13 @@ public interface OrdersRepository extends CrudRepository<Orders, Integer> {
 	public List<Orders> findByUser(@Param("user") User user);
 	
 	@Query("from Orders as o where o.user = :user and o.orderStatus = 'Cart'")
-	public Orders findCartByUser(@Param("user") User user);
+	public List<Orders> findCartByUser(@Param("user") User user);
 	
 	@Query("from Orders as o where o.orderStatus = 'Pending' and o.pickupStatus is null")
 	public List<Orders> findPayment();
+	
+	@Query("from Orders as o where o.paymentStatus = 'Approve' and o.store.storeId = :storeId")
+	public List<Orders> findPickupByStore(@Param("storeId") String storeId);
 	
 	@Query("from Orders as o where o.orderStatus = 'Pending' and o.paymentStatus = 'Approve'")
 	public List<Orders> findPickup();

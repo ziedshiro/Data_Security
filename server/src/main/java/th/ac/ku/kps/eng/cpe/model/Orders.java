@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Orders implements java.io.Serializable {
 
 	private String orderId;
+	private Store store;
 	@JsonIgnore private User user;
 	private Date orderDate;
 	private String orderStatus;
@@ -34,17 +35,19 @@ public class Orders implements java.io.Serializable {
 	public Orders() {
 	}
 
-	public Orders(String orderId, User user, String orderStatus, Date createdate) {
+	public Orders(String orderId, Store store,User user, String orderStatus, Date createdate) {
 		this.orderId = orderId;
+		this.store = store;
 		this.user = user;
 		this.orderStatus = orderStatus;
 		this.createdate = createdate;
 	}
 
-	public Orders(String orderId, User user, Date orderDate, String orderStatus, BigDecimal totalAmount,
+	public Orders(String orderId, Store store, User user, Date orderDate, String orderStatus, BigDecimal totalAmount,
 			String filepath, Date paymentDate, String paymentStatus, String pickupCode, Date pickupDate,
 			String pickupStatus, Date createdate, Date updatedate) {
 		this.orderId = orderId;
+		this.store = store;
 		this.user = user;
 		this.orderDate = orderDate;
 		this.orderStatus = orderStatus;
@@ -169,6 +172,14 @@ public class Orders implements java.io.Serializable {
 
 	public void setPickupCode(String pickupCode) {
 		this.pickupCode = pickupCode;
+	}
+
+	public Store getStore() {
+		return store;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
 	}
 
 }

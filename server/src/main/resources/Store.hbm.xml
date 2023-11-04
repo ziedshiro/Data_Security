@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Nov 1, 2023, 3:42:21 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 4, 2023, 9:54:40 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Store" optimistic-lock="none" table="store">
         <id name="storeId" type="string">
@@ -42,6 +42,12 @@
         <property name="rating" type="int">
             <column name="rating" not-null="true"/>
         </property>
+        <set fetch="select" inverse="true" lazy="true" name="orderses" table="orders">
+            <key>
+                <column length="200" name="store_id" not-null="true"/>
+            </key>
+            <one-to-many class="th.ac.ku.kps.eng.cpe.model.Orders"/>
+        </set>
         <set fetch="select" inverse="true" lazy="true" name="favourites" table="favourite">
             <key>
                 <column length="200" name="store_id" not-null="true"/>

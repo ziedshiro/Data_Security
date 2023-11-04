@@ -2,13 +2,16 @@ package th.ac.ku.kps.eng.cpe.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,16 +48,23 @@ public class PaymentController {
 	@Autowired
 	private UserServices userservice;
 	
-	@PostMapping("auth/generatepromptpayqrcode/{id}")
-	public QRCodeResponse generatePromptpayQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")String id) throws Exception {
+	@PostMapping("auth/generatepromptpayqrcode")
+	public QRCodeResponse generatePromptpayQRCode(@RequestHeader("Authorization") String token,@RequestBody Orders[] ordersRequest) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		QRCodeResponse reps = new QRCodeResponse();
 		if (user != null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findById(id);
-			ThaiQRPromptPay qrcode = new ThaiQRPromptPay.Builder().dynamicQR().creditTransfer().mobileNumber("0955523541").amount(order.getTotalAmount()).build();
+			List<Orders> orders = new ArrayList<Orders>();
+			for (Orders order : ordersRequest) {
+				orders.add(orderservice.findById(order.getOrderId()));
+			}
+			BigDecimal total = new BigDecimal(0);
+			for (Orders order : orders) {
+				total.add(order.getTotalAmount());
+			}
+			ThaiQRPromptPay qrcode = new ThaiQRPromptPay.Builder().dynamicQR().creditTransfer().mobileNumber("0955523541").amount(total).build();
 			reps.setResults("data:image/png;base64,"+qrcode.drawToBase64(300, 300));
 			reps.setMsg("create");
 			reps.setStatus(HttpStatus.CREATED);

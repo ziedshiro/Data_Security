@@ -113,7 +113,7 @@ public class OrderitemController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findCartByUser(user);
+			List<Orders> orders = orderservice.findCartByUser(user);
 			Product product = productservice.findById(id);
 			BigDecimal subTotal = new BigDecimal(0);
 			
@@ -125,22 +125,42 @@ public class OrderitemController {
 			LocalTime oneHourBeforeClose = storeCloseTime.minusHours(1);
 			
 			if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
-				if(orderitem.getQuantity()<=product.getQuantityAvailable() && orderitem.getQuantity()!=0) {
+				if(orderitem.getQuantity()<=product.getQuantityAvailable() && orderitem.getQuantity()>0) {
 					if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
 						subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitem.getQuantity()));
 					} else {
 						subTotal = product.getPrice().multiply(new BigDecimal(orderitem.getQuantity()));				
 					}
-					
-					if(order != null) {
-						order.setTotalAmount(order.getTotalAmount().add(subTotal));
-						order.setUpdatedate(new Date());
 						
-						orderservice.save(order);
-						
-						orderitem.setOrders(order);
+					if(orders != null) {
+						boolean ck = true;
+						for (Orders order : orders) {
+							if(product.getStore().getStoreId().equals(order.getStore().getStoreId())) {
+								order.setTotalAmount(order.getTotalAmount().add(subTotal));
+								order.setUpdatedate(new Date());
+								
+								orderservice.save(order);
+								
+								orderitem.setOrders(order);
+								ck=false;
+							}
+						}
+						if(ck) {
+							Orders o = new Orders(UUID.randomUUID().toString(),
+									product.getStore(),
+									user,
+									new Date(),
+									"Cart",
+									subTotal,null,null,null,null,null,null,
+									new Date(),null	
+									);
+							orderservice.save(o);
+							
+							orderitem.setOrders(o);
+						}
 					}else {
 						Orders o = new Orders(UUID.randomUUID().toString(),
+								product.getStore(),
 								user,
 								new Date(),
 								"Cart",
@@ -154,7 +174,6 @@ public class OrderitemController {
 					
 					orderitem.setOrderItemId(UUID.randomUUID().toString());
 					orderitem.setProduct(product);
-					orderitem.setOrders(order);
 					orderitem.setSubtotal(subTotal);
 					orderitem.setCreatedate(new Date());
 					
@@ -179,7 +198,7 @@ public class OrderitemController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findCartByUser(user);
+			Orders order = orderservice.findById(orderitemBody.getOrders().getOrderId());
 			BigDecimal subTotal = new BigDecimal(0);
 			Orderitem orderitem = orderitemservice.findById(id);
 			
@@ -194,7 +213,7 @@ public class OrderitemController {
 				LocalTime oneHourBeforeClose = storeCloseTime.minusHours(1);
 				
 				if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
-					if(orderitemBody.getQuantity()<=product.getQuantityAvailable() && orderitemBody.getQuantity()!=0) {
+					if(orderitemBody.getQuantity()<=product.getQuantityAvailable() && orderitemBody.getQuantity()>0) {
 						if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
 							subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));
 						} else {
@@ -237,22 +256,10 @@ public class OrderitemController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findCartByUser(user);
-			List<Orderitem> list = orderitemservice.findByUser(user);
-			Orderitem orderitem = orderitemservice.findById(id);
-			if(list.size() == 1) {
-				orderitemservice.deleteById(orderitem);
-				orderservice.deleteById(order);
-			}
-			else {
-				order.setTotalAmount(order.getTotalAmount().subtract(orderitem.getSubtotal()));
-				order.setUpdatedate(new Date());
-				orderservice.save(order);				
-				orderitemservice.deleteById(orderitem);
-			}			
+			Orders order = orderservice.findById(id);
+			orderservice.deleteById(order);		
 			return new Response(HttpStatus.OK,"Delted");
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
-		
 	}
 }

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated Nov 1, 2023, 3:42:21 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 4, 2023, 9:54:40 PM by Hibernate Tools 6.1.7.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="yummy_hub" name="th.ac.ku.kps.eng.cpe.model.Orders" optimistic-lock="none" table="orders">
         <id name="orderId" type="string">
             <column length="200" name="order_id"/>
             <generator class="assigned"/>
         </id>
+        <many-to-one class="th.ac.ku.kps.eng.cpe.model.Store" fetch="select" name="store">
+            <column length="200" name="store_id" not-null="true"/>
+        </many-to-one>
         <many-to-one class="th.ac.ku.kps.eng.cpe.model.User" fetch="select" name="user">
             <column length="200" name="user_id" not-null="true"/>
         </many-to-one>

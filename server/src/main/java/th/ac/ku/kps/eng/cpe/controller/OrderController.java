@@ -1,5 +1,6 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -22,19 +23,19 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
-
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
 import th.ac.ku.kps.eng.cpe.model.Orders;
 import th.ac.ku.kps.eng.cpe.model.Product;
+import th.ac.ku.kps.eng.cpe.model.Store;
 import th.ac.ku.kps.eng.cpe.model.User;
 import th.ac.ku.kps.eng.cpe.response.Response;
 import th.ac.ku.kps.eng.cpe.service.EncryptionServices;
 import th.ac.ku.kps.eng.cpe.service.OrderitemServices;
 import th.ac.ku.kps.eng.cpe.service.OrdersServices;
 import th.ac.ku.kps.eng.cpe.service.ProductServices;
+import th.ac.ku.kps.eng.cpe.service.StoreServices;
 import th.ac.ku.kps.eng.cpe.service.UserServices;
 import th.ac.ku.kps.eng.cpe.util.FileUploadUtil;
 
@@ -59,6 +60,9 @@ public class OrderController {
 	private ProductServices productservice;
 	
 	@Autowired
+	private StoreServices storeservice;
+	
+	@Autowired
 	private EncryptionServices encryptionservice;
 	
 	@GetMapping("/auth/order")
@@ -73,6 +77,30 @@ public class OrderController {
 		return null;
 	}
 	
+	@GetMapping("/auth/order/cart")
+	public List<Orders> getCartByUser(@RequestHeader("Authorization") String token) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null && user.getRole().equals("customer")) {
+			return orderservice.findCartByUser(user);
+		}
+		return null;
+	}
+	
+	@GetMapping("/auth/order/cart/length")
+	public int getCartByUserLength(@RequestHeader("Authorization") String token) throws Exception {
+		String jwtToken = token.replace("Bearer ", "");
+		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
+		String username = (String) claims.get("username");
+		User user = userservice.findByUserId(encryptionservice.encrypt(username));
+		if(user!=null && user.getRole().equals("customer")) {
+			return orderservice.findCartByUser(user).size();
+		}
+		return 0;
+	}
+	
 	@GetMapping("/auth/payment")
 	public List<Orders> getPayment(@RequestHeader("Authorization") String token) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
@@ -85,14 +113,15 @@ public class OrderController {
 		return null;
 	}
 	
-	@GetMapping("/auth/pickup")
-	public List<Orders> getPickup(@RequestHeader("Authorization") String token) throws Exception {
+	@GetMapping("/auth/pickup/{id}")
+	public List<Orders> getPickup(@RequestHeader("Authorization") String token, @PathVariable("id")String id) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
-		if(user!=null && user.getRole().equals("store owner")) {
-			return orderservice.findPickup();
+		Store store = storeservice.findById(id);
+		if(user!=null && user.getRole().equals("store owner") && store!=null ) {
+			return orderservice.findPickupByStore(store.getStoreId());
 		}
 		return null;
 	}
@@ -121,10 +150,10 @@ public class OrderController {
 				for (Orderitem orderItem : orderItems) {
 					Product product = orderItem.getProduct();
 					
-					Date storeOpenDate = product.getStore().getStoreOpen();
-					Date storeCloseDate = product.getStore().getStoreClose();
-					LocalTime storeOpenTime = storeOpenDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-					LocalTime storeCloseTime = storeCloseDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+					Time storeOpenDate = product.getStore().getStoreOpen();
+					Time storeCloseDate = product.getStore().getStoreClose();
+					LocalTime storeOpenTime = storeOpenDate.toLocalTime();
+					LocalTime storeCloseTime = storeCloseDate.toLocalTime();
 					
 					if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
 						int quantityAvailable = product.getQuantityAvailable();

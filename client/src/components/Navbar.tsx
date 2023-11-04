@@ -1,6 +1,6 @@
 import { Disclosure } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { IoCaretDown } from "react-icons/io5";
 import Sidebar from "./Sidebar";
@@ -11,11 +11,13 @@ import Logo from "../img/logo.png"
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
+import CartLength from './CartLength';
 
 function Navbar() {
     const [openSideBar, setOpenSideBar] = useState(false)
     const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
     const { state } = useLocation();
+    // const { data, isFetching, error } = useFetchCartLengthQuery("");
     
     useEffect(()=>{},[state])
     
@@ -65,6 +67,7 @@ function Navbar() {
                                 <Link to='/cart' className='py-5'>
                                     <span className='flex items-center'>
                                         <img src={Cart} alt='cart'/>
+                                        <CartLength/>
                                     </span>
                                 </Link>
                         </div>
