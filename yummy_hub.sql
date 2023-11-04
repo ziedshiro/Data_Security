@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2023 at 08:29 PM
+-- Generation Time: Nov 04, 2023 at 10:19 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -987,8 +987,7 @@ CREATE TABLE `favourite` (
 --
 
 INSERT INTO `favourite` (`favourite_id`, `store_id`, `user_id`, `createdate`) VALUES
-('d', 'B545qwSXq', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '2023-11-02 19:20:42'),
-('t', '8xjuo23Wsed5', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '2023-11-02 19:20:19');
+('1f74cdfe-f91d-46ba-ab67-4b4aa33f0b0f', '8xjuo23Wsed5', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '2023-11-04 00:46:26');
 
 -- --------------------------------------------------------
 
@@ -1003,8 +1002,15 @@ CREATE TABLE `orderitem` (
   `quantity` int(11) DEFAULT NULL,
   `Subtotal` decimal(11,2) DEFAULT NULL,
   `createdate` datetime NOT NULL,
-  `updatedate` datetime NOT NULL
+  `updatedate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `orderitem`
+--
+
+INSERT INTO `orderitem` (`orderItem_id`, `order_id`, `product_id`, `quantity`, `Subtotal`, `createdate`, `updatedate`) VALUES
+('29d732d4-70c8-480e-a0a6-34ccf6c776ba', '0c01f2cd-c56f-4760-8877-6b6ad1b09145', '42d26897-9284-4485-a7f5-f0150981e7c4', 1, 189.00, '2023-11-04 16:18:29', NULL);
 
 -- --------------------------------------------------------
 
@@ -1027,6 +1033,13 @@ CREATE TABLE `orders` (
   `createdate` datetime NOT NULL,
   `updatedate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `order_date`, `order_status`, `TotalAmount`, `filepath`, `payment_date`, `payment_status`, `pickup_code`, `pickup_date`, `pickup_status`, `createdate`, `updatedate`) VALUES
+('0c01f2cd-c56f-4760-8877-6b6ad1b09145', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '2023-11-04 16:13:50', 'Cart', 567.00, NULL, NULL, NULL, NULL, NULL, NULL, '2023-11-04 16:13:50', '2023-11-04 16:18:29');
 
 -- --------------------------------------------------------
 
@@ -8687,7 +8700,7 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `role`, `last_login_timestamp`, `account_lock_status`, `attempt_login`, `attempt_time_login`, `two_factor_authentication_enabled`, `code_two_factor_authentication`) VALUES
 ('5XhbMCkwbI6qnPN5H8TwXwQgwSMMO2+ZE05DpyayHOU=', 'A1gt3kk6cJUhXmEJXe1D/g==', 'A1gt3kk6cJUhXmEJXe1D/g==', 'ee46f21b2ac1503db76de02686628f8ea35d9c223316ccee35c06c0355b587c9', '4oL/12mgwYQdHbINR2fSEA==', 'store owner', '2023-11-02 14:44:52', 0, 0, NULL, 1, 'SWL4T2B6LCH67JSI3HR2VWBH33Y4LGHJ'),
 ('bkF2462d0ZeDGz3QtEJB0A==', 'uwUcN3mwOFXMzX27FLFXqw==', 'Kz2+y7sii9kngmhxNkakoQ==', '6e37ab5bffa8e3bb3da25a75653508de2d52c9aeba71c9c0920f8bf4220681eb', 'hTV+zxrcdSDDlBx2AJSkwA==', 'store owner', '2023-11-02 18:04:24', 0, 0, NULL, 1, 'NKPZR2RYFL5BK7RUJZF5ABGCWCMAYG5Q'),
-('hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', 'BcMvBoaaADqRAVB8rR/XQw==', 'gItS51XdVzW/R940eXq9Ag==', '07901b88aa453480e1b1cf28f44ac0bb8d598f7608d4c958dee38bdc0fa44491', 'ADS0ZSEsZv55H5L5ft0cSQ==', 'customer', '2023-11-03 02:28:44', 0, 0, NULL, 1, '2KURGKDB6FMAZVJHOCQMGANRCIBCHEJE'),
+('hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', 'BcMvBoaaADqRAVB8rR/XQw==', 'gItS51XdVzW/R940eXq9Ag==', '07901b88aa453480e1b1cf28f44ac0bb8d598f7608d4c958dee38bdc0fa44491', 'ADS0ZSEsZv55H5L5ft0cSQ==', 'customer', '2023-11-04 16:05:36', 0, 0, NULL, 1, '2KURGKDB6FMAZVJHOCQMGANRCIBCHEJE'),
 ('jZMY2Peh++e/TF+hegA3TbiCwf1nwUpik1a6MHN0Tt0=', 'etX+F5CcPIduTNbvjyAEBw==', 'etX+F5CcPIduTNbvjyAEBw==', '12b57d834652758d0a575053aba2a19cb48219f3716fa96c7b108745829c579a', 'TcNnPta60E/zpeW4CyFTbA==', 'store owner', '2023-11-02 17:45:13', 0, 0, NULL, 1, 'TCN2LOT4GL3Q2HV4OAXNKEN2ZPIU3I23'),
 ('Mvx4FYkvkT7E/nRVGwtj8LiCwf1nwUpik1a6MHN0Tt0=', 'GCL2G/I3UHU6Rpv5B76m6w==', 'MmtN2pz7WM2gqQIxKJu3zw==', '3ce232e12b044a9a39eda44b7e99361989a4062fe4c35751fc330130aee05857', '5kdMTybrfKEbxpk/eueZWg==', 'store owner', '2023-11-02 17:25:17', 0, 0, NULL, 1, 'ZXX2QWQLIBHD27N7G6G7UJ3262MGDCGY'),
 ('test', 'test', 'test', 'test', 'test', 'store owner', NULL, NULL, NULL, NULL, NULL, NULL),

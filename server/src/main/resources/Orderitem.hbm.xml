@@ -22,7 +22,7 @@
             <column length="19" name="createdate" not-null="true"/>
         </property>
         <property name="updatedate" type="timestamp">
-            <column length="19" name="updatedate" not-null="true"/>
+            <column length="19" name="updatedate"/>
         </property>
     </class>
 </hibernate-mapping>

@@ -1,6 +1,7 @@
 package th.ac.ku.kps.eng.cpe.controller;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -116,10 +117,10 @@ public class OrderitemController {
 			Product product = productservice.findById(id);
 			BigDecimal subTotal = new BigDecimal(0);
 			
-			Date storeOpenDate = product.getStore().getStoreOpen();
-			Date storeCloseDate = product.getStore().getStoreClose();
-			LocalTime storeOpenTime = storeOpenDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-			LocalTime storeCloseTime = storeCloseDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+			Time storeOpenDate = product.getStore().getStoreOpen();
+			Time storeCloseDate = product.getStore().getStoreClose();
+			LocalTime storeOpenTime = storeOpenDate.toLocalTime();
+			LocalTime storeCloseTime = storeCloseDate.toLocalTime();
 			LocalTime currentTime = LocalTime.now();
 			LocalTime oneHourBeforeClose = storeCloseTime.minusHours(1);
 			
@@ -185,10 +186,10 @@ public class OrderitemController {
 			if(orderitem!=null) {
 				Product product = orderitem.getProduct();
 				
-				Date storeOpenDate = product.getStore().getStoreOpen();
-				Date storeCloseDate = product.getStore().getStoreClose();
-				LocalTime storeOpenTime = storeOpenDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-				LocalTime storeCloseTime = storeCloseDate.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+				Time storeOpenDate = product.getStore().getStoreOpen();
+				Time storeCloseDate = product.getStore().getStoreClose();
+				LocalTime storeOpenTime = storeOpenDate.toLocalTime();
+				LocalTime storeCloseTime = storeCloseDate.toLocalTime();
 				LocalTime currentTime = LocalTime.now();
 				LocalTime oneHourBeforeClose = storeCloseTime.minusHours(1);
 				

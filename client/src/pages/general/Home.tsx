@@ -83,8 +83,8 @@ function Home() {
                         </div>
                         :
                         ((showMore ? sortedStores : sortedStores.slice(0, initialOrdersToShow)).map((store:any, index:number) => (
-                            <Link to={`/infostore/${store.storeId}`} key={index}>
-                                <img src={imagepath} alt="img_store" className="rounded shadow-lg hover:scale-105" />
+                            <Link to={`/infostore/${store.storeId}`} className="hover:scale-105 bg-white rounded-lg" key={index}>
+                                <img src={imagepath} alt="img_store" className="rounded shadow-lg" />
                                 <div className="flex justify-between">
                                     <h2 className="text-lg font-thin my-2 kanit">{store.name}</h2>
                                     <div className="flex items-center">
@@ -143,6 +143,7 @@ function Home() {
                         <Link
                             to={`/type/${type.typeId}`}
                             key={index}
+                            className="hover:scale-105 bg-white rounded-lg"
                         >
                             <img
                                 src={require(`../../img/types/${type?.img}`)}

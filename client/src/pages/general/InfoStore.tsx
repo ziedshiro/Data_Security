@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Box, Skeleton } from '@mui/material';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart, AiOutlineSearch } from 'react-icons/ai';
 import { format } from 'date-fns';
 import Cookies from 'js-cookie';
 
@@ -20,19 +20,24 @@ const InfoStore = () => {
     const [ addFavorite ] = useAddFavouriteMutation();
     const [ unFavorite ] = useRemoveFavouriteMutation();
     const [activeTab, setActiveTab] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
     const filteredProducts = products?.filter((product:any) => (
         activeTab === 0 ? products :
         product?.type.typeId === activeTab
     ));
+    const filteredData = filteredProducts?.filter((item:any) =>
+    (
+    (typeof item?.name === 'string' && item?.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ))
     const navigate = useNavigate();
     const user = Cookies.get('userdata');
-    const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
-
+    
     const handleTabClick = (tabNumber: number) => {
         setActiveTab(tabNumber);
     };
 
     const timeCheck = () => {
+        const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
         const startTime = store?.storeOpen?.split(":").slice(0, 2).join(":");
         const endTime = store?.storeClose?.split(":").slice(0, 2).join(":");
         if(currentTime >= startTime && currentTime <= endTime){
@@ -56,7 +61,6 @@ const InfoStore = () => {
             return false;
         }
     }
-
 
     const handleFavourite = async () => {
         Swal.fire({
@@ -99,20 +103,22 @@ const InfoStore = () => {
               Swal.showLoading();
             }
         })
+
         await unFavorite(favourite?.favouriteId).then( async (result:any) => {
-                if(result?.error?.status === 500){
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Authentication Error',
-                        text: 'Please Login!',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: true,
-                    });
-                    navigate("/login");
-                }
-            });
+            if(result?.error?.status === 500){
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Authentication Error',
+                    text: 'Please Login!',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: true,
+                });
+                navigate("/login");
+            }
+        });
+
         Swal.close();
     }
 
@@ -244,9 +250,9 @@ const InfoStore = () => {
                         </div>
                         <p className="font-medium mb-3 text-gray-500">{store?.address}</p>
                         <div className="flex text-sm text-gray-500 font-medium mb-3">
-                            <p className="mr-3">{store.districts.nameInThai}</p>
-                            <p className="mr-3">{store.subdistricts.nameInThai}</p>
-                            <p>{store.provinces.nameInThai}</p>
+                            <p className="mr-3">{store?.districts?.nameInThai}</p>
+                            <p className="mr-3">{store?.subdistricts?.nameInThai}</p>
+                            <p>{store?.provinces?.nameInThai}</p>
                         </div>
 
                         <div className="flex items-center">
@@ -254,7 +260,7 @@ const InfoStore = () => {
                                 <StarIcon
                                 key={rating}
                                 className={classNames(
-                                    store.rating > rating ? 'text-red-500' : 'text-gray-200',
+                                    store?.rating > rating ? 'text-red-500' : 'text-gray-200',
                                     'h-5 w-5 flex-shrink-0'
                                 )}
                                 aria-hidden="true"
@@ -266,7 +272,7 @@ const InfoStore = () => {
                                 Opening Hours
                             </p>
                             <p className="mr-3 text-gray-500">
-                                {store?.storeOpen.split(":").slice(0, 2).join(":")} - {store?.storeClose.split(":").slice(0, 2).join(":")}
+                                {store?.storeOpen?.split(":").slice(0, 2).join(":")} - {store?.storeClose?.split(":").slice(0, 2).join(":")}
                             </p>
                             {
                                 timeCheck() ?
@@ -299,10 +305,24 @@ const InfoStore = () => {
             </div>
 
             <div className=''>
-                <div className="container mx-auto mt-3 mb-10">
-                    <div className="px-4">
+                <div className="container mx-auto mb-10">
+                    <div className="px-4 py-3">
                         <div className='container mx-auto'>
-                        <p className="text-2xl font-medium mb-10 my-6 kanit">{typeOption[activeTab].label}</p> 
+                        <div className="flex justify-between items-center">
+                            <p className="text-2xl font-medium mb-10 my-6 kanit">{typeOption[activeTab].label}</p>
+                            <div className="mr-4 flex items-center kanit rounded-2xl bg-gray-50 px-3 py-2 text-gray-400 shadow-md">
+                                <AiOutlineSearch size={20} className="mr-3"/>
+                                <input
+                                    type="text"
+                                    id="form-subscribe-Filter"
+                                    className="focus:outline-none bg-gray-50 w-48"
+                                    placeholder="ค้นหาสินค้า"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+
+                            </div>
+                        </div>
                             {
                                 isProduct || errorProduct || isFavourite ?
                                 <div className="grid gap-x-8 gap-y-10 grid-cols-4">
@@ -316,7 +336,7 @@ const InfoStore = () => {
                                     <Media/>
                                 </div>
                             :
-                                (filteredProducts?.length === 0 ?
+                                (filteredData?.length === 0 ?
                                     <div className="flex flex-col justify-center py-20 items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="4 4 40 40" className="w-20">
                                             <path className="fill-slate-200" d="M22 30h4v4h-4zm0-16h4v12h-4zm1.99-10C12.94 4 4 12.95 4 24s8.94 20 19.99 20S44 35.05 44 24 35.04 4 23.99 4zM24 40c-8.84 0-16-7.16-16-16S15.16 8 24 8s16 7.16 16 16-7.16 16-16 16z" fill="#000000"/>
@@ -326,13 +346,13 @@ const InfoStore = () => {
                                     </div>
                                 :
                                     <div className="grid gap-x-8 gap-y-10 grid-cols-4">
-                                        {filteredProducts.map((product:any, index:number) => (
+                                        {filteredData.map((product:any, index:number) => (
                                             (
                                             timeCheck() ?
                                                 <div
                                                     onClick={() => handleClickProduct(product?.productId)}
                                                     key={index}
-                                                    className='bg-white hover:scale-105 rounded-lg'
+                                                    className='bg-white hover:scale-105 rounded-lg cursor-pointer'
                                                 >
                                                     <img
                                                         src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
@@ -341,14 +361,20 @@ const InfoStore = () => {
                                                     />
                                                     <div className='m-3'>
                                                         <p className="kanit">{product?.name} EXP ({format(new Date(product?.expiryDate), 'dd-MM-yyyy')})</p>
-                                                        (
+                                                        {
                                                             discountCheck() ?
-                                                            <div className="flex items-center">
-                                                                <p className="text-sm kanit text-red-500 line-through mr-1">{product?.price}</p>
-                                                                <p className="text-base kanit text-red-500">{product?.discountPrice} บาท</p>
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center">
+                                                                    <p className="text-sm kanit text-red-500 line-through mr-1">{product?.price}</p>
+                                                                    <p className="text-base kanit text-red-500">{product?.discountPrice} บาท</p>
+                                                                </div>
+                                                                <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
                                                             </div>
                                                             :
-                                                            <p className="text-base kanit text-red-500">{product?.price} บาท</p>)
+                                                            <div className="flex justify-between items-center">
+                                                                <p className="text-base kanit text-red-500">{product?.price} บาท</p>
+                                                                <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
+                                                            </div>}
                                                     </div>
                                                 </div>
                                                 :
