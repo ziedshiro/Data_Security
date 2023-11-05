@@ -245,14 +245,14 @@ const StoreInfo = ({id}:StoreInfo) => {
                                                             discountCheck() ?
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center">
-                                                                    <p className="text-sm kanit text-red-500 line-through mr-1">{product?.price}</p>
-                                                                    <p className="text-base kanit text-red-500">{product?.discountPrice} บาท</p>
+                                                                    <p className="text-sm kanit text-blue-500 line-through mr-1">{product?.price}</p>
+                                                                    <p className="text-base kanit text-blue-500">{product?.discountPrice} บาท</p>
                                                                 </div>
                                                                 <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
                                                             </div>
                                                             :
                                                             <div className="flex justify-between items-center">
-                                                                <p className="text-base kanit text-red-500">{product?.price} บาท</p>
+                                                                <p className="text-base kanit text-blue-500">{product?.price} บาท</p>
                                                                 <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
                                                             </div>}
                                                     </div>
@@ -273,7 +273,7 @@ const StoreInfo = ({id}:StoreInfo) => {
                                                     <div className='m-3'>
                                                         <p className="kanit">{product?.name} EXP ({format(new Date(product?.expiryDate), 'dd-MM-yyyy')})</p>
                                                         <div className="flex justify-between items-center">
-                                                            <p className="text-base kanit text-red-500">{product?.price} บาท</p>
+                                                            <p className="text-base kanit text-blue-500">{product?.price} บาท</p>
                                                             <p className="text-sm kanit text-gray-500">จำนวน {product?.quantityAvailable}</p>
                                                         </div>
                                                     </div>
