@@ -263,7 +263,7 @@ const StoreInfo = ({id}:StoreInfo) => {
                                                     {product?.imgProduct && <img
                                                         src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
                                                         alt="img_product"
-                                                        className="rounded-xl shadow-lg opacity-40"
+                                                        className="rounded-xl shadow-lg opacity-40 w-80 h-48 object-contain"
                                                     />}
                                                     <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
                                                         <div className="text-sm kanit font-bold cursor-default bg-red-500 px-2 py-1 rounded">ORDER FOR LATER</div>
