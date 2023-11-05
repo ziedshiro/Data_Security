@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useFetchProductByStoreIdQuery, useFetchStoreByIdQuery } from '../store';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Box, Skeleton } from '@mui/material';
@@ -28,7 +27,6 @@ const StoreInfo = ({id}:StoreInfo) => {
     (
     (typeof item?.name === 'string' && item?.name.toLowerCase().includes(searchQuery.toLowerCase()))
     ))
-    const navigate = useNavigate();
     
     const handleTabClick = (tabNumber: number) => {
         setActiveTab(tabNumber);

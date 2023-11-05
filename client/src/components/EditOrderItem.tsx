@@ -1,9 +1,9 @@
 import { Fragment, ReactNode, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
+import { AiOutlineMinusCircle, AiOutlinePlusCircle, AiOutlineDelete } from 'react-icons/ai';
 import { format } from 'date-fns';
 import Swal from 'sweetalert2';
-import { useUpdateItemMutation } from '../store';
+import { useRemoveItemMutation, useUpdateItemMutation } from '../store';
 import { useNavigate } from 'react-router';
 interface OpenModal {
     open: boolean;
@@ -16,8 +16,9 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
 
     const navigate = useNavigate();
     const cancelButtonRef = useRef(null);
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState(item?.quantity);
     const [ updateItem ] = useUpdateItemMutation();
+    const [ removeItem ] = useRemoveItemMutation();
 
     const timeCheck = () => {
         const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -96,12 +97,52 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                     allowOutsideClick: true,
                     text: 'ใส่ตะกร้าเรียบร้อย',
                 });
-                navigate(`/cart`);
+                onHide()
             }
         });
 
         Swal.close();
+    }
 
+    const handleDelete = async() => {
+        Swal.fire({
+            timerProgressBar: true,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            background: 'transparent',
+            didOpen: () => {
+              Swal.showLoading();
+            }
+        })
+
+        await removeItem(item?.orderItemId).then( async (result:any) => {
+            if(result?.error?.status === 500){
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Authentication Error',
+                    text: 'Please Login!',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: true,
+                });
+                navigate(`/login`);
+            }
+            else{
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Successful',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: true,
+                    text: 'ลบสินค้าเรียบร้อยเรียบร้อย',
+                });
+                onHide()
+            }
+        });
+
+        Swal.close();
     }
 
     return ( 
@@ -156,22 +197,21 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                                                                 <p className="kanit text-sm text-gray-700">{item?.product?.type?.typeName}</p>
                                                                 <p className="kanit text-sm text-gray-700">จำนวน {item?.product?.quantityAvailable}</p>
                                                             </div>
-                                                            <p className="kanit text-sm font-extralight my-5">{item?.product?.description}</p>
                                                             <div className="flex kanit text-gray-500 text-sm">
                                                                 <p className="mr-3">วันหมดอายุ</p>
                                                                 <p>{format(new Date(item?.product?.expiryDate), 'dd-MM-yyyy HH:mm')}</p>
                                                             </div>
                                                             {
-                                                                discountCheck() ?
+                                                                discountCheck() && item?.product?.discountPrice === item?.price ?
                                                                 <>
-                                                                    <div className="flex items-center mt-1">
+                                                                    <div className="flex justify-center items-center mt-1">
                                                                         <p className="text-sm kanit text-red-500 line-through mr-1">{item?.product?.price}</p>
                                                                         <p className="text-lg kanit text-red-500">{item?.product?.discountPrice} บาท</p>
                                                                     </div>
                                                                     <div className="flex justify-center my-6 items-center text-gray-400">
                                                                         {
                                                                         quantity === 1 ? 
-                                                                        <AiOutlineMinusCircle size={25} className="mr-4 cursor-not-allowed text-gray-300"/>
+                                                                        <AiOutlineDelete size={25} className="mr-4 cursor-pointer" onClick={handleDelete}/>
                                                                         :
                                                                         <AiOutlineMinusCircle size={25} className="mr-4 cursor-pointer" onClick={handleMinus}/>}
                                                                         <p className="mr-4 text-black cursor-default">{quantity}</p>
@@ -182,7 +222,7 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                                                                         <AiOutlinePlusCircle size={25} className="cursor-pointer" onClick={handlePlus}/>}
                                                                     </div>
                                                                     <div className="flex justify-center mt-8 mb-4 cursor-pointer bg-red-500 rounded-full text-white kanit py-3 mx-5 text-sm" onClick={handleAddProduct}>
-                                                                        ใส่ตะกร้า ({item?.product?.discountPrice * quantity} บาท)
+                                                                        แก้ไข ({item?.product?.discountPrice * quantity} บาท)
                                                                     </div>
                                                                 </>
                                                                 :
@@ -191,7 +231,7 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                                                                     <div className="flex justify-center my-6 items-center text-gray-400">
                                                                         {
                                                                         quantity === 1 ? 
-                                                                        <AiOutlineMinusCircle size={25} className="mr-4 cursor-not-allowed text-gray-300"/>
+                                                                        <AiOutlineDelete size={27} className="mr-4 cursor-pointer" onClick={handleDelete}/>
                                                                         :
                                                                         <AiOutlineMinusCircle size={25} className="mr-4 cursor-pointer" onClick={handleMinus}/>}
                                                                         <p className="mr-4 text-black cursor-default">{quantity}</p>
@@ -202,28 +242,27 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                                                                         <AiOutlinePlusCircle size={25} className="cursor-pointer" onClick={handlePlus}/>}
                                                                     </div>
                                                                     <div className="flex justify-center mt-8 mb-4 cursor-pointer bg-red-500 rounded-full text-white kanit py-3 mx-5 text-sm" onClick={handleAddProduct}>
-                                                                        ใส่ตะกร้า ({item?.product?.price * quantity} บาท)
+                                                                        แก้ไข ({item?.product?.price * quantity} บาท)
                                                                     </div>
                                                                 </>}
                                                         </div>
                                                     </div>
                                                     :
-                                                    <div className="w-96">
+                                                    <div className="w-80">
                                                         <img
                                                             src={require(`C:/image/Files-Upload/products/${item?.product?.imgProduct}`)}
                                                             alt="img_product"
-                                                            className="rounded-3xl shadow-lg w-96 h-64 opacity-40"
+                                                            className="rounded-3xl shadow-lg w-80 h-56 opacity-40"
                                                         />
-                                                        <div className="absolute top-80 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
+                                                        <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
                                                             <div className="text-sm kanit font-bold cursor-default bg-red-500 px-2 py-1 rounded">ORDER FOR LATER</div>
                                                         </div>
                                                         <div className='mt-10 mx-3'>
-                                                            <p className="kanit text-3xl font-semibold">{item?.product?.name}</p>
+                                                            <p className="kanit text-xl font-semibold">{item?.product?.name}</p>
                                                             <div className="flex justify-between items-center mt-2">
                                                                 <p className="kanit text-sm text-gray-700">{item?.product?.type?.typeName}</p>
                                                                 <p className="kanit text-sm text-gray-700">จำนวน {item?.product?.quantityAvailable}</p>
                                                             </div>
-                                                            <p className="kanit text-sm font-extralight my-5">{item?.product?.description}</p>
                                                             <div className="flex kanit text-gray-500 text-sm">
                                                                 <p className="mr-3">วันหมดอายุ</p>
                                                                 <p>{format(new Date(item?.product?.expiryDate), 'dd-MM-yyyy HH:mm')}</p>
@@ -235,7 +274,7 @@ function EditOrderItem({ open ,onHide ,item }:OpenModal) {
                                                                 <AiOutlineMinusCircle size={25} className="mr-4 cursor-not-allowed text-gray-300"/>
                                                             </div>
                                                             <div className="flex justify-center mt-6 cursor-not-allowed bg-gray-400 rounded-full text-white kanit py-3 mx-5 text-sm">
-                                                                ใส่ตะกร้า ({item?.product?.price * quantity} บาท)
+                                                                แก้ไข ({item?.product?.price * quantity} บาท)
                                                             </div>
                                                         </div>
                                                     </div>

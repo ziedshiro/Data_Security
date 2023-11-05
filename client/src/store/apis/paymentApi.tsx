@@ -38,24 +38,29 @@ const paymentApi = createApi({
                 providesTags: ['Payments'],
             }),
             //provide user
-            generatePromptpayQRCode: builder.mutation({
-                query: (id) => {
+            generatePromptpayQRCode: builder.query({
+                query: (data) => {
+
+                    const orders = data.map((item:string) => ({ "orderId": item }));
+
                     return{
-                        url: `/auth/generatepromptpayqrcode/${id}`,
+                        url: `/auth/generatepromptpayqrcode`,
                         method: 'POST',
+                        body: orders,
                     };
                 },
             }),
             //for user pay order
-            payment: builder.mutation({
-                query: (id) => {
-                    return{
-                        url: `/auth/payment/${id}`,
-                        method: 'POST',
-                    };
-                },
-                invalidatesTags: ['Payments'],
-            }),
+            // payment: builder.mutation({
+            //     query: (data) => {
+            //         return{
+            //             url: `/auth/payment`,
+            //             method: 'POST',
+            //             body: data,
+            //         };
+            //     },
+            //     invalidatesTags: ['Payments'],
+            // }),
             //for admin change status order
             updateStatusPayment: builder.mutation({
                 query: ({ id, orderData }) => {
@@ -73,8 +78,8 @@ const paymentApi = createApi({
 
 export const {
     useFetchPaymentQuery,
-    useGeneratePromptpayQRCodeMutation,
-    usePaymentMutation,
+    useGeneratePromptpayQRCodeQuery,
+    // usePaymentMutation,
     useUpdateStatusPaymentMutation
 } = paymentApi;
 

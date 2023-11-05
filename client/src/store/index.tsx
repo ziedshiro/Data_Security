@@ -71,13 +71,14 @@ export {
     useRemoveItemMutation,
     useUpdateItemMutation,
     useFetchCartOrderQuery,
-    useFetchCartLengthQuery
+    useFetchCartLengthQuery,
+    usePaymentMutation,
 } from './apis/cartApi';
 
 export {
     useFetchPaymentQuery,
-    useGeneratePromptpayQRCodeMutation,
-    usePaymentMutation,
+    useGeneratePromptpayQRCodeQuery,
+    // usePaymentMutation,
     useUpdateStatusPaymentMutation
 } from './apis/paymentApi';
 

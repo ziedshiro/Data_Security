@@ -54,6 +54,16 @@ const cartApi = createApi({
                 },
                 providesTags: ['Carts'],
             }),
+            payment: builder.mutation({
+                query: (data) => {
+                    return{
+                        url: `/auth/payment`,
+                        method: 'POST',
+                        body: data,
+                    };
+                },
+                invalidatesTags: ['Carts'],
+            }),
             fetchCartLength: builder.query({
                 query: () => {
                     return{
@@ -102,7 +112,8 @@ export const {
     useRemoveItemMutation,
     useUpdateItemMutation,
     useFetchCartOrderQuery,
-    useFetchCartLengthQuery
+    useFetchCartLengthQuery,
+    usePaymentMutation
 } = cartApi;
 
 export { cartApi };

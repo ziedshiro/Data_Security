@@ -15,7 +15,6 @@ const Cart = () => {
     const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
     const totalAmountSum = orders?.filter((order:any) => selectedOrderIds?.includes(order.orderId)).reduce((sum:number, order:any) => sum + order.totalAmount, 0);
-    console.log(selectedOrderIds)
     let userData;
     if(user){
         userData = JSON.parse(user)
@@ -74,7 +73,8 @@ const Cart = () => {
     if(errorOrder || errorOrderItem){
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });
-        
+        Cookies.remove('orders', { path: '/' });
+
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',
@@ -167,7 +167,7 @@ const Cart = () => {
                                                 <p className="text-lg">{filteredItem?.product?.name}</p> 
                                                 <div className="text-sm flex text-gray-500">{filteredItem?.quantity} X 
                                                 {
-                                                discountCheck(order) ?
+                                                discountCheck(order) && filteredItem?.product?.discountPrice === filteredItem?.price ?
                                                 <div className="flex items-center ml-1">
                                                     <p className="line-through mr-1">{filteredItem?.product?.price}</p>
                                                     <p className="">{filteredItem?.product?.discountPrice}</p>
