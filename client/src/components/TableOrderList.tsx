@@ -8,14 +8,18 @@ import ModalApprovePayment from "./ModalApprovePayment";
 
 interface TablePayment {
     search: string;
+    storeId:string | undefined;
 }
 
-function TableOrderList({search}:TablePayment) {
-    const { data,isFetching  } = useFetchPickupQuery('') as {
+function TableOrderList({search,storeId}:TablePayment) {
+    const { data,isFetching,isError  } = useFetchPickupQuery(storeId) as {
         data:Array<Payment>,
-        isFetching:boolean
+        isFetching:boolean,
+        isError:boolean
     };
     const [viewPayment,setViewPayment] = useState(false);
+    console.log(data);
+    
     
     let content;
     if(isFetching){
@@ -25,7 +29,12 @@ function TableOrderList({search}:TablePayment) {
                     <Skeleton width={815} height={500}/>
                 </td>
             </tr>
-    }else if(data.length > 0){
+    }else if(isError || data?.length === 0){
+        content = 
+            <tr>
+                <td>No Data</td>
+            </tr>
+    }else{
         const filterData = data.filter((item:Payment)=>{
             return(
                 thaiDateFormat(item.paymentDate).includes(search) || thaiDateFormat(item.orderDate).includes(search)
@@ -88,11 +97,6 @@ function TableOrderList({search}:TablePayment) {
                 )
             })
         }
-    }else{
-        content = 
-            <tr>
-                <td>No Data</td>
-            </tr>
     }
     return (
         <>

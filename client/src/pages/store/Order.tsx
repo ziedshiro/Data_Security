@@ -95,6 +95,7 @@ function Order() {
                 </thead>
                 <tbody className="border-black border-b-2">
                     <TableOrderList
+                      storeId={data.storeId}
                       search={search}
                     />
                 </tbody>

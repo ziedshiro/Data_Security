@@ -19,19 +19,6 @@ function EditProduct() {
     if(isFetching || isProductFetch){
         content = <Skeleton />
     }else if(data){
-        console.log(data);
-        
-        const newInitialValues = {
-            type: product.type.typeName,
-            name: product.name,
-            description: product.description,
-            expiryDate: product.expiryDate,
-            price: product.price,
-            discountPrice: product.discountPrice,
-            quantityAvailable: product.quantityAvailable,
-            file: [],
-        };
-        // formik.setValues(newInitialValues);
         content = <EditProductList product={product} storeId={data.storeId}/>
             
     }else{
