@@ -4,7 +4,6 @@ import { useAddItemMutation, useFetchProductByIdQuery } from "../../store";
 import { Skeleton } from "@mui/material";
 import { format } from 'date-fns';
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from 'react-icons/ai';
-import { async } from 'q';
 import Swal from 'sweetalert2';
 
 function Product() {
