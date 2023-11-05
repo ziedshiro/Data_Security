@@ -22,7 +22,7 @@ public interface OrdersRepository extends CrudRepository<Orders, Integer> {
 	@Query("from Orders as o where o.user = :user and o.orderStatus = 'Cart'")
 	public List<Orders> findCartByUser(@Param("user") User user);
 	
-	@Query("from Orders as o where o.orderStatus = 'Pending' and o.pickupStatus is null")
+	@Query("from Orders as o where o.orderStatus != 'Cart'")
 	public List<Orders> findPayment();
 	
 	@Query("from Orders as o where o.paymentStatus = 'Approve' and o.store.storeId = :storeId")
