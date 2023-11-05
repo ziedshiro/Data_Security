@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.jsonwebtoken.Claims;
 import th.ac.ku.kps.eng.cpe.auth.JwtUtil;
 import th.ac.ku.kps.eng.cpe.model.Orderitem;
@@ -126,14 +129,16 @@ public class OrderController {
 		return null;
 	}
 	
-	@PostMapping("/auth/payment/{id}")
-	public Response pay(@RequestHeader("Authorization") String token,@PathVariable("id")String id,@RequestPart("file") MultipartFile file) throws Exception {
+	@PostMapping("/auth/payment")
+	public Response pay(@RequestHeader("Authorization") String token,@RequestPart("order") String orderJson,@RequestPart("file") MultipartFile file) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findById(id);
+			ObjectMapper objectMapper = new ObjectMapper();
+			Orders orderRequest = objectMapper.readValue(orderJson, Orders.class);
+			Orders order = orderservice.findById(orderRequest.getOrderId());
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 			
 			if (fileName != null && fileName.matches(".*\\.(jpg|jpeg|png|gif|bmp|svg)$")) {
@@ -144,7 +149,7 @@ public class OrderController {
 				order.setPaymentDate(new Date());
 				order.setPaymentStatus("Pending");
 				order.setUpdatedate(new Date());
-				List<Orderitem> orderItems = orderitemservice.findByOrderId(id);
+				List<Orderitem> orderItems = orderitemservice.findByOrderId(order.getOrderId());
 				
 				LocalTime currentTime = LocalTime.now();
 				for (Orderitem orderItem : orderItems) {

@@ -15,7 +15,6 @@ const Cart = () => {
     const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
     const totalAmountSum = orders?.filter((order:any) => selectedOrderIds?.includes(order.orderId)).reduce((sum:number, order:any) => sum + order.totalAmount, 0);
-    console.log(selectedOrderIds)
     let userData;
     if(user){
         userData = JSON.parse(user)
@@ -74,6 +73,7 @@ const Cart = () => {
     if(errorOrder || errorOrderItem){
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });
+        Cookies.remove('orders', { path: '/' });
 
         Swal.fire({
             icon: 'error',

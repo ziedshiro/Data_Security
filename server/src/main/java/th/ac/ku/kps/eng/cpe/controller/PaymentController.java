@@ -62,7 +62,7 @@ public class PaymentController {
 			}
 			BigDecimal total = new BigDecimal(0);
 			for (Orders order : orders) {
-				total.add(order.getTotalAmount());
+				total = total.add(order.getTotalAmount());
 			}
 			ThaiQRPromptPay qrcode = new ThaiQRPromptPay.Builder().dynamicQR().creditTransfer().mobileNumber("0955523541").amount(total).build();
 			reps.setResults("data:image/png;base64,"+qrcode.drawToBase64(300, 300));

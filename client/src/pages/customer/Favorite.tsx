@@ -27,6 +27,7 @@ function Favorite() {
     if(error){
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });
+        Cookies.remove('orders', { path: '/' });
 
         Swal.fire({
             icon: 'error',
