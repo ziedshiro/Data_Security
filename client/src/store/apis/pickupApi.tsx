@@ -49,11 +49,12 @@ const pickupApi = createApi({
                 },
             }),
             //provide user
-            generatePickupQRCode: builder.mutation({
-                query: (id) => {
+            generatePickupQRCode: builder.query({
+                query: (data) => {
                     return{
-                        url: `auth/generatepickupqrcode/${id}`,
+                        url: `auth/generatepickupqrcode`,
                         method: 'POST',
+                        body: data
                     };
                 },
             }),
@@ -74,7 +75,7 @@ const pickupApi = createApi({
 
 export const {
     useFetchPickupQuery,
-    useGeneratePickupQRCodeMutation,
+    useGeneratePickupQRCodeQuery,
     useUpdateStatusPickupMutation,
     useFetchPickupCheckMutation
 } = pickupApi;

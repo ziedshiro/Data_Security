@@ -76,23 +76,28 @@ public class PaymentController {
 		return reps;
 	}
 	
-	@PostMapping("auth/generatepickupqrcode/{id}")
-	public QRCodeResponse generatePickupQRCode(@RequestHeader("Authorization") String token,@PathVariable("id")String id) throws Exception {
+	@PostMapping("auth/generatepickupqrcode")
+	public QRCodeResponse generatePickupQRCode(@RequestHeader("Authorization") String token,@RequestBody Orders orderRequest) throws Exception {
 		String jwtToken = token.replace("Bearer ", "");
 		Claims claims = jwtUtil.parseJwtClaims(jwtToken);
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		QRCodeResponse reps = new QRCodeResponse();
 		if (user != null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findById(id);
-			QRCodeWriter qrCodeWriter = new QRCodeWriter();
-			BitMatrix bitMatrix = qrCodeWriter.encode(order.getPickupCode(), BarcodeFormat.QR_CODE, 300, 300);
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
-            byte[] imageBytes = outputStream.toByteArray();
-            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-			
-			reps.setResults("data:image/png;base64,"+base64Image);
+			Orders order = orderservice.findById(orderRequest.getOrderId());
+			if(order.getPickupCode()==null) {
+				reps.setResults(null);
+			}
+			else {
+				QRCodeWriter qrCodeWriter = new QRCodeWriter();
+				BitMatrix bitMatrix = qrCodeWriter.encode(order.getPickupCode(), BarcodeFormat.QR_CODE, 300, 300);
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+				byte[] imageBytes = outputStream.toByteArray();
+				String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+				
+				reps.setResults("data:image/png;base64,"+base64Image);				
+			}
 			reps.setMsg("create");
 			reps.setStatus(HttpStatus.CREATED);
 		}

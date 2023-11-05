@@ -84,7 +84,7 @@ export {
 
 export {
     useFetchPickupQuery,
-    useGeneratePickupQRCodeMutation,
+    useGeneratePickupQRCodeQuery,
     useUpdateStatusPickupMutation,
     useFetchPickupCheckMutation
 } from './apis/pickupApi';
