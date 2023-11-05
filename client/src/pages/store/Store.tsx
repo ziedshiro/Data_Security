@@ -119,8 +119,7 @@ function Store(storeData:StoreAuth) {
             window.removeEventListener("resize", handleWindowResize);
         };
     }, []);
-    console.log(storeData);
-    
+
     const handleLogout = () => {
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });

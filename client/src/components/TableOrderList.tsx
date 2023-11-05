@@ -1,10 +1,12 @@
 import { EyeIcon } from "@heroicons/react/24/outline";
 import thaiDateFormat from "../utils/thaiDateFormat";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Payment } from "../Model/Payment";
 import { useFetchPickupQuery } from "../store";
 import { Skeleton } from "@mui/joy";
 import ModalApprovePayment from "./ModalApprovePayment";
+import { authStoreApi } from "../store/apis/authStoreApi";
+import { useDispatch } from "react-redux";
 
 interface TablePayment {
     search: string;
@@ -12,6 +14,7 @@ interface TablePayment {
 }
 
 function TableOrderList({search,storeId}:TablePayment) {
+    const dispatch = useDispatch();
     const { data,isFetching,isError  } = useFetchPickupQuery(storeId) as {
         data:Array<Payment>,
         isFetching:boolean,
@@ -19,6 +22,12 @@ function TableOrderList({search,storeId}:TablePayment) {
     };
     const [viewPayment,setViewPayment] = useState(false);
     
+    useEffect(()=>{
+        if(isError){
+            dispatch(authStoreApi.util.resetApiState());
+        }
+    },[isError])
+
     let content;
     if(isFetching){
         content = 
@@ -27,13 +36,8 @@ function TableOrderList({search,storeId}:TablePayment) {
                     <Skeleton width={815} height={500}/>
                 </td>
             </tr>
-    }else if(isError || data?.length === 0){
-        content = 
-            <tr>
-                <td>No Data</td>
-            </tr>
-    }else{
-        const filterData = data.filter((item:Payment)=>{
+    }else if(data && data?.length > 0){
+        const filterData = data?.filter((item:Payment)=>{
             return(
                 thaiDateFormat(item.paymentDate).includes(search) || thaiDateFormat(item.orderDate).includes(search)
             )
@@ -65,7 +69,7 @@ function TableOrderList({search,storeId}:TablePayment) {
                 )
             })
         }else{
-            content = filterData.map((item:Payment)=>{
+            content = filterData?.map((item:Payment)=>{
                 return(
                     <tr key={item.orderId}>
                         <td className="px-3 text-start">
@@ -95,6 +99,11 @@ function TableOrderList({search,storeId}:TablePayment) {
                 )
             })
         }
+    }else{
+        content = 
+        <tr>
+            <td>No Data</td>
+        </tr>
     }
     return (
         <>

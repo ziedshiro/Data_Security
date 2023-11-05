@@ -6,12 +6,21 @@ import { Button } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 import TableProductList from "../../components/TableProductList";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { authStoreApi } from "../../store/apis/authStoreApi";
 
 function Product() {
+    const dispatch = useDispatch();
     const { data,isFetching } = useFetchAuthStoreQuery();
     const { data:product,isFetching:isProduct,isError:errorProduct } = useFetchAuthProductQuery();
     const [ search,setSearch ] = useState('');
+
+    useEffect(()=>{
+        if(errorProduct){
+            dispatch(authStoreApi.util.resetApiState());
+        }
+    },[errorProduct])
 
     let content;
     if(isFetching){
@@ -23,13 +32,6 @@ function Product() {
             <tr>
                 <td>
                     <Skeleton width={587} height={250}/>
-                </td>
-            </tr>
-        }else if(errorProduct){
-            content_list = 
-            <tr>
-                <td>
-                    Error
                 </td>
             </tr>
         }else if(product){

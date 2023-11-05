@@ -74,7 +74,7 @@ const Cart = () => {
     if(errorOrder || errorOrderItem){
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });
-
+        
         Swal.fire({
             icon: 'error',
             title: 'Authentication Error',
