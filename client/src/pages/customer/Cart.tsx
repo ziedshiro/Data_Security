@@ -4,9 +4,12 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import { Skeleton } from '@mui/material';
+import EditOrderItem from '../../components/EditOrderItem';
 
 const Cart = () => {
     const navigate = useNavigate();
+    const [selectedItem, setSelectedItem] = useState({});
+    const [onOpen,setOnOpen] = useState(false);
     const { data:orderItem, isFetching:isOrderItem, error:errorOrderItem } = useFetchCartQuery("");
     const { data:orders, isFetching:isOrder, error:errorOrder } = useFetchCartOrderQuery("");
     const user = Cookies.get('userdata') !== undefined ? Cookies.get('userdata') : null;
@@ -18,20 +21,15 @@ const Cart = () => {
         userData = JSON.parse(user)
     }
 
-    const getTotalPrice = () => {
-        // return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    };
-
-    const removeFromCart = (itemId: number) => {
-        // setCartItems(cartItems.filter((item) => item.id !== itemId));
-    };
-
     const handlePayment = () => {
+        const jsonString = JSON.stringify(selectedOrderIds);
+        Cookies.set('orders', jsonString);
         navigate('/payment')
     }
 
     const handleEdit = (item:any) => {
-        
+        setOnOpen(true);
+        setSelectedItem(item);
     }
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +67,10 @@ const Cart = () => {
         }
     };
 
+    const handleClose = () => {
+        setOnOpen(false);
+    }
+
     if(errorOrder || errorOrderItem){
         Cookies.remove('jwt',{ path: '/' });
         Cookies.remove('userdata', { path: '/' });
@@ -88,6 +90,9 @@ const Cart = () => {
 
     return (
         <>
+        {onOpen && selectedItem && (
+            <EditOrderItem open={onOpen} onHide={handleClose} item={selectedItem} />
+        )}
         <div className="bg-red-500">
             <p className="text-4xl leading-tight font-semibold text-white px-24 py-10 kanit">
                 ตะกร้าสินค้า
@@ -188,7 +193,6 @@ const Cart = () => {
                                 </>
                             ))}
                         </div>
-                        
                     
                     ))}
                     <div className='row-end-3 row-span-2'>
