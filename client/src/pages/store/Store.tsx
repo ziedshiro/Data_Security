@@ -11,6 +11,8 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { StoreAuth } from '../../Model/Store'
+import { useLocation } from "react-router-dom";
+import StoreInfo from "../../components/StoreInfo";
 
 function NavList({className}:any) {
     let active: string;
@@ -20,7 +22,7 @@ function NavList({className}:any) {
     }else{
         active = "pb-1 text-yellow-500 text-base ";
     }
-
+    
     useEffect(() => {
         
     }, [className]);
@@ -107,6 +109,8 @@ function Store(storeData:StoreAuth) {
     const navigate = useNavigate();
     const handleWindowResize = () =>
     window.innerWidth >= 960 && setOpenNav(false);
+    const { pathname } = useLocation();
+    const path = pathname.split('/store');
  
     useEffect(() => {
         window.addEventListener("resize", handleWindowResize);
@@ -167,7 +171,14 @@ function Store(storeData:StoreAuth) {
                     <NavList />
                 </Collapse>
             </div>
-            <Outlet/> 
+            {path[1] === ''?(
+                <StoreInfo
+                    id={storeData.storeId}
+                />
+            ):(
+                <Outlet/> 
+            )            
+            }
         </div>
     );
 }

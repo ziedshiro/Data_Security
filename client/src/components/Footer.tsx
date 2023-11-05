@@ -29,29 +29,29 @@ function Footer() {
                         </h6>
                         <div className="flex flex-row justify-between w-3/4">
                             <p className="mb-4">
-                                <Link to="/type/1" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/1" className="text-neutral-200 dark:text-neutral-200"
                                 >Dried food</Link>
                             </p>
                             <p className="mb-4">
-                                <Link to="/type/2" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/2" className="text-neutral-200 dark:text-neutral-200"
                                 >Drinks</Link>
                             </p>
                             <p className="mb-4">
-                                <Link to="/type/3" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/3" className="text-neutral-200 dark:text-neutral-200"
                                 >Bread</Link>
                             </p>
                         </div>
                         <div className="flex flex-row justify-between w-3/4">
                             <p className="mb-4">
-                                <Link to="/type/4" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/4" className="text-neutral-200 dark:text-neutral-200"
                                 >Canned food</Link>
                             </p>
                             <p className="mb-4">
-                                <Link to="/type/5" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/5" className="text-neutral-200 dark:text-neutral-200"
                                 >Vegetable</Link>
                             </p>
                             <p className="mb-4">
-                                <Link to="/type/6" className="text-neutral-600 dark:text-neutral-200"
+                                <Link to="/type/6" className="text-neutral-200 dark:text-neutral-200"
                                 >Fruit</Link>
                             </p>
                         </div>
@@ -63,7 +63,7 @@ function Footer() {
                         Useful links
                     </h6>
                     <p className="mb-4">
-                        <Link to="/address" className="text-neutral-600 dark:text-neutral-200"
+                        <Link to="/address" className="text-neutral-200 dark:text-neutral-200"
                         >Location</Link>
                     </p>
                     </div>

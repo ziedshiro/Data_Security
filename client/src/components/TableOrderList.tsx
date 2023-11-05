@@ -18,8 +18,6 @@ function TableOrderList({search,storeId}:TablePayment) {
         isError:boolean
     };
     const [viewPayment,setViewPayment] = useState(false);
-    console.log(data);
-    
     
     let content;
     if(isFetching){

@@ -1,24 +1,23 @@
 import { useState } from 'react';
-import { useAddFavouriteMutation, useFetchFavouriteByIdQuery, useFetchProductByStoreIdQuery, useFetchStoreByIdQuery, useRemoveFavouriteMutation } from '../../store';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useFetchProductByStoreIdQuery, useFetchStoreByIdQuery, useRemoveFavouriteMutation } from '../store';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Box, Skeleton } from '@mui/material';
-import { AiFillHeart, AiOutlineHeart, AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineSearch } from 'react-icons/ai';
 import { format } from 'date-fns';
-import Cookies from 'js-cookie';
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
     return classes.filter(Boolean).join(' ');
 }
 
-const InfoStore = () => {
-    const { id } = useParams();
+interface StoreInfo{
+    id:string | undefined
+}
+
+const StoreInfo = ({id}:StoreInfo) => {
     const { data:store,isFetching:isStore,isError:errorStore } = useFetchStoreByIdQuery(id);
     const { data:products,isFetching:isProduct,isError:errorProduct } = useFetchProductByStoreIdQuery(id);
-    const { data:favourite,isFetching:isFavourite,isError:errorFavourite } = useFetchFavouriteByIdQuery(id);
-    const [ addFavorite ] = useAddFavouriteMutation();
-    const [ unFavorite ] = useRemoveFavouriteMutation();
     const [activeTab, setActiveTab] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
     const filteredProducts = products?.filter((product:any) => (
@@ -30,7 +29,6 @@ const InfoStore = () => {
     (typeof item?.name === 'string' && item?.name.toLowerCase().includes(searchQuery.toLowerCase()))
     ))
     const navigate = useNavigate();
-    const user = Cookies.get('userdata');
     
     const handleTabClick = (tabNumber: number) => {
         setActiveTab(tabNumber);
@@ -60,83 +58,6 @@ const InfoStore = () => {
         else{
             return false;
         }
-    }
-
-    const handleFavourite = async () => {
-        Swal.fire({
-            timerProgressBar: true,
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            background: 'transparent',
-            didOpen: () => {
-              Swal.showLoading();
-            }
-        })
-        await addFavorite({
-            store:{
-                storeId:id
-            }}).then( async (result:any) => {
-                console.log(result)
-                if(result?.error?.status === 500){
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Authentication Error',
-                        text: 'Please Login!',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: true,
-                    });
-                    navigate("/login");
-                }
-            });
-        Swal.close();
-    }
-
-    const handleUnFavourite = async () => {
-        Swal.fire({
-            timerProgressBar: true,
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            background: 'transparent',
-            didOpen: () => {
-              Swal.showLoading();
-            }
-        })
-
-        await unFavorite(favourite?.favouriteId).then( async (result:any) => {
-            if(result?.error?.status === 500){
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Authentication Error',
-                    text: 'Please Login!',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    showConfirmButton: false,
-                    allowOutsideClick: true,
-                });
-                navigate("/login");
-            }
-        });
-
-        Swal.close();
-    }
-
-    const handleClickNotLogin = async () => {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Authentication Error',
-            text: 'Please Login!',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            allowOutsideClick: true,
-        });
-        navigate("/login");
-    }
-
-    const handleClickProduct = (id:number) => {
-        navigate(`/infoproduct/${id}`);
     }
 
     const typeOption = [
@@ -176,20 +97,6 @@ const InfoStore = () => {
             allowOutsideClick: true,
         });
     }
-    else if(errorFavourite&&user){
-        Cookies.remove('jwt',{ path: '/' });
-        Cookies.remove('userdata', { path: '/' });
-        Swal.fire({
-            icon: 'error',
-            title: 'Authentication Error',
-            text: 'JWT Token Expired!',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            allowOutsideClick: true,
-        });
-        navigate("/login");
-    }
 
     window.scrollTo(0, 0);
 
@@ -198,7 +105,7 @@ const InfoStore = () => {
             <div className='bg-gray-50'>
                 <div className='container mx-auto kanit px-4 py-5'>
                     {
-                    isStore || errorStore || isFavourite ?
+                    isStore || errorStore ?
                     <>
                         <Skeleton width="20%" height={30} />
                         <div className='mt-2'>
@@ -219,34 +126,8 @@ const InfoStore = () => {
                     </>
                     :
                     <>
-                        <nav>
-                            <ol className="flex">
-                                <div className="flex items-center">
-                                    <Link to="/" className="mr-2 kanit text-lg font-medium text-red-500">
-                                        Home
-                                    </Link>
-                                    <div className='mr-2 kanit text-lg font-medium'>/</div>
-                                </div>
-                                <div className="flex items-center">
-                                    <Link to="/" className="mr-2 kanit text-lg font-medium text-red-500">
-                                        Store
-                                    </Link>
-                                    <div className='mr-2 kanit text-lg font-medium'>/</div>
-                                </div>
-                                <div className="text-sm">
-                                    <p className="kanit text-lg text-gray-500">
-                                        {store?.name}
-                                    </p>
-                                </div>
-                            </ol>
-                        </nav>
                         <div className="flex items-center">
                             <p className="text-5xl font-medium my-3 mr-7">{store?.name}</p>
-                            {user ? 
-                                favourite ?
-                                    <AiFillHeart size={25} className="text-red-500 cursor-pointer" onClick={handleUnFavourite}/>:
-                                <AiOutlineHeart size={25} className="text-red-500 cursor-pointer" onClick={handleFavourite}/>:
-                            <AiOutlineHeart size={25} className="text-red-500 cursor-pointer" onClick={handleClickNotLogin}/>}
                         </div>
                         <p className="font-medium mb-3 text-gray-500">{store?.address}</p>
                         <div className="flex text-sm text-gray-500 font-medium mb-3">
@@ -324,7 +205,7 @@ const InfoStore = () => {
                             </div>
                         </div>
                             {
-                                isProduct || errorProduct || isFavourite ?
+                                isProduct || errorProduct ?
                                 <div className="grid gap-x-8 gap-y-10 grid-cols-4">
                                     <Media/>
                                     <Media/>
@@ -350,14 +231,13 @@ const InfoStore = () => {
                                             (
                                             timeCheck() ?
                                                 <div
-                                                    onClick={() => handleClickProduct(product?.productId)}
                                                     key={index}
-                                                    className='bg-white hover:scale-105 rounded-lg cursor-pointer'
+                                                    className='bg-white rounded-lg'
                                                 >
                                                     <img
                                                         src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
                                                         alt="img_product"
-                                                        className="rounded-xl shadow-lg w-80 h-48 object-contain"
+                                                        className="rounded-xl w-80 h-48 object-contain"
                                                     />
                                                     <div className='m-3'>
                                                         <p className="kanit">{product?.name} EXP ({format(new Date(product?.expiryDate), 'dd-MM-yyyy')})</p>
@@ -382,11 +262,11 @@ const InfoStore = () => {
                                                     key={index}
                                                     className='bg-white hover:scale-105 rounded-lg relative'
                                                 >
-                                                    <img
+                                                    {product?.imgProduct && <img
                                                         src={require(`C:/image/Files-Upload/products/${product?.imgProduct}`)}
                                                         alt="img_product"
-                                                        className="rounded-xl shadow-lg w-80 h-48 opacity-40"
-                                                    />
+                                                        className="rounded-xl shadow-lg opacity-40"
+                                                    />}
                                                     <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white"> {/* Add w-full to take full width */}
                                                         <div className="text-sm kanit font-bold cursor-default bg-red-500 px-2 py-1 rounded">ORDER FOR LATER</div>
                                                     </div>
@@ -410,4 +290,4 @@ const InfoStore = () => {
 };
 
 
-export default InfoStore;
+export default StoreInfo;
