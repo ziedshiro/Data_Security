@@ -16,9 +16,43 @@ function History() {
     const [selectedItem, setSelectedItem] = useState({});
 
     const [selectedStatus, setSelectedStatus] = useState('All');
-    const filteredData = data?.filter((item :HistoryData) =>
-        (selectedStatus === 'All' || item.orderStatus === selectedStatus)
-    );
+    const filteredData = data?.filter((item: HistoryData) => {
+        if (selectedStatus === 'All') {
+            return true; 
+        }else if (selectedStatus === 'Pending') {
+            return (
+                item.orderStatus === 'Pending' &&
+                item.paymentStatus === 'Pending'
+            )
+        }else if (selectedStatus === 'Reject') {
+            return (
+                item.orderStatus === 'Failed' &&
+                item.paymentStatus === 'Reject'
+            );
+        }else if (selectedStatus === 'Waiting') {
+            return (
+                item.orderStatus === 'Pending' &&
+                item.paymentStatus === 'Approve' &&
+                item.pickupStatus === 'Pending'
+            );
+        }else if (selectedStatus === 'Failed') {
+            return (
+                item.orderStatus === 'Failed' &&
+                item.paymentStatus === 'Approve' &&
+                item.pickupStatus === 'Failed'
+            );
+        }else if (selectedStatus === 'Receive') {
+            return (
+                item.orderStatus === 'Success' &&
+                item.paymentStatus === 'Approve' &&
+                item.pickupStatus === 'Received'
+            );
+        }
+        
+        return false; 
+    });
+    
+
 
     const handleClick = (item:any) => {
         console.log(item)
@@ -82,9 +116,11 @@ function History() {
                                 onChange={(e) => setSelectedStatus(e.target.value)}
                             >
                                 <option value="All">ทั้งหมด</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Failed">Failed</option>
-                                <option value="Reject">Reject</option>
+                                <option value="Pending">รอการตรวจสอบ</option>
+                                <option value="Failed">ไม่ได้รับสินค้า</option>
+                                <option value="Reject">ปฎิเสธการชำระเงิน</option>
+                                <option value="Waiting">รอรับสินค้า</option>
+                                <option value="Receive">รับสินค้า</option>
                             </select>
                         </div>
                     </div>

@@ -58,7 +58,7 @@ function ManagePayment() {
                 </div>
             </div>
             <div className="w-screen h-full justify-center items-center flex flex-col px-10 py-8 mt-8">
-            <h1 className="text-3xl font-bold">Product</h1>
+            <h1 className="text-3xl font-bold">Manage Payment</h1>
             <div className="overflow-x-auto mt-2 sm:-mx-6 items-center lg:-mx-8">
                 <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="w-full flex flex-row justify-between mb-3">
