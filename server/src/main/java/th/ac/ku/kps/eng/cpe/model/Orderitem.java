@@ -16,6 +16,7 @@ public class Orderitem implements java.io.Serializable {
 	private String orderItemId;
 	private Product product;
 	private Orders orders;
+	private BigDecimal price;
 	private int quantity;
 	private BigDecimal subtotal;
 	private Date createdate;
@@ -24,10 +25,11 @@ public class Orderitem implements java.io.Serializable {
 	public Orderitem() {
 	}
 
-	public Orderitem(String orderItemId, Product product, Orders orders, int quantity, BigDecimal subtotal, Date createdate) {
+	public Orderitem(String orderItemId, Product product, Orders orders, BigDecimal price, int quantity, BigDecimal subtotal, Date createdate) {
 		this.orderItemId = orderItemId;
 		this.product = product;
 		this.orders = orders;
+		this.price = price;
 		this.quantity = quantity;
 		this.setSubtotal(subtotal);
 		this.createdate = createdate;
@@ -87,6 +89,14 @@ public class Orderitem implements java.io.Serializable {
 
 	public void setSubtotal(BigDecimal subtotal) {
 		this.subtotal = subtotal;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 
 }

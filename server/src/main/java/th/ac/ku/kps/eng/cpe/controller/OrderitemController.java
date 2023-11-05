@@ -127,8 +127,10 @@ public class OrderitemController {
 			if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
 				if(orderitem.getQuantity()<=product.getQuantityAvailable() && orderitem.getQuantity()>0) {
 					if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
+						orderitem.setPrice(product.getDiscountPrice());
 						subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitem.getQuantity()));
 					} else {
+						orderitem.setPrice(product.getPrice());
 						subTotal = product.getPrice().multiply(new BigDecimal(orderitem.getQuantity()));				
 					}
 						
@@ -139,7 +141,7 @@ public class OrderitemController {
 								List<Orderitem> orderitems = orderitemservice.findByOrderId(order.getOrderId());
 								for (Orderitem item : orderitems) {
 									if(item.getProduct().equals(product)) {
-										if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
+										if ((currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) && !item.getPrice().equals(product.getDiscountPrice())) {
 											order.setTotalAmount(order.getTotalAmount().subtract(item.getSubtotal()));
 											orderitemservice.deleteById(item);
 											order.setTotalAmount(order.getTotalAmount().add(subTotal));
@@ -147,6 +149,7 @@ public class OrderitemController {
 													UUID.randomUUID().toString(),
 													product,
 													order,
+													orderitem.getPrice(),
 													orderitem.getQuantity(),
 													subTotal,
 													new Date()
@@ -228,9 +231,9 @@ public class OrderitemController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findById(orderitemBody.getOrders().getOrderId());
 			BigDecimal subTotal = new BigDecimal(0);
 			Orderitem orderitem = orderitemservice.findById(id);
+			Orders order = orderitem.getOrders();
 			
 			if(orderitem!=null) {
 				Product product = orderitem.getProduct();
@@ -245,7 +248,7 @@ public class OrderitemController {
 				if(currentTime.isAfter(storeOpenTime) && currentTime.isBefore(storeCloseTime)) {
 					if(orderitemBody.getQuantity()<=product.getQuantityAvailable() && orderitemBody.getQuantity()>0) {
 						
-						if (currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) {
+						if ((currentTime.isBefore(storeCloseTime) && currentTime.isAfter(oneHourBeforeClose)) && product.getDiscountPrice().equals(orderitem)) {
 							subTotal = product.getDiscountPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));
 						} else {
 							subTotal = product.getPrice().multiply(new BigDecimal(orderitemBody.getQuantity()));				
@@ -271,12 +274,8 @@ public class OrderitemController {
 				
 				}
 			}
-			else {
-				return new Response(HttpStatus.INTERNAL_SERVER_ERROR,"Orderitem not found!");
-			}
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
-		
 	}
 	
 	@DeleteMapping("/auth/orderitem/{id}")
@@ -286,8 +285,17 @@ public class OrderitemController {
 		String username = (String) claims.get("username");
 		User user = userservice.findByUserId(encryptionservice.encrypt(username));
 		if(user!=null && user.getRole().equals("customer")) {
-			Orders order = orderservice.findById(id);
-			orderservice.deleteById(order);		
+			Orderitem item = orderitemservice.findById(id);
+			Orders order = orderservice.findById(item.getOrders().getOrderId());				
+			List<Orderitem> items = orderitemservice.findByOrderId(order.getOrderId());
+			if(items.size() == 1) {
+				orderservice.deleteById(order);		
+			} else {
+				order.setTotalAmount(order.getTotalAmount().subtract(item.getSubtotal()));
+				order.setUpdatedate(new Date());
+				orderservice.save(order);
+				orderitemservice.deleteById(item);
+			}
 			return new Response(HttpStatus.OK,"Delted");
 		}
 		return new Response(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");

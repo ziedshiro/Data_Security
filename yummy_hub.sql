@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2023 at 07:34 PM
+-- Generation Time: Nov 05, 2023 at 07:14 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -998,6 +998,7 @@ INSERT INTO `favourite` (`favourite_id`, `store_id`, `user_id`, `createdate`) VA
 CREATE TABLE `orderitem` (
   `orderItem_id` varchar(200) NOT NULL,
   `order_id` varchar(200) NOT NULL,
+  `price` decimal(11,2) NOT NULL,
   `product_id` varchar(200) NOT NULL,
   `quantity` int(11) DEFAULT NULL,
   `Subtotal` decimal(11,2) DEFAULT NULL,
@@ -1009,10 +1010,8 @@ CREATE TABLE `orderitem` (
 -- Dumping data for table `orderitem`
 --
 
-INSERT INTO `orderitem` (`orderItem_id`, `order_id`, `product_id`, `quantity`, `Subtotal`, `createdate`, `updatedate`) VALUES
-('67fb3e17-117f-416d-be50-41eb7d025948', 'fb8f2d96-fc93-423e-9ee8-b514c8508d03', '42d26897-9284-4485-a7f5-f0150981e7c4', 2, 378.00, '2023-11-05 00:25:57', NULL),
-('69dad746-7d61-4b6d-ba76-a61207727afd', '6ad3da8d-1770-486a-b00d-044f11cd33b1', '0d171bd9-20a8-4180-bafb-57fdfd992ea5', 1, 20.00, '2023-11-05 00:26:26', NULL),
-('d9faa9a3-05bd-4f7f-a0b2-87725766af5a', 'fb8f2d96-fc93-423e-9ee8-b514c8508d03', '42d26897-9284-4485-a7f5-f0150981e7c4', 1, 99.00, '2023-11-04 22:36:02', NULL);
+INSERT INTO `orderitem` (`orderItem_id`, `order_id`, `price`, `product_id`, `quantity`, `Subtotal`, `createdate`, `updatedate`) VALUES
+('0af5614f-ed56-4793-b2dc-140f4cd58d44', 'a449dc44-5275-457d-85bc-e5a175bbd1e2', 99.00, '42d26897-9284-4485-a7f5-f0150981e7c4', 3, 297.00, '2023-11-05 13:11:51', '2023-11-05 13:12:09');
 
 -- --------------------------------------------------------
 
@@ -1042,8 +1041,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `store_id`, `order_date`, `order_status`, `TotalAmount`, `filepath`, `payment_date`, `payment_status`, `pickup_code`, `pickup_date`, `pickup_status`, `createdate`, `updatedate`) VALUES
-('6ad3da8d-1770-486a-b00d-044f11cd33b1', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', 'B545qwSXq', '2023-11-05 00:26:26', 'Cart', 20.00, NULL, NULL, NULL, NULL, NULL, NULL, '2023-11-05 00:26:26', NULL),
-('fb8f2d96-fc93-423e-9ee8-b514c8508d03', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '8xjuo23Wsed5', '2023-11-04 22:36:02', 'Cart', 477.00, NULL, NULL, NULL, NULL, NULL, NULL, '2023-11-04 22:36:02', '2023-11-05 00:25:57');
+('a449dc44-5275-457d-85bc-e5a175bbd1e2', 'hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', '8xjuo23Wsed5', '2023-11-05 13:05:19', 'Cart', 297.00, NULL, NULL, NULL, NULL, NULL, NULL, '2023-11-05 13:05:19', '2023-11-05 13:12:09');
 
 -- --------------------------------------------------------
 
@@ -1245,8 +1243,8 @@ CREATE TABLE `store` (
 --
 
 INSERT INTO `store` (`store_id`, `name`, `address`, `latitude`, `longitude`, `district_id`, `subdistrict_id`, `province_id`, `img_store`, `store_open`, `store_close`, `user_id`, `rating`) VALUES
-('8xjuo23Wsed5', 'Supercan', '3218 New Phetburi Road Bangkapi\r\nCity Bangkok Province   Bangkok\r\nZipcode  10320\r\n', 98, 12, 1, 1, 1, '', '00:00:00', '20:00:00', 'XvSV3A9tCF9Y3dx6koPN2wQgwSMMO2+ZE05DpyayHOU=', 5),
-('B545qwSXq', 'Breadfast', '2673 Soi Chuennukul Ramkhamhaeng Hua Mark Bang Kapi\r\nCity Bangkok\r\nProvince Bangkok\r\nZipcode 10240', 110, 15, 1, 1, 1, '', '00:00:00', '18:00:00', 'Mvx4FYkvkT7E/nRVGwtj8LiCwf1nwUpik1a6MHN0Tt0=', 3),
+('8xjuo23Wsed5', 'Supercan', '3218 New Phetburi Road Bangkapi\r\nCity Bangkok Province   Bangkok\r\nZipcode  10320\r\n', 98, 12, 1, 1, 1, '', '08:00:00', '13:30:00', 'XvSV3A9tCF9Y3dx6koPN2wQgwSMMO2+ZE05DpyayHOU=', 5),
+('B545qwSXq', 'Breadfast', '2673 Soi Chuennukul Ramkhamhaeng Hua Mark Bang Kapi\r\nCity Bangkok\r\nProvince Bangkok\r\nZipcode 10240', 110, 15, 1, 1, 1, '', '07:00:00', '18:00:00', 'Mvx4FYkvkT7E/nRVGwtj8LiCwf1nwUpik1a6MHN0Tt0=', 3),
 ('kklcldlvvfvf', '247', '-', NULL, NULL, 750, 5996, 1, '-', '08:00:00', '21:00:00', 'xp4YRwzZj5ierSI64cpIog==', 0),
 ('Psfe5x2sds', 'Dryed', '449 Gp 3 Vibhavadi Rangsit Lardyao\r\nCity Bangkok\r\nProvince Bangkok\r\nZipcode 10900\r\n', 101, 12, 1, 1, 1, '', '11:00:00', '18:00:00', 'bkF2462d0ZeDGz3QtEJB0A==', 5),
 ('qweA5QWxxli', 'FastFruit', '138 Soi Saphanyao New Road\r\nCity Bangkok\r\nProvince Bangkok\r\nZipcode 10500\r\n', 101, 14, 1, 1, 1, '', '09:30:00', '16:00:00', 'jZMY2Peh++e/TF+hegA3TbiCwf1nwUpik1a6MHN0Tt0=', 5),
@@ -8704,7 +8702,7 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `role`, `last_login_timestamp`, `account_lock_status`, `attempt_login`, `attempt_time_login`, `two_factor_authentication_enabled`, `code_two_factor_authentication`) VALUES
 ('5XhbMCkwbI6qnPN5H8TwXwQgwSMMO2+ZE05DpyayHOU=', 'A1gt3kk6cJUhXmEJXe1D/g==', 'A1gt3kk6cJUhXmEJXe1D/g==', 'ee46f21b2ac1503db76de02686628f8ea35d9c223316ccee35c06c0355b587c9', '4oL/12mgwYQdHbINR2fSEA==', 'store owner', '2023-11-02 14:44:52', 0, 0, NULL, 1, 'SWL4T2B6LCH67JSI3HR2VWBH33Y4LGHJ'),
 ('bkF2462d0ZeDGz3QtEJB0A==', 'uwUcN3mwOFXMzX27FLFXqw==', 'Kz2+y7sii9kngmhxNkakoQ==', '6e37ab5bffa8e3bb3da25a75653508de2d52c9aeba71c9c0920f8bf4220681eb', 'hTV+zxrcdSDDlBx2AJSkwA==', 'store owner', '2023-11-02 18:04:24', 0, 0, NULL, 1, 'NKPZR2RYFL5BK7RUJZF5ABGCWCMAYG5Q'),
-('hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', 'BcMvBoaaADqRAVB8rR/XQw==', 'gItS51XdVzW/R940eXq9Ag==', '07901b88aa453480e1b1cf28f44ac0bb8d598f7608d4c958dee38bdc0fa44491', 'ADS0ZSEsZv55H5L5ft0cSQ==', 'customer', '2023-11-05 01:31:26', 0, 0, NULL, 1, '2KURGKDB6FMAZVJHOCQMGANRCIBCHEJE'),
+('hWAXiaeHRnKzPoAiP+7gEgQgwSMMO2+ZE05DpyayHOU=', 'BcMvBoaaADqRAVB8rR/XQw==', 'gItS51XdVzW/R940eXq9Ag==', '07901b88aa453480e1b1cf28f44ac0bb8d598f7608d4c958dee38bdc0fa44491', 'ADS0ZSEsZv55H5L5ft0cSQ==', 'customer', '2023-11-05 12:30:53', 0, 0, NULL, 1, '2KURGKDB6FMAZVJHOCQMGANRCIBCHEJE'),
 ('jZMY2Peh++e/TF+hegA3TbiCwf1nwUpik1a6MHN0Tt0=', 'etX+F5CcPIduTNbvjyAEBw==', 'etX+F5CcPIduTNbvjyAEBw==', '12b57d834652758d0a575053aba2a19cb48219f3716fa96c7b108745829c579a', 'TcNnPta60E/zpeW4CyFTbA==', 'store owner', '2023-11-02 17:45:13', 0, 0, NULL, 1, 'TCN2LOT4GL3Q2HV4OAXNKEN2ZPIU3I23'),
 ('Mvx4FYkvkT7E/nRVGwtj8LiCwf1nwUpik1a6MHN0Tt0=', 'GCL2G/I3UHU6Rpv5B76m6w==', 'MmtN2pz7WM2gqQIxKJu3zw==', '3ce232e12b044a9a39eda44b7e99361989a4062fe4c35751fc330130aee05857', '5kdMTybrfKEbxpk/eueZWg==', 'store owner', '2023-11-02 17:25:17', 0, 0, NULL, 1, 'ZXX2QWQLIBHD27N7G6G7UJ3262MGDCGY'),
 ('test', 'test', 'test', 'test', 'test', 'store owner', NULL, NULL, NULL, NULL, NULL, NULL),
