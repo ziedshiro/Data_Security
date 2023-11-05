@@ -14,13 +14,11 @@ function Success() {
     const navigate = useNavigate();
 
     const handleSubmit = () =>{
-        Cookies.remove('jwt',{ path: '/' });
-        Cookies.remove('userdata', { path: '/' });
         Cookies.remove('orders', { path: '/' });
-
         window.scrollTo(0, 0);
         navigate('/');
     }
+    
     useEffect(() => {
         if(!order || !user || !jwt){
             Cookies.remove('orders', { path: '/' });

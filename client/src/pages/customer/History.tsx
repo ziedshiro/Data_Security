@@ -155,27 +155,27 @@ function History() {
                                                                     ปฎิเสธการชำระเงิน
                                                                 </span>
                                                             </span>
-                                                            : data?.orderStatus === 'Pending' && data?.paymentStatus === 'Approve' && data.pickupStatus === 'pending' ?
+                                                            : data?.orderStatus === 'Pending' && data?.paymentStatus === 'Approve' && data?.pickupStatus === 'Pending' ?
                                                                 <span className="relative inline-block px-3 py-1 font-semibold leading-tight text-yellow-900">
                                                                     <span aria-hidden="true" className="absolute inset-0 bg-yellow-200 rounded-full opacity-50"></span>
                                                                     <span className="relative">
-                                                                        รอรับ
+                                                                        รอรับสินค้า
                                                                     </span>
                                                                 </span>
-                                                                : data?.orderStatus === 'Failed' && data?.paymentStatus === 'Approve' && data.pickupStatus === 'Failed' ?
+                                                                : data?.orderStatus === 'Failed' && data?.paymentStatus === 'Approve' && data?.pickupStatus === 'Failed' ?
                                                                     <span className="relative inline-block px-3 py-1 font-semibold leading-tight text-red-900">
                                                                         <span aria-hidden="true" className="absolute inset-0 bg-red-200 rounded-full opacity-50"></span>
                                                                         <span className="relative">
                                                                             ไม่ได้รับสินค้า
                                                                         </span>
                                                                     </span>
-                                                                    : 
+                                                                    : data?.orderStatus === 'Success' && data?.paymentStatus === 'Approve' && data?.pickupStatus === 'Received' ?
                                                                     <span className="relative inline-block px-3 py-1 font-semibold leading-tight text-green-900">
                                                                         <span aria-hidden="true" className="absolute inset-0 bg-green-200 rounded-full opacity-50"></span>
                                                                         <span className="relative">
                                                                             รับสินค้าแล้ว
                                                                         </span>
-                                                                    </span>
+                                                                    </span>:<></>
                                                     }
                                                 </td>
                                                 <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">

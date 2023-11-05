@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 import { CircularProgress } from '@mui/joy';
+import { Link } from 'react-router-dom';
 
 interface OpenModal {
     open: boolean;
@@ -72,13 +73,13 @@ function ModalHistory({ open ,onHide ,item }:OpenModal) {
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all">
-                                <div className="bg-white px-20 py-8">
+                                <div className="bg-white p-6">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-3 text-center">                         
-                                            <div className= "container mx-auto">
-                                                <div className="w-80">
+                                            <div className= "container">
+                                                <div className="mx-10">
                                                     {isQRCode || errorQRCode || isItem || errorItem ?
-                                                    <div className="w-80 rounded-b-md py-8 flex justify-center">
+                                                    <div className="rounded-b-md py-8 flex justify-center">
                                                         <span className="w-56 h-56 flex justify-center items-center">
                                                             <CircularProgress /> 
                                                         </span>
@@ -87,29 +88,39 @@ function ModalHistory({ open ,onHide ,item }:OpenModal) {
                                                     ( (qrCode.results===null) ?
                                                         <></>
                                                         :
-                                                    <img className="w-80" src={qrCode.results} alt="QRCode"/>)}
-                                                    {/* <img
-                                                        src={require(`C:/image/Files-Upload/products/${item?.product?.imgProduct}`)}
-                                                        alt="img_product"
-                                                        className="rounded-3xl shadow-lg w-80 h-56"
-                                                    /> */}
-                                                    <div className='mt-10 mx-3'>
-                                                        {/* <p className="kanit text-xl font-semibold">{item?.product?.name}</p>
-                                                        <div className="flex justify-between items-center mt-2">
-                                                            <p className="kanit text-sm text-gray-700">{item?.product?.type?.typeName}</p>
-                                                            <p className="kanit text-sm text-gray-700">จำนวน {item?.product?.quantityAvailable}</p>
-                                                        </div> */}
-                                                        <div className="flex kanit text-gray-500 text-sm">
-                                                            {/* <p className="mr-3">วันหมดอายุ</p>
-                                                            <p>{format(new Date(item?.product?.expiryDate), 'dd-MM-yyyy HH:mm')}</p> */}
+                                                    <img className="w-72 mx-auto" src={qrCode.results} alt="QRCode"/>)}
+                                                    {
+                                                        isItem || errorItem || isQRCode || errorItem ?
+                                                        <></>
+                                                    :
+                                                    <>
+                                                    <Link to={`/infostore/${item?.store?.storeId}`} className="p-2 border border-gray-200 flex justify-between items-center">
+                                                        <div className="kanit text-lg mx-2 flex items-center cursor-pointer">
+                                                            {item?.store?.name}
                                                         </div>
-                                                            <>
-                                                                {/* <p className="text-base kanit text-red-500 mt-1">{item?.product?.price} บาท</p> */}
-                                                                <div className="flex justify-center my-6 items-center text-gray-400">
-                                                                    <p className="mr-4 text-black cursor-default">{}</p>
+                                                    </Link>
+                                                    { items?.map((filteredItem:any) => (
+                                                        <div key={filteredItem?.orderId} className="mx-4 my-4 items-center flex justify-between">
+                                                            <div className="flex items-center w-96">
+                                                                <img
+                                                                    src={require(`C:/image/Files-Upload/products/${filteredItem?.product?.imgProduct}`)}
+                                                                    alt="img_product"
+                                                                    className="rounded-3xl shadow-lg w-10 h-10"
+                                                                />
+                                                                <div className="kanit ml-2 flex">
+                                                                    <p className="text-sm">{filteredItem?.product?.name}</p> 
                                                                 </div>
-                                                            </>
+                                                            </div>
+                                                            <div className="kanit text-sm flex text-gray-500">
+                                                                {filteredItem?.quantity} X 
+                                                                <p className="ml-1">{filteredItem?.price}</p>
+                                                            </div>
                                                     </div>
+                                                    ))}
+                                                    <div className="flex justify-between kanit text-red-500 mx-4 my-3 text-lg">
+                                                        <p>ราคารวม</p>
+                                                        <p>{item?.totalAmount}</p>
+                                                    </div></>}
                                                 </div>
                                             </div>
                                         </div>

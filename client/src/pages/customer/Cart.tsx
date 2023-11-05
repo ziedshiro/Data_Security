@@ -167,7 +167,7 @@ const Cart = () => {
                                                 <p className="text-lg">{filteredItem?.product?.name}</p> 
                                                 <div className="text-sm flex text-gray-500">{filteredItem?.quantity} X 
                                                 {
-                                                discountCheck(order) && filteredItem?.product?.discountPrice === filteredItem?.price ?
+                                                discountCheck(order) && (filteredItem?.product?.discountPrice === filteredItem?.price) ?
                                                 <div className="flex items-center ml-1">
                                                     <p className="line-through mr-1">{filteredItem?.product?.price}</p>
                                                     <p className="">{filteredItem?.product?.discountPrice}</p>
