@@ -141,7 +141,7 @@ const StoreInfo = ({id}:StoreInfo) => {
                                 <StarIcon
                                 key={rating}
                                 className={classNames(
-                                    store?.rating > rating ? 'text-red-500' : 'text-gray-200',
+                                    store?.rating > rating ? 'text-blue-500' : 'text-gray-200',
                                     'h-5 w-5 flex-shrink-0'
                                 )}
                                 aria-hidden="true"
@@ -174,7 +174,7 @@ const StoreInfo = ({id}:StoreInfo) => {
                             typeOption.map((type:any, index:number) => (
                                 <button
                                 key={index}
-                                className={`px-4 kanit text-lg pb-3 ${activeTab === type.value ? 'text-red-500 border-b-4 border-red-500' : 'text-gray-500'}`}
+                                className={`px-4 kanit text-lg pb-3 ${activeTab === type.value ? 'text-blue-500 border-b-4 border-blue-500' : 'text-gray-500'}`}
                                 onClick={() => handleTabClick(type.value)}
                                 >
                                 {type.label}
