@@ -11,6 +11,10 @@ import { userLoginMFA } from '../store';
 import { useAppDispatch } from '../hook/use-dispatch-selector';
 import Cookies from "js-cookie";
 import otp from '../img/transaction-password-otp-verification-code-security.svg'
+import { useDispatch } from 'react-redux';
+import { authStoreApi } from '../store/apis/authStoreApi';
+import { cartApi } from '../store/apis/cartApi';
+import { paymentApi } from '../store/apis/paymentApi';
 
 interface OpenModal {
     open: boolean;
@@ -22,10 +26,11 @@ interface OpenModal {
 }
 
 export default function ModalMFALogin({ open, onHide,children,title,user,setUser }: OpenModal) {
-    const dispatch = useAppDispatch();
+    const appDispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const { data:MFA,isFetching:MFAFetching,isError:MFAError } = useMFACodeQuery(user?.userId);
     const navigate = useNavigate();
-    const cancelButtonRef = useRef(null);;
+    const cancelButtonRef = useRef(null);
 
     if(MFAError){
         navigate("/");
@@ -48,7 +53,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
         const inputValue = inputElement.value;
         if (user && MFA) {
             user.secretcode = inputValue;
-            const result = await dispatch(userLoginMFA(user));
+            const result = await appDispatch(userLoginMFA(user));
 
             if (result.payload?.status === 'UNAUTHORIZED') {
                 Swal.close();
@@ -63,7 +68,7 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                     allowOutsideClick: true,
                 });
             }else{
-                Cookies.set('jwt', result.payload.accessToken,{ expires: 1 });
+                Cookies.set('jwt', result.payload.accessToken);
                 Cookies.set('userdata',JSON.stringify(result.payload.user));
                 Swal.close();
                 onHide();
@@ -77,14 +82,19 @@ export default function ModalMFALogin({ open, onHide,children,title,user,setUser
                     text: 'Login Successful',
                 });
                 const role = result.payload.user.role;
+                console.log(result.payload);
+                console.log(Cookies.get('jwt'));
                 if(role === 'customer') {
+                    dispatch(cartApi.util.resetApiState());
                     navigate('/');
                 }else if(role === 'store owner') {
+                    dispatch(authStoreApi.util.resetApiState());
                     navigate('/store');
                 }else if(role === 'administrator') {
+                    dispatch(paymentApi.util.resetApiState());
                     navigate('/admin');
                 }
-                setUser(undefined);
+                setUser();
             }
         }
     };

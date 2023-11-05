@@ -14,11 +14,12 @@ const initialState: LoginState = {
   error: null,
 };
 
-const loginSlice = createSlice({
+const loginMFASlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-
+    resetMFALogin: () => initialState,
+    getMFALoginState:  (state) => state,
   },
   extraReducers(builder) {
     builder.addCase(userLoginMFA.pending, (state,) => {
@@ -34,5 +35,5 @@ const loginSlice = createSlice({
     });
   },
 });
-
-export const loginMFAReducer = loginSlice.reducer;
+export const { resetMFALogin,getMFALoginState } = loginMFASlice.actions; 
+export const loginMFAReducer = loginMFASlice.reducer;

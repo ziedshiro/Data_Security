@@ -8,7 +8,6 @@ import { useState } from "react";
 import { QrCodeIcon } from "@heroicons/react/24/outline";
 import ModalScanner from "../../components/ModalScanner";
 import TableOrderList from "../../components/TableOrderList";
-import { Payment } from "../../Model/Payment";
 import ModalPickup from "../../components/ModalPickup";
 
 function Order() {
@@ -17,7 +16,7 @@ function Order() {
   const [ scan,setScan ] = useState(false);
   const [ orderData, setOrderData ] = useState<any>();
   const [ openOrder,setOpenOrder ] = useState(false);
-
+  
   let content;
   if(isFetching){
       content = <Skeleton />

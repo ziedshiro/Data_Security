@@ -18,10 +18,11 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-
+    resetLogin: () => initialState,
+    getLoginState:  (state) => state,
   },
   extraReducers(builder) {
-    builder.addCase(userLogin.pending, (state,) => {
+    builder.addCase(userLogin.pending, (state) => {
       state.isLoading = true;
     });
     builder.addCase(userLogin.fulfilled, (state, action: PayloadAction<LoginUser>) => {
@@ -34,5 +35,5 @@ const loginSlice = createSlice({
     });
   },
 });
-
+export const { resetLogin,getLoginState } = loginSlice.actions; 
 export const loginReducer = loginSlice.reducer;

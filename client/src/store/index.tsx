@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { loginMFAReducer } from "./slices/loginMFASlice";
-import { loginReducer } from "./slices/loginSlice";
+import { loginMFAReducer,resetMFALogin,getMFALoginState } from "./slices/loginMFASlice";
+import { loginReducer,resetLogin,getLoginState } from "./slices/loginSlice";
 import { registerApi } from "./apis/registerApi";
 import { favouriteApi } from "./apis/favouriteApi";
 import { locationApi } from "./apis/locationApi";
@@ -121,6 +121,12 @@ export {
 
 export { userLoginMFA } from './thunks/userLoginMFA';
 export { userLogin } from './thunks/userLogin';
+export {
+    resetMFALogin,
+    resetLogin,
+    getMFALoginState,
+    getLoginState
+}
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

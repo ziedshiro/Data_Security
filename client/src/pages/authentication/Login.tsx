@@ -42,12 +42,11 @@ function Login() {
               .validate(values, { abortEarly: false }) // abortEarly: false ensures that all validation errors are collected
               .then(() => {
                 // Validation successful, you can proceed with form submission
-               
                 dispatch(userLogin(values)).then((result:any) => {
                     if(result.payload?.status ===  "UNAUTHORIZED"){
                      Swal.fire({
                          icon: 'error',
-                         title: 'Register Failed',
+                         title: 'Login Failed',
                          text: `${result.payload.msg[0]}`,
                          timer: 2000,
                          timerProgressBar: true,
@@ -126,7 +125,9 @@ function Login() {
                         </button>
                     </div>
                 </form>
-                <ModalMFALogin open={onOpen} onHide={handleClose} user={userData} setUser={handleResetUser} title="MFA Code"/>          
+                {userData &&
+                    <ModalMFALogin open={onOpen} onHide={handleClose} user={userData} setUser={handleResetUser} title="MFA Code"/>  
+                }   
                 <p className="mt-8 text-xs font-light text-center text-gray-700">
                     {" "}
                     Don't have an account?{" "}
