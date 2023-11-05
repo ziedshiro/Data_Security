@@ -3,14 +3,12 @@ import Login from '../pages/authentication/Login';
 import Register from '../pages/authentication/Register';
 import Home from '../pages/general/Home';
 import NoPage from '../pages/general/NoPage';
-import Profile from '../pages/store/Profile';
-import Store from '../pages/store/Store';
 import Order from '../pages/store/Order';
 import AnonymousRoutes from '../utils/AnonymousRoutes';
 import CustomerRoutes from '../utils/CustomerRoutes';
 import OwnerRoutes from '../utils/OwnerRoutes';
 import AdminRoutes from '../utils/AdminRoutes';
-import Address from '../pages/general/Address';
+import Address from '../pages/general/Location';
 import Success from '../pages/customer/Success';
 import Payment from '../pages/customer/Payment';
 import History from '../pages/customer/History';
@@ -32,7 +30,7 @@ function Router() {
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/address" element={<Address/>}/>
+          <Route path="/location" element={<Address/>}/>
           <Route path="/infostore/:id" element={<InfoStore/>}/>
           <Route path="/type/:id" element={<Type/>}/>
           <Route path="/infoproduct/:id" element={<InfoProduct/>}/>

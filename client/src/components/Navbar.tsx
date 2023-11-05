@@ -52,7 +52,7 @@ function Navbar() {
                             
                         <div className='flex border-r-2 border-l-2 pl-5'>
                             <div className='mr-5'>
-                                <Link to='/address' className='px-7 py-3'>
+                                <Link to='/location' className='px-7 py-3'>
                                     <span className='flex items-center kanit text-gray-600 hover:text-red-500 text-base font-medium'>
                                         <FaMapMarkerAlt className='mr-3 text-xl'/>
                                         เลือกร้านค้าใกล้เคียง

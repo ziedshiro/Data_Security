@@ -63,7 +63,7 @@ function Footer() {
                         Useful links
                     </h6>
                     <p className="mb-4">
-                        <Link to="/address" className="text-neutral-200 dark:text-neutral-200"
+                        <Link to="/location" className="text-neutral-200 dark:text-neutral-200"
                         >Location</Link>
                     </p>
                     </div>
