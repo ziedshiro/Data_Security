@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useFetchProductByStoreIdQuery, useFetchStoreByIdQuery, useRemoveFavouriteMutation } from '../store';
+import { useFetchProductByStoreIdQuery, useFetchStoreByIdQuery } from '../store';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { StarIcon } from '@heroicons/react/20/solid'

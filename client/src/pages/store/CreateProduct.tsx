@@ -8,8 +8,12 @@ import { useFetchAuthStoreQuery,useAddProductMutation } from "../../store";
 import Swal from "sweetalert2";
 import { useState } from 'react';
 import Cookies from 'js-cookie';
+import { useDispatch } from "react-redux";
+import { productApi } from "../../store/apis/productApi";
+import { storeApi } from "../../store/apis/storeApi";
 
 function CreateProduct() {
+    const dispatch = useDispatch();
     const [ addProduct,isError ] = useAddProductMutation();
     const { data,isFetching } = useFetchAuthStoreQuery();
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 1MB
@@ -97,6 +101,8 @@ function CreateProduct() {
                             }
                             setIsSubmit(true);
                             await addProduct(productData);
+                            dispatch(storeApi.util.resetApiState());
+                            dispatch(productApi.util.resetApiState());
                             setIsSubmit(false);
                             navigate('/store/product');
                         }

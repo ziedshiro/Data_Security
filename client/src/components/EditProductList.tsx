@@ -6,6 +6,9 @@ import { Textarea } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProductMutation } from "../store";
 import { useState } from 'react';
+import { useDispatch } from "react-redux";
+import { productApi } from "../store/apis/productApi";
+import { storeApi } from "../store/apis/storeApi";
 
 interface EditProduct {
   product:ProductData,
@@ -13,6 +16,7 @@ interface EditProduct {
 }
 
 function EditProductList({product,storeId}:EditProduct) {
+  const dispatch = useDispatch();
   const [ updateProduct ] = useUpdateProductMutation();
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 1MB
   const ALLOWED_FILE_TYPES = ['image/png','image/jpg','image/jpeg'];
@@ -109,6 +113,8 @@ function EditProductList({product,storeId}:EditProduct) {
               console.log(productData);
               setIsSubmit(true);
               await updateProduct(productData);
+              dispatch(storeApi.util.resetApiState());
+              dispatch(productApi.util.resetApiState());
               setIsSubmit(false);
               navigate('/store/product');
             }
