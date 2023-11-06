@@ -112,7 +112,8 @@ export {
     useFetchProductByIdQuery,
     useFetchProductByStoreIdQuery,
     useFetchProductByTypeQuery,
-    useFetchProductQuery
+    useFetchProductQuery,
+    useFetchProductByTypeAndLocationQuery
 } from './apis/productApi'
 
 export {

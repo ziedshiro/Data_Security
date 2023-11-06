@@ -18,6 +18,6 @@ public interface StoreRepository extends CrudRepository<Store, Integer> {
 	@Query("from Store as s where s.storeId = :storeId")
 	public Store findById(@Param("storeId")String id);
 	
-	@Query("from Store as s where s.districts.id = :districtId and s.provinces.id = :provinceId and s.subdistricts.id = :subdistrictId")
-	public List<Store> findByLocation(@Param("districtId") int districtId, @Param("subdistrictId") int subdistrictId, @Param("provinceId") int provinceId);
+	@Query("from Store as s where s.districts.nameInThai = :district and s.provinces.nameInThai = :province and s.subdistricts.nameInThai = :subdistrict")
+	public List<Store> findByLocation(@Param("district") String district, @Param("subdistrict") String subdistrict, @Param("province") String province);
 }

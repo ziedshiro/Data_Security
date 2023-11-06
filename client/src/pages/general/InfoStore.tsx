@@ -226,7 +226,7 @@ const InfoStore = () => {
                                     <div className='mr-2 kanit text-lg font-medium'>/</div>
                                 </div>
                                 <div className="flex items-center">
-                                    <Link to="/" className="mr-2 kanit text-lg font-medium text-red-500">
+                                    <Link to="/stores" className="mr-2 kanit text-lg font-medium text-red-500">
                                         Store
                                     </Link>
                                     <div className='mr-2 kanit text-lg font-medium'>/</div>

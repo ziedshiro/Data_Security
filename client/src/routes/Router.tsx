@@ -21,6 +21,7 @@ import CreateProduct from '../pages/store/CreateProduct';
 import InfoStore from '../pages/general/InfoStore';
 import Type from '../pages/general/Type';
 import InfoProduct from '../pages/general/InfoProduct'
+import Stores from '../pages/general/Stores';
 
 function Router() {
   return (
@@ -31,8 +32,9 @@ function Router() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/location" element={<Address/>}/>
+          <Route path="/stores" element={<Stores/>}/>
           <Route path="/infostore/:id" element={<InfoStore/>}/>
-          <Route path="/type/:id" element={<Type/>}/>
+          <Route path="/type/:id/:name" element={<Type/>}/>
           <Route path="/infoproduct/:id" element={<InfoProduct/>}/>
           <Route path="/*" element={<NoPage/>}/>
         </Route>

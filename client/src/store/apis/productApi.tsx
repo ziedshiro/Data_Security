@@ -34,6 +34,14 @@ const productApi = createApi({
                     };
                 },
             }),
+            fetchProductByTypeAndLocation: builder.query({
+                query: ({id, districtId, subdistrictId, provinceId}) => {
+                    return{
+                        url: `/product/type/${id}/${districtId}/${subdistrictId}/${provinceId}`,
+                        method: 'GET',
+                    };
+                },
+            }),
             fetchProductById: builder.query({
                 query: (id) => {
                     return{
@@ -58,7 +66,8 @@ export const {
     useFetchProductByIdQuery,
     useFetchProductByStoreIdQuery,
     useFetchProductByTypeQuery,
-    useFetchProductQuery
+    useFetchProductQuery,
+    useFetchProductByTypeAndLocationQuery
 } = productApi;
 
 export { productApi };

@@ -59,8 +59,8 @@ public class StoreController {
 		return null;
 	}
 	
-	@GetMapping("/store/{districtId}/{subdistrictId}/{provinceId}")
-	public List<Store> storeByLoacation(@PathVariable("districtId")int districtId,@PathVariable("subdistrictId")int subdistrictId,@PathVariable("provinceId")int provinceId){
-		return storeservice.findByLocation(districtId, subdistrictId, provinceId);
+	@GetMapping("/store/{district}/{subdistrict}/{province}")
+	public List<Store> storeByLoacation(@PathVariable("district")String district,@PathVariable("subdistrict")String subdistrict,@PathVariable("province")String province){
+		return storeservice.findByLocation(district, subdistrict, province);
 	}
 }

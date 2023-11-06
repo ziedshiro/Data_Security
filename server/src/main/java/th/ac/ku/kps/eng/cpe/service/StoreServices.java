@@ -22,8 +22,8 @@ public class StoreServices {
 		return storerepository.findById(id);
 	}
 	
-	public List<Store> findByLocation(int districtId,int subdistrictId,int provinceId){
-		return storerepository.findByLocation(districtId, subdistrictId, provinceId);
+	public List<Store> findByLocation(String district,String subdistrict,String province){
+		return storerepository.findByLocation(district, subdistrict, province);
 	}
 	
 	public Store save(Store store) {

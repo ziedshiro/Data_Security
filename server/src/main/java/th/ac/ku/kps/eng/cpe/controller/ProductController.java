@@ -74,8 +74,8 @@ public class ProductController {
 		return productservice.findByStoreId(id);
 	}
 	
-	@GetMapping("/product/type/{id}/{districtId}/{subdistrictId}/{provinceId}")
-	public List<Product> getByLocationAndType(@PathVariable("id")int id,@PathVariable("districtId")int districtId,@PathVariable("subdistrictId")int subdistrictId,@PathVariable("provinceId")int provinceId){
+	@GetMapping("/product/type/{id}/{district}/{subdistrict}/{province}")
+	public List<Product> getByLocationAndType(@PathVariable("id")int id,@PathVariable("district")String districtId,@PathVariable("subdistrict")String subdistrictId,@PathVariable("province")String provinceId){
 		List<Store> stores = storeservice.findByLocation(districtId, subdistrictId, provinceId);
 		List<Product> products = new ArrayList<>();
 		for (Store store : stores) {
