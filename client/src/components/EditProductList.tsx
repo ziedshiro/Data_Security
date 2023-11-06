@@ -320,7 +320,7 @@ function EditProductList({product,storeId}:EditProduct) {
               color='blue'
               className='w-full'
             >
-              Create
+              Update
             </Button>
           </div>
       </form>
