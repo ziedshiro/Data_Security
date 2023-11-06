@@ -109,7 +109,7 @@ function ModalApprovePayment({ open, onHide, payment }: OpenModal) {
                             Cancel
                         </Button>
                         <Button
-                            disabled={spin}
+                            disabled={spin || payment.orderStatus==='Failed' || payment.orderStatus==='Success'}
                             color='red'
                             variant='outlined'
                             className='mr-2'
@@ -118,7 +118,7 @@ function ModalApprovePayment({ open, onHide, payment }: OpenModal) {
                             Reject
                         </Button>
                         <Button
-                            disabled={spin}
+                            disabled={spin || payment.orderStatus==='Failed' || payment.orderStatus==='Success'}
                             color='green'
                             variant='outlined'
                             onClick={()=>handleUpdate('Approve')}
