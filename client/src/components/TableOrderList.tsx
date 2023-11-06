@@ -87,13 +87,8 @@ function TableOrderList({search,storeId}:TablePayment) {
                         <td className="px-3">
                             {item.paymentStatus}
                         </td>
-                        <td className="px-3 py-2 flex">
-                            <EyeIcon onClick={()=>setViewPayment(true)} height={25} className="hover:text-yellow-600 cursor-pointer mr-1"/>
-                            <ModalApprovePayment 
-                                onHide={()=>setViewPayment(false)}
-                                open={viewPayment}
-                                payment={item}
-                            />
+                        <td className="px-3 py-2">
+                            {item.pickupStatus}
                         </td>
                     </tr>
                 )

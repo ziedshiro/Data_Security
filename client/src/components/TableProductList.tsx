@@ -11,7 +11,7 @@ function TableProductList(item:ProductData) {
     const [openProduct,setOpenProduct] = useState(false);
 
     return (
-        <tr key={item.productId}>
+        <tr>
             <td className="px-3 text-start">
                 {item.name}
             </td>
