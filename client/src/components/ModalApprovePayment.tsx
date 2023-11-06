@@ -90,11 +90,13 @@ function ModalApprovePayment({ open, onHide, payment }: OpenModal) {
                             <p className="text-sm text-gray-700">
                                 <b>Total Amount:</b> {payment.totalAmount}
                             </p>
-                            <img
-                                className="h-7/12 w-7/12 object-cover object-center mt-2 self-center"
-                                src={require(`C:/image/Files-Upload/payments/${payment.filepath}`)}
-                                alt={'img-'+payment.orderId}
-                            />
+                            {payment.filepath && 
+                                <img
+                                    className="h-7/12 w-7/12 object-cover object-center mt-2 self-center"
+                                    src={require(`C:/image/Files-Upload/payments/${payment.filepath}`)}
+                                    alt={'img-'+payment.orderId}
+                                />
+                            }
                         </div>
                         <div className="mt-4 h-1/4 flex flex-row justify-center">
                         <Button

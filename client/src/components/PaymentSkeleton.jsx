@@ -30,7 +30,7 @@ function PaymentSkeleton() {
                             <CircularProgress /> 
                         </span>
                     </div> 
-                    <p className="mt-5 text-xl font-bold">KU KPS SPORT</p>
+                    <p className="mt-5 text-xl font-bold">Yummy Hub</p>
                     <div className="text-center py-5">
                         <div className="text-lg font-bold mt-4 flex items-center text-red-500">
                             <GoStopwatch className="mr-3 text-xl font-bold"/><Media width={100} height={20}/>
