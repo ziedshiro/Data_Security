@@ -80,8 +80,8 @@ function ModalScanner( { open, onHide,setOrderData,setOpenOrder }: OpenModal ) {
                   <div className='min-h-full min-w-full'>
                     {!spin &&
                       <Html5QrcodePlugin
-                        fps={5}
-                        qrbox={{ width: 250, height: 250 }}
+                        fps={15}
+                        qrbox={{ width: 260, height: 260 }}
                         disableFlip={true}
                         qrCodeSuccessCallback={onNewScanResult} 
                         qrCodeErrorCallback={
